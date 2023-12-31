@@ -1,0 +1,99 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 10px;
+
+  transition: filter .3s ease;
+
+  &.inActive {
+    filter: brightness(80%) opacity(90%);
+  }
+}
+
+.label {
+  padding: 15px 0 0 18px;
+  font-family: Figtree, sans-serif;
+  font-weight: 500;
+  font-size: 1.2em;
+  color: hsla(0, 0%, 100%, 50%);
+
+  span {
+    color: hsla(0, 0%, 100%, 30%);
+  }
+}
+
+.main {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  padding: 10px 5px 10px 15px;
+  justify-content: flex-start;
+  align-items: center;
+  border-radius: 10px;
+  scroll-behavior: smooth;
+  overflow: hidden;
+}
+
+.elem {
+  height: clamp(120px, 12vh, 300px);
+  filter: brightness(85%);
+  transition: all .15s ease-in-out;
+  border: 3px solid transparent;
+  border-radius: 3px;
+  filter: drop-shadow(1px 4px 3px rgba(0, 0, 0, 0.6));
+
+  &.square {
+    aspect-ratio: 1 / 1;
+    height: clamp(150px, 15vh, 300px);
+  }
+
+  &.landscape {
+    aspect-ratio: 92 / 43;
+  }
+}
+
+.noPoster {
+  background-color: hsl(200, 10%, 40%);
+  background-clip: padding-box;
+
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+
+  padding: 1em;
+}
+
+.elemText {
+  font-family: Figree, sans-serif;
+  font-size: 2em;
+  color: hsl(200, 15%, 90%);
+
+  width: 100%;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.image {
+  object-fit: fill;
+  width: 100%;
+  height: 100%;
+}
+
+.active {
+  border: 3px solid hsla(40, 100%, 50%, 80%);
+  filter: brightness(100%);
+  transform: scale(1.04);
+  filter: drop-shadow(1px 4px 3px rgba(0, 0, 0, 0.6));
+}
+
+.logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+
+  filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, .2))
+}

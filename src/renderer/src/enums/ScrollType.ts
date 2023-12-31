@@ -1,0 +1,6 @@
+export enum ScrollType {
+  HORIZONTAL,
+  VERTICAL,
+  GRID_HORIZONTAL,
+  GRID_VERTICAL
+}
