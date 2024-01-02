@@ -3,11 +3,11 @@ import { Scroller, ScrollerProps } from "../Scroller"
 import { ScrollElement } from "@renderer/types";
 
 export type ScrollerConfig<T extends ScrollElement> = Omit<ScrollerProps<T>, "isActive" | "onPrevScroller" | "onNextScroller"> & { id: string }
-interface Props<T extends ScrollElement> {
-  scrollers: ScrollerConfig<T>[]
+interface Props {
+  scrollers: ScrollerConfig<any>[]
 }
 
-const Scrollers = <T extends ScrollElement>({ scrollers }: Props<T>) => {
+const Scrollers = ({ scrollers }: Props) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const content = useMemo(() => {

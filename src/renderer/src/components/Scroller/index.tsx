@@ -1,6 +1,5 @@
 import classNames from "classnames";
 import { useEffect, useRef, useState } from "react";
-import useSound from "use-sound";
 import { ScrollElement } from "../../types";
 import css from "./Scroller.module.scss"
 import { useKeepVisible, useOnInput } from "../../hooks"
@@ -43,10 +42,6 @@ export const Scroller = <T extends ScrollElement>({
   const activeRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
 
-  const [playTick] = useSound("/sounds/tick.wav", {
-    playbackRate: 3
-  });
-
   const displayElems = elems.map((elem, i) => {
     const elemIsActive = i === activeIndex
 
@@ -73,12 +68,10 @@ export const Scroller = <T extends ScrollElement>({
     if (!isActive) return;
 
     const handlePrev = () => {
-      activeIndex !== 0 && playTick();
       setActiveIndex((i) => Math.max(i - 1, 0));
     }
 
     const handleNext = () => {
-      activeIndex !== elems.length - 1 && playTick();
       setActiveIndex((i) => Math.min(i + 1, elems.length - 1));
     }
 

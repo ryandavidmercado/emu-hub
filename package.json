@@ -30,7 +30,6 @@
     "jotai-immer": "^0.2.0",
     "react-icons": "^4.12.0",
     "react-wavify": "^1.9.0",
-    "use-sound": "^4.0.1",
     "yaml": "^2.3.4"
   },
   "devDependencies": {

@@ -3,52 +3,55 @@ import { MainContainer } from "../../components/MainContainer";
 import { Showcase, ShowcaseContent } from "../../components/Showcase"
 import css from "./Landing.module.css"
 import { useAtom } from "jotai";
-import games, { useUpdateGame } from "@renderer/atoms/games";
-import { systemsAtom } from "@renderer/atoms/systems";
+import games, { Game } from "@renderer/atoms/games";
+import { System, systemsAtom } from "@renderer/atoms/systems";
 import Scrollers, { ScrollerConfig } from "@renderer/components/Scrollers/Scrollers";
 import { ScrollElement } from "@renderer/types";
 
 export const Landing = () => {
-  const [gamesList] = useAtom(games.list);
-  const [recentGamesList] = useAtom(games.recents);
+  const [gamesList] = useAtom(games.lists.all);
+  const [recentGamesList] = useAtom(games.lists.recents);
+
+  const [, updateGame] = useAtom(games.update);
+  const [launchGame] = useAtom(games.launch);
 
   const [systems] = useAtom(systemsAtom);
 
   const [currentContent, setCurrentContent] = useState<ShowcaseContent | null>(null);
 
-  const updateGame = useUpdateGame(Number(currentContent?.id));
-  const updateLastPlayed = useCallback(() => {
-    updateGame({ lastPlayed: new Date().toUTCString() })
-  }, [updateGame])
+  const onGameSelect = useCallback((game: Game) => {
+    try {
+      updateGame(game.id, { lastPlayed: new Date().toUTCString() });
+      launchGame(game.id);
+    } catch(e) {
+      console.error(e)
+    }
+  }, [updateGame, launchGame])
 
-  const scrollers = useMemo<ScrollerConfig<ScrollElement>[]>(() => {
+  const scrollers = useMemo(() => {
     return [
       {
         id: "all-games",
         label: "All Games",
         elems: gamesList,
         onHighlight: setCurrentContent,
-        // onHighlight: setCurrentGameID,
-        onSelect: updateLastPlayed
-      },
+        onSelect: onGameSelect as (content: ScrollElement) => void,
+      } as ScrollerConfig<Game>,
       {
         id: "recent-games",
         elems: recentGamesList,
         label: "Recent Games",
         onHighlight: setCurrentContent
-        // onHighlight: setCurrentGameID
-      },
+      } as ScrollerConfig<Game>,
       {
         id: "systems",
         elems: systems,
         label: "Systems",
         aspectRatio: "square",
         onHighlight: setCurrentContent,
-        // onActiveChange: (isActive) => { if(isActive) setCurrentGameID(null) }
-      } as const
+      }  as ScrollerConfig<System>
     ]
-  }, [gamesList, recentGamesList, setCurrentContent, updateLastPlayed, systems]);
-
+  }, [gamesList, onGameSelect, recentGamesList, setCurrentContent, systems]);
 
   return (
     <div className={css.landing}>
