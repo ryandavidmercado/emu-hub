@@ -12,7 +12,8 @@ export const useOnInput = (cb: (input: Input) => void) => {
     w: Input.UP,
     s: Input.DOWN,
     " ": Input.A,
-    "Enter": Input.A
+    "Enter": Input.A,
+    "Escape": Input.B
   }
 
   const isKey = (key: string): key is keyof typeof keyMap => key in keyMap

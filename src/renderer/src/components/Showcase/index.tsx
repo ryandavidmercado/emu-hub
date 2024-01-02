@@ -13,11 +13,12 @@ export interface ShowcaseContent {
 }
 
 interface Props {
-  content: ShowcaseContent,
+  content?: ShowcaseContent | null,
   hidden?: boolean
 }
 
 export const Showcase = ({ content, hidden = false }: Props) => {
+  if(!content) return <div className={css.main} />
   return (
     <AnimatePresence mode="popLayout">
       <motion.div
