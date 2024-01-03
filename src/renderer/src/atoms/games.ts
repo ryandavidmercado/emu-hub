@@ -21,22 +21,6 @@ const gamesAtom = atomWithStorage<Game[]>('games', [], window.configStorage, { g
 const readonlyGamesAtom = atom((get) => get(gamesAtom));
 const immerizedGamesAtom = withImmer(gamesAtom);
 
-const updateGameAtom = atom(null,
-  (_, set, id: string, update: Partial<Omit<Game, "id>">>) => {
-    set(immerizedGamesAtom, (draft) => {
-      const gameIndex = draft.findIndex(game => game.id === id);
-      if(gameIndex === -1) {
-        return console.error("Tried to update invalid game ID!")
-      }
-
-      draft[gameIndex] = {
-        ...draft[gameIndex],
-        ...update
-      }
-    })
-  }
-);
-
 const recentsAtom = atom((get) => {
   const games = get(gamesAtom);
   return games
@@ -77,10 +61,25 @@ const launchGameAtom = atom(null, (get, set, gameId: string) => {
 })
 
 const getGameAtom = atomFamily((id: string) =>
-  atom((get) => {
-    const games = get(readonlyGamesAtom);
-    return games.find(game => game.id == id)
-  })
+  atom(
+    (get) => {
+      const games = get(readonlyGamesAtom);
+      return games.find(game => game.id == id)
+    },
+    (_, set, update: Partial<Omit<Game, "id>">>) => {
+      set(immerizedGamesAtom, (draft) => {
+        const gameIndex = draft.findIndex(game => game.id === id);
+        if(gameIndex === -1) {
+          return console.error("Tried to update invalid game ID!")
+        }
+
+        draft[gameIndex] = {
+          ...draft[gameIndex],
+          ...update
+        }
+      })
+    }
+  )
 )
 
 export default {
@@ -88,7 +87,6 @@ export default {
     all: readonlyGamesAtom,
     recents: recentsAtom
   },
-  update: updateGameAtom,
   launch: launchGameAtom,
-  get: getGameAtom
+  single: getGameAtom
 }

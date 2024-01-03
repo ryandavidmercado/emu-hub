@@ -14,7 +14,7 @@ import {
 } from "react-icons/io5"
 
 const GameView = ({ id }: { id: string }) => {
-  const [game] = useAtom(games.get(id));
+  const [game] = useAtom(games.single(id));
   const [, launchGame] = useAtom(games.launch);
 
   const [_, setLocation] = useLocation()
