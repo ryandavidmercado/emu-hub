@@ -58,13 +58,17 @@
 .logo {
   width: 25vw;
   height: 20vh;
-}
-
-.logo > img {
-  width: 100%;
-  height: 100%;
   object-fit: contain;
-  filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, .4))
+  filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, .4));
+
+  font-family: Figree, sans-serif;
+  font-size: 4em;
+  color: hsl(200, 15%, 90%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+
 }
 
 .pills {

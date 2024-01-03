@@ -25,6 +25,7 @@ if (process.contextIsolated) {
       const romPath = path.join(ROM_PATH, system, romname);
       return exec(`open "${romPath}" -a ${emulator}`)
     })
+    contextBridge.exposeInMainWorld('path', path)
   } catch (error) {
     console.error(error)
   }

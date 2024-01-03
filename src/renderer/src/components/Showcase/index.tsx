@@ -3,9 +3,11 @@ import Pill from "../Pill";
 import css from "./Showcase.module.scss"
 import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
+import GameLogo from "../GameLogo";
+import { useEffect, useState } from "react";
 
 export interface ShowcaseContent {
-  id: string | number,
+  id: string | number
   logo?: string,
   description?: string
   players?: number
@@ -13,18 +15,25 @@ export interface ShowcaseContent {
 }
 
 interface Props {
-  content?: ShowcaseContent | null,
+  content?: ShowcaseContent | null
   hidden?: boolean
+  className?: string
 }
 
-export const Showcase = ({ content, hidden = false }: Props) => {
-  if(!content) return <div className={css.main} />
+export const Showcase = ({ content, hidden = false, className }: Props) => {
+  if (!content) return <div className={css.main} />
+
+  const [initialOpacity, setInitialOpacity] = useState(1);
+  useEffect(() => {
+    setInitialOpacity(0)
+  }, [])
+
   return (
     <AnimatePresence mode="popLayout">
       <motion.div
         key={content.id ?? "null"}
         initial={{
-          opacity: 0
+          opacity: initialOpacity
         }}
         animate={{
           opacity: 1,
@@ -38,12 +47,10 @@ export const Showcase = ({ content, hidden = false }: Props) => {
             duration: .2
           }
         }}
-        className={classNames(css.main, (hidden || !content) && css.hidden)}
+        className={classNames(css.main, (hidden || !content) && css.hidden, className)}
       >
         <div className={classNames(css.content, !content.hero && css.noBg)}>
-          <div className={css.logo}>
-            <img key={content.logo} src={content.logo} />
-          </div>
+          <GameLogo game={content} className={css.logo} />
           <div className={css.description}>
             <div className={css.descText}>{content.description}</div>
             <div className={css.pills}>
@@ -52,7 +59,9 @@ export const Showcase = ({ content, hidden = false }: Props) => {
           </div>
         </div>
         <div className={css.hero}>
-          {content.hero && <img src={content.hero} className={css.image} />}
+          {content.hero && (
+            <img src={content.hero} className={css.image} />
+          )}
         </div>
       </motion.div>
     </AnimatePresence>

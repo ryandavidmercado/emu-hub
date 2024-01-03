@@ -1,0 +1,38 @@
+.button {
+  border: 2px solid;
+  padding: 12px;
+  gap: 10px;
+
+  display: flex;
+  align-items: center;
+
+  font-family: Figtree;
+  font-size: 1.4em;
+  color: white;
+
+  transition: all .2s ease;
+  border-radius: 50%;
+
+  .label {
+    max-width: 0px;
+    overflow: hidden;
+    transition: max-width .2s ease;
+  }
+
+  &.active {
+    transform: scale(1.1);
+
+    background-color: orange;
+    border-color: transparent;
+
+    .label {
+      max-width: 150px;
+    }
+  }
+}
+
+.buttons {
+  display: flex;
+  gap: 15px;
+  padding: 20px;
+}

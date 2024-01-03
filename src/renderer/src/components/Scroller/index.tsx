@@ -4,6 +4,7 @@ import { ScrollElement } from "../../types";
 import css from "./Scroller.module.scss"
 import { useKeepVisible, useOnInput } from "../../hooks"
 import { Input, ScrollType } from "../../enums";
+import GameLogo from "../GameLogo";
 
 export interface ScrollerProps<T extends ScrollElement> {
   aspectRatio?: "landscape" | "square"
@@ -56,9 +57,11 @@ export const Scroller = <T extends ScrollElement>({
       >
         {elem.poster
           ? <img src={elem.poster} className={css.image} />
-          : elem.logo
-            ? <img src={elem.logo} className={css.logo} />
-            : <div className={css.elemText}>{elem.name ?? elem.id}</div>
+          : <GameLogo
+              game={elem}
+              textClassName={css.elemText}
+              imgClassName={css.logo}
+            />
         }
       </div>
     )

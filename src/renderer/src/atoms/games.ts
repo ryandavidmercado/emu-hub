@@ -6,10 +6,10 @@ import { systemsAtom } from "./systems";
 export interface Game {
   id: string,
   players: number,
-  name: string,
+  name?: string,
   poster?: string,
   hero: string,
-  logo: string,
+  logo?: string,
   description: string,
   system: string
   lastPlayed: string
