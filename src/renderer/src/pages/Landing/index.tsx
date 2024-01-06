@@ -1,17 +1,16 @@
 import { useMemo, useState } from "react";
-import { MainContainer } from "../../components/MainContainer";
 import { Showcase, ShowcaseContent } from "../../components/Showcase"
 import css from "./Landing.module.css"
 import { useAtom } from "jotai";
 import games, { Game } from "@renderer/atoms/games";
-import { System, systemsAtom } from "@renderer/atoms/systems";
+import systems, { System } from "@renderer/atoms/systems";
 import Scrollers, { ScrollerConfig } from "@renderer/components/Scrollers/Scrollers";
 import { useLocation } from "wouter";
 
 export const Landing = () => {
   const [gamesList] = useAtom(games.lists.all);
   const [recentGamesList] = useAtom(games.lists.recents);
-  const [systems] = useAtom(systemsAtom);
+  const [systemsList] = useAtom(systems.lists.all);
 
   const [currentContent, setCurrentContent] = useState<ShowcaseContent | null>(null);
 
@@ -19,13 +18,6 @@ export const Landing = () => {
 
   const scrollers = useMemo(() => {
     return [
-      {
-        id: "all-games",
-        label: "All Games",
-        elems: gamesList,
-        onHighlight: setCurrentContent,
-        onSelect: (game) => { setLocation(`/game/${game.id}`) },
-      } as ScrollerConfig<Game>,
       {
         id: "recent-games",
         elems: recentGamesList,
@@ -35,13 +27,14 @@ export const Landing = () => {
       } as ScrollerConfig<Game>,
       {
         id: "systems",
-        elems: systems,
+        elems: systemsList,
         label: "Systems",
         aspectRatio: "square",
         onHighlight: setCurrentContent,
+        onSelect: (system) => { setLocation(`/system/${system.id}`) }
      }  as ScrollerConfig<System>
     ]
-  }, [gamesList, recentGamesList, setCurrentContent, systems]);
+  }, [gamesList, recentGamesList, setCurrentContent, systemsList]);
 
   return (
     <div className={css.landing}>

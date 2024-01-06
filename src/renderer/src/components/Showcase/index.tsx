@@ -4,7 +4,7 @@ import css from "./Showcase.module.scss"
 import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
 import GameLogo from "../GameLogo";
-import { useEffect, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 
 export interface ShowcaseContent {
   id: string | number
@@ -20,16 +20,15 @@ interface Props {
   className?: string
 }
 
-export const Showcase = ({ content, hidden = false, className }: Props) => {
-  if (!content) return <div className={css.main} />
-
+export const Showcase = ({ content, hidden = false, className, children }: PropsWithChildren<Props>) => {
   const [initialOpacity, setInitialOpacity] = useState(1);
   useEffect(() => {
     setInitialOpacity(0)
   }, [])
 
+  if (!content) return <div className={css.main} />
   return (
-    <AnimatePresence mode="popLayout">
+    <AnimatePresence mode="popLayout" initial={false}>
       <motion.div
         key={content.id ?? "null"}
         initial={{
@@ -56,6 +55,7 @@ export const Showcase = ({ content, hidden = false, className }: Props) => {
             <div className={css.pills}>
               {content.players && <Pill Icon={BsPersonFill} label={String(content.players)} />}
             </div>
+            {children}
           </div>
         </div>
         <div className={css.hero}>

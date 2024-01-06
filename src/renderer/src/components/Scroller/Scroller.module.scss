@@ -1,3 +1,5 @@
+@import "@renderer/scss/colors.scss";
+
 .container {
   width: 100%;
   display: flex;
@@ -16,10 +18,10 @@
   font-family: Figtree, sans-serif;
   font-weight: 500;
   font-size: 1.2em;
-  color: hsla(0, 0%, 100%, 50%);
+  color: $faded;
 
   span {
-    color: hsla(0, 0%, 100%, 30%);
+    color: $fadedplus;
   }
 }
 
@@ -88,7 +90,7 @@
   transform: scale(1.04);
   filter: drop-shadow(1px 4px 3px rgba(0, 0, 0, 0.6));
 
-  border: 3px solid hsla(40, 100%, 50%, 80%);
+  border: 3px solid $highlight;
 }
 
 .logo {

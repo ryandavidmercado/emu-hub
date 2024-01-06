@@ -11,8 +11,6 @@ html {
 }
 
 :root {
-  background-color: hsl(200, 15%, 20%);
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

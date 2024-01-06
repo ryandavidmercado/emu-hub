@@ -98,6 +98,7 @@ export const Scroller = <T extends ScrollElement>({
   });
 
   useKeepVisible(activeRef, 35, ScrollType.HORIZONTAL, isActive)
+
   const activeElem = elems[activeIndex];
 
   return (
@@ -111,7 +112,7 @@ export const Scroller = <T extends ScrollElement>({
       {label && (
         <div className={css.label}>
           {label}
-          {isActive && activeElem.name && <span> - {elems[activeIndex].name}</span>}
+          {isActive && activeElem?.name && <span> - {elems[activeIndex]?.name}</span>}
         </div>
       )}
       <div className={css.main}>

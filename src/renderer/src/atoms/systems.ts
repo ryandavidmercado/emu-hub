@@ -1,9 +1,11 @@
-import { atomWithStorage } from "jotai/utils";
+import { arrayConfigAtoms } from "./util/arrayConfigAtom";
+
 export interface System {
   id: string,
   name: string,
   logo: string,
-  emulators?: string[]
+  emulators?: string[],
+  fileExtensions: string[]
 }
 
-export const systemsAtom = atomWithStorage<System[]>('systems', [], window.configStorage, { getOnInit: true })
+export default arrayConfigAtoms<System>({ storageKey: 'systems' });

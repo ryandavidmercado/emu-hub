@@ -1,0 +1,22 @@
+@import "@renderer/scss/colors";
+
+.controllerForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.entry {
+  display: flex;
+  flex-direction: row;
+  padding: 30px;
+
+  font-family: Figtree, sans-serif;
+  font-size: 1.3em;
+  color: $fadedminus;
+  transition: all .1s ease;
+
+  &.active {
+    color: $background;
+    background-color: $primary;
+  }
+}

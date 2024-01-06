@@ -1,13 +1,9 @@
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import fs from "./fs"
 import configStorage from './util/configStorage'
-import { exec as execCb } from 'child_process';
 import path from 'path';
-import { ROM_PATH } from './util/const';
-import { promisify } from 'util';
-
-const exec = promisify(execCb);
+import launchGame from './util/launchGame';
+import scanRoms from './util/scanRoms';
 
 // Custom APIs for renderer
 const api = {}
@@ -17,15 +13,10 @@ const api = {}
 // just add to the DOM global.
 if (process.contextIsolated) {
   try {
-    contextBridge.exposeInMainWorld('electron', electronAPI)
-    contextBridge.exposeInMainWorld('api', api)
-    contextBridge.exposeInMainWorld('fs', fs)
     contextBridge.exposeInMainWorld('configStorage', configStorage)
-    contextBridge.exposeInMainWorld('launchGame', (romname, system, emulator) => {
-      const romPath = path.join(ROM_PATH, system, romname);
-      return exec(`open "${romPath}" -a ${emulator}`)
-    })
-    contextBridge.exposeInMainWorld('path', path)
+    contextBridge.exposeInMainWorld('launchGame', launchGame)
+    contextBridge.exposeInMainWorld('path', path),
+    contextBridge.exposeInMainWorld('scanRoms', scanRoms)
   } catch (error) {
     console.error(error)
   }

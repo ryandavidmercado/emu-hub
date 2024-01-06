@@ -1,50 +1,60 @@
 import { atom } from "jotai";
-import { withImmer } from "jotai-immer";
-import { atomFamily, atomWithStorage } from "jotai/utils";
-import { systemsAtom } from "./systems";
+import systems from "./systems";
+import emulators from "./emulators";
+import { navigate } from "wouter/use-location";
+import { arrayConfigAtoms } from "./util/arrayConfigAtom";
+import { atomFamily } from "jotai/utils";
 
 export interface Game {
   id: string,
-  players: number,
+  players?: number,
   name?: string,
   poster?: string,
-  hero: string,
+  hero?: string,
   logo?: string,
-  description: string,
+  description?: string,
   system: string
-  lastPlayed: string
+  lastPlayed?: string
   romname: string
   timesPlayed?: number
 }
 
-const gamesAtom = atomWithStorage<Game[]>('games', [], window.configStorage, { getOnInit: true })
-const readonlyGamesAtom = atom((get) => get(gamesAtom));
-const immerizedGamesAtom = withImmer(gamesAtom);
+const mainAtoms = arrayConfigAtoms<Game>({ storageKey: 'games' });
+
+const scanGamesAtom = atom(null,
+  (_, set) => {
+    const newGames = window.scanRoms();
+    set(mainAtoms.lists.all, newGames)
+  }
+)
 
 const recentsAtom = atom((get) => {
-  const games = get(gamesAtom);
+  const games = get(mainAtoms.lists.all);
   return games
     .filter(game => game.lastPlayed)
     .sort((a, b) =>
-      new Date(b.lastPlayed).valueOf() - new Date(a.lastPlayed).valueOf()
+      new Date(b.lastPlayed!).valueOf() - new Date(a.lastPlayed!).valueOf()
     )
+    .slice(0, 10)
 });
 
 const launchGameAtom = atom(null, (get, set, gameId: string) => {
-  const systems = get(systemsAtom);
-  const game = get(getGameAtom(gameId))
+  const systemsList = get(systems.lists.all);
+  const game = get(mainAtoms.single(gameId))
 
   if(!game) throw new Error(`Tried to launch undefined game ID: ${gameId}!`)
 
-  const { romname, system: gameSystem } = game;
+  const { system: gameSystem } = game;
 
-  const system = systems.find(system => system.id === gameSystem);
+  const system = systemsList.find(system => system.id === gameSystem);
   if(!system) throw new Error(`Tried to open game for undefined system: ${gameSystem}`);
 
-  const emulator = system.emulators?.[0];
-  if(!emulator) throw new Error(`No emulators defined for system: ${system.id}`);
+  const emulatorId = system.emulators?.[0];
+  const emulator = get(emulators.single(emulatorId ?? ""))
 
-  set(immerizedGamesAtom, draft => {
+  if(!emulatorId || !emulator) throw new Error(`No emulators defined for system: ${system.id}`);
+
+  set(mainAtoms.lists.immerized, draft => {
     const gameIndex = draft.findIndex(game => game.id === gameId);
     if(gameIndex === -1) {
       return console.error("Tried to update invalid game ID!")
@@ -57,36 +67,26 @@ const launchGameAtom = atom(null, (get, set, gameId: string) => {
     }
   })
 
-  return window.launchGame(romname, system.id, emulator)
+  navigate("/ingame");
+  return window
+    .launchGame(game, emulator)
+    .then(() => { history.back() })
 })
 
-const getGameAtom = atomFamily((id: string) =>
-  atom(
-    (get) => {
-      const games = get(readonlyGamesAtom);
-      return games.find(game => game.id == id)
-    },
-    (_, set, update: Partial<Omit<Game, "id>">>) => {
-      set(immerizedGamesAtom, (draft) => {
-        const gameIndex = draft.findIndex(game => game.id === id);
-        if(gameIndex === -1) {
-          return console.error("Tried to update invalid game ID!")
-        }
-
-        draft[gameIndex] = {
-          ...draft[gameIndex],
-          ...update
-        }
-      })
-    }
-  )
-)
+const forSystemAtom = atomFamily((systemId: string) => (
+  atom((get) => {
+    const games = get(mainAtoms.lists.all);
+    return games.filter(game => game.system === systemId)
+  })
+))
 
 export default {
+  ...mainAtoms,
   lists: {
-    all: readonlyGamesAtom,
-    recents: recentsAtom
+    ...mainAtoms.lists,
+    recents: recentsAtom,
+    system: forSystemAtom
   },
   launch: launchGameAtom,
-  single: getGameAtom
+  scan: scanGamesAtom
 }

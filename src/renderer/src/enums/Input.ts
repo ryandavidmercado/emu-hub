@@ -5,5 +5,6 @@ export enum Input {
   DOWN,
   A,
   B,
-  START
+  START,
+  SELECT
 }

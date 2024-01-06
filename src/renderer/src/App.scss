@@ -1,0 +1,17 @@
+@import "./scss/colors.scss";
+
+.wave {
+  position: fixed;
+  bottom: 0;
+  height: 100%;
+  z-index: -1;
+}
+
+:root {
+  background-color: $background;
+}
+
+.flipper {
+  height: 100%;
+  width: 100%;
+}

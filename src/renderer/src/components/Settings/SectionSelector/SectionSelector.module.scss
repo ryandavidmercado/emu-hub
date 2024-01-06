@@ -1,0 +1,36 @@
+@import "@renderer/scss/colors.scss";
+
+.sectionButton {
+  font-family: Figtree, sans-serif;
+
+  width: 100%;
+  border-radius: 20px;
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 30px;
+  font-size: 1.2rem;
+
+  background-color: hsla(0, 0%, 0%, 0%);
+  color: $primary;
+
+  transition: all .2s ease;
+
+  &.active {
+    background-color: $primary;
+    color: $background;
+  }
+}
+
+.sectionSelector {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  transition: filter .2s ease;
+
+  &.inactive {
+    filter: opacity(50%);
+  }
+}

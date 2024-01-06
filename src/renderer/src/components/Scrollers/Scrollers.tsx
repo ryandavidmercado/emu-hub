@@ -18,7 +18,6 @@ const Scrollers = ({ scrollers }: Props) => {
 
     return filteredScrollers.map((scroller, i) => (
       <Scroller
-        key={scroller.id}
         {...scroller}
         isActive={activeIndex === i}
         onPrevScroller={onPrevScroller}

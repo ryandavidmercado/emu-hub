@@ -2,12 +2,11 @@ import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import installExtension, { REACT_DEVELOPER_TOOLS } from "electron-devtools-installer";
 
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -18,6 +17,7 @@ function createWindow(): void {
   })
 
   mainWindow.on('ready-to-show', () => {
+    mainWindow.maximize()
     mainWindow.show()
   })
 
@@ -39,6 +39,11 @@ function createWindow(): void {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  // install react dev tools
+  installExtension(REACT_DEVELOPER_TOOLS, { loadExtensionOptions: { allowFileAccess: true } })
+    .then((name) => console.log(`Added Extension:  ${name}`))
+    .catch((err) => console.log('An error occurred: ', err));
+
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 
