@@ -1,29 +1,37 @@
 import { RefObject, useEffect } from "react";
 import { ScrollType } from "../enums";
 
+export interface OverrideParentBox {
+  right: number,
+  left: number,
+  bottom: number,
+  top: number
+}
+
 export const useKeepVisible = (
   ref: RefObject<HTMLDivElement>,
   padding: number = 0,
   scrollType: ScrollType = ScrollType.HORIZONTAL,
-  active = true
+  active = true,
+  overrideParentBox?: OverrideParentBox
 ) => {
   useEffect(() => {
     if (!ref.current?.parentElement || !active) return;
 
     const elementBox = ref.current.getBoundingClientRect();
-    const parentBox = ref.current.parentElement.getBoundingClientRect();
+    const parentBox = (overrideParentBox as DOMRect) ?? ref.current.parentElement.getBoundingClientRect();
 
     switch (scrollType) {
       case ScrollType.HORIZONTAL:
         handleHorizontal(elementBox, parentBox, ref, padding);
         break;
       case ScrollType.VERTICAL:
-        handleVertical(elementBox, parentBox, ref, padding);
+        handleVertical(elementBox, parentBox, ref);
         break;
       default:
         break;
     }
-  }, [ref.current, padding, scrollType])
+  }, [ref.current, padding, scrollType, overrideParentBox])
 }
 
 const handleHorizontal = (elementBox: DOMRect, parentBox: DOMRect, elementRef: RefObject<HTMLDivElement>, padding: number) => {
@@ -37,13 +45,13 @@ const handleHorizontal = (elementBox: DOMRect, parentBox: DOMRect, elementRef: R
   }
 }
 
-const handleVertical = (elementBox: DOMRect, parentBox: DOMRect, elementRef: RefObject<HTMLDivElement>, padding: number) => {
+const handleVertical = (elementBox: DOMRect, parentBox: DOMRect, elementRef: RefObject<HTMLDivElement>) => {
   if (!elementRef.current?.parentElement) return;
 
-  if (elementBox.bottom > parentBox.bottom) {
-    elementRef.current.parentElement.scrollTop = elementBox.bottom - parentBox.bottom + padding + elementRef.current.parentElement.scrollTop;
-  }
-  if (elementBox.top < parentBox.top) {
-    elementRef.current.parentElement.scrollTop = elementBox.top - parentBox.top + elementRef.current.parentElement.scrollTop - padding;
+  if ((elementBox.bottom > parentBox.bottom) || (elementBox.top < parentBox.top)) {
+    elementRef.current.scrollIntoView({
+      block: "center"
+    });
+    return;
   }
 }

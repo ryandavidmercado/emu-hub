@@ -1,0 +1,49 @@
+@import "@renderer/scss/colors";
+
+.tabs {
+  display: flex;
+  gap: 2rem;
+  transition: opacity .1s ease;
+}
+
+.opacityTransition {
+  transition: opacity .1s ease;
+}
+
+.tab {
+  padding: 1rem 1.5rem;
+  border-radius: 2rem;
+
+  color: white;
+  /* border: 2px solid $primary; */
+
+  /* background-color: $primary; */
+  /* background-clip: padding-box; */
+
+  /* border: 2px solid transparent; */
+
+  font-family: Figtree;
+  font-size: 1.2rem;
+
+  transition: all .1s ease;
+
+  &.active {
+    background-color: $primary;
+    color: $background-dark;
+    transform: scale(1.1);
+  }
+}
+
+.container {
+  font-family: Figtree;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.inactive {
+  opacity: .5;
+}
+

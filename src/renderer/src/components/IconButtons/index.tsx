@@ -4,6 +4,8 @@ import css from "./IconButtons.module.scss";
 import { useMemo, useState } from "react";
 import { Input } from "@renderer/enums";
 import classNames from "classnames";
+import Label from "../Label/Label";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface Button {
   id: string
@@ -17,31 +19,37 @@ interface Button {
 }
 
 interface Props {
+  className?: string;
   buttons: Button[]
+  isActive?: boolean;
+  onExitDown?: () => void;
 }
 
-const IconButtons = ({ buttons }: Props) => {
-  const [activeButton, setActiveButton] = useState(0);
-
+const IconButtons = ({ className, buttons, isActive, onExitDown }: Props) => {
+  const [index, setIndex] = useState(0);
   useOnInput((input) => {
     switch(input) {
       case Input.LEFT:
-        return setActiveButton(i => Math.max(0, i - 1));
+        return setIndex(i => Math.max(0, i - 1));
       case Input.RIGHT:
-        return setActiveButton(i => Math.min(buttons.length - 1, i + 1));
+        return setIndex(i => Math.min(buttons.length - 1, i + 1));
+      case Input.DOWN:
+        onExitDown?.();
     }
-  })
+  }, { disabled: !isActive })
 
   const buttonElements = buttons.map((button, i) => (
     <Button
       key={button.id}
+      label={button.label}
       button={button}
-      isActive={activeButton === i}
+      isActive={index === i}
+      isParentActive={isActive}
     />
   ))
 
   return (
-    <div className={css.buttons}>
+    <div className={classNames(css.buttons, !isActive && css.inactive, className)}>
       {buttonElements}
     </div>
   )
@@ -49,10 +57,12 @@ const IconButtons = ({ buttons }: Props) => {
 
 interface ButtonProps {
   isActive?: boolean
+  label?: string
   button: Button
+  isParentActive?: boolean;
 }
 
-const Button = ({ button, isActive }: ButtonProps) => {
+const Button = ({ button, label, isActive, isParentActive }: ButtonProps) => {
   const icon = useMemo(() => {
     const iconOrNull = (Icon?: IconType) => {
       return Icon
@@ -66,17 +76,42 @@ const Button = ({ button, isActive }: ButtonProps) => {
   }, [isActive, button])
 
   useOnInput((input) => {
-    if(!isActive) return;
-
     switch(input) {
       case Input.A:
         button.onSelect?.();
     }
+  }, {
+    disabled: !isParentActive || !isActive
   })
 
   return (
-    <div className={classNames(css.button, isActive && css.active, button.className )}>
-      {icon}
+    <div className={css.buttonContainer}>
+      <AnimatePresence initial={false}>
+        {label && isActive && isParentActive &&
+          <motion.div
+            initial={{
+              opacity: 0,
+              scale: .5,
+              y: -10
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              y: 0
+            }}
+            className={css.labelWrapper}
+          >
+            <Label
+              className={css.label}
+              label={label}
+            />
+          </motion.div>
+        }
+      </AnimatePresence>
+
+      <div className={classNames(css.button, isActive && css.active, button.className )}>
+        {icon}
+      </div>
     </div>
   )
 }

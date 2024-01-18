@@ -15,17 +15,11 @@
   transition: all .2s ease;
   border-radius: 50%;
 
-  .label {
-    max-width: 0px;
-    overflow: hidden;
-    transition: max-width .2s ease;
-  }
-
   &.active {
     transform: scale(1.1);
 
-    background-color: $highlight;
-    background-clip: text;
+    background-color: $primary;
+    color: hsl(0, 0%, 20%);
 
     border-color: transparent;
 
@@ -38,5 +32,30 @@
 .buttons {
   display: flex;
   gap: 15px;
-  padding-top: 20px;
+  justify-content: center;
+  transition: filter ease .1s;
+
+  &.inactive {
+    filter: saturate(0%) opacity(50%);
+  }
 }
+
+.label {
+  padding: unset;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 250%);
+  color: white;
+  overflow: visible;
+  text-wrap: nowrap;
+}
+
+.labelWrapper {
+  transform-origin: center;
+}
+
+.buttonContainer {
+  position: relative;
+}
+
+

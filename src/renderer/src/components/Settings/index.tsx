@@ -1,16 +1,44 @@
 import { Input } from "@renderer/enums";
 import { useOnInput } from "@renderer/hooks";
-import { ReactNode, useEffect, useState } from "react"
+import { ReactNode, useEffect, useMemo, useState } from "react"
 import css from "./Settings.module.scss";
 import { AnimatePresence, motion } from "framer-motion";
 import SectionSelector from "./SectionSelector";
-import { IoGameController, IoGameControllerOutline, IoSettings, IoSettingsOutline } from "react-icons/io5";
-import { IconType } from "react-icons";
 import Games from "./Games/Games";
 import classNames from "classnames";
+import Stores from "./Stores/Stores";
+
+import { IconType } from "react-icons";
+import { IoGameController, IoGameControllerOutline } from "react-icons/io5";
+import { AiOutlineAppstore, AiFillAppstore } from "react-icons/ai";
+import { BsCollection, BsCollectionFill } from "react-icons/bs";
+
+const sections: Section[] = [
+  {
+    id: 'games',
+    label: 'Games',
+    Icon: IoGameControllerOutline,
+    IconActive: IoGameController,
+    component: Games
+  },
+  {
+    id: 'collections',
+    label: 'Collections',
+    Icon: BsCollection,
+    IconActive: BsCollectionFill,
+    component: () => null
+  },
+  {
+    id: 'stores',
+    label: 'Stores',
+    Icon: AiOutlineAppstore,
+    IconActive: AiFillAppstore,
+    component: Stores
+  }
+]
 
 export interface Section {
-  component: ({ isActive }: { isActive: boolean }) => ReactNode
+  component: ({ isActive, onExit }: { isActive: boolean, onExit: () => void }) => ReactNode
   id: string;
   label: string;
   Icon: IconType;
@@ -38,15 +66,13 @@ const Settings = () => {
     {
       captureKey: "settings-modal",
       isCaptured: open,
+      bypassCapture: true
     }
   )
 
   useOnInput(
     (input) => {
       switch(input) {
-        case Input.LEFT: {
-          return setActiveSide("left");
-        }
         case Input.RIGHT: {
           return setActiveSide("right");
         }
@@ -56,8 +82,6 @@ const Settings = () => {
         }
         case Input.B: {
           if(activeSide === "left") setOpen(false)
-          else setActiveSide("left");
-
           break;
         }
       }
@@ -69,24 +93,7 @@ const Settings = () => {
     }
   )
 
-  const sections: Section[] = [
-    {
-      id: 'general',
-      label: 'General',
-      Icon: IoSettingsOutline,
-      IconActive: IoSettings,
-      component: () => null
-    },
-    {
-      id: 'games',
-      label: 'Games',
-      Icon: IoGameControllerOutline,
-      IconActive: IoGameController,
-      component: Games
-    }
-  ]
-
-  const ActiveComponent = sections[activeSection]?.component
+  const ActiveComponent = useMemo(() => sections[activeSection]?.component, [activeSection])
 
   return (
     <AnimatePresence>
@@ -108,7 +115,7 @@ const Settings = () => {
               />
             </div>
             <div className={classNames(css.right, (activeSide !== "right") && css.inactive)}>
-              <ActiveComponent isActive={activeSide === "right"} />
+              <ActiveComponent isActive={activeSide === "right"} onExit={() => setActiveSide("left") }/>
             </div>
           </div>
         </motion.div>

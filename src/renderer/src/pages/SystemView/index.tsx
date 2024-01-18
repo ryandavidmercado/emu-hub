@@ -1,19 +1,15 @@
-import systems, { System } from "@renderer/atoms/systems"
-import { Scroller } from "@renderer/components/Scroller"
+import systems from "@renderer/atoms/systems"
 import { useAtom } from "jotai"
 import { useOnInput } from "@renderer/hooks"
 import { Input } from "@renderer/enums"
-import { useLocation } from "wouter"
-import games from "@renderer/atoms/games"
+import { useNavigate, useParams } from "react-router-dom"
+import { GameListPage } from "@renderer/components/GameListPage/GameListPage"
 
-interface Props {
-  id: System["id"]
-}
+export const SystemView = () => {
+  const { systemId } = useParams();
+  const [system] = useAtom(systems.withGames(systemId || ""));
 
-export const SystemView = ({ id }: Props) => {
-  const [gamesList] = useAtom(games.lists.system(id));
-  const [system] = useAtom(systems.single(id))
-  const [, setLocation] = useLocation();
+  const navigate = useNavigate();
 
   useOnInput((input) => {
     switch(input) {
@@ -22,11 +18,15 @@ export const SystemView = ({ id }: Props) => {
     }
   })
 
+  if(!system) {
+    navigate(-1);
+    return null;
+  }
+
   return (
-    <Scroller
-      elems={gamesList}
-      label={system?.name}
-      onSelect={(game) => setLocation(`/game/${game.id}`)}
+    <GameListPage
+      games={system.games}
+      label={system.name}
     />
   )
 }

@@ -1,33 +1,20 @@
-import { Route } from 'wouter';
 import './App.scss'
 import { Landing } from './pages/Landing';
-import { GameView } from './pages/GameView';
+import { GameViewWrapper } from './pages/GameView';
 import Wave from 'react-wavify';
 import { SystemView } from './pages/SystemView';
-import InGame from './pages/InGame';
 import Settings from './components/Settings';
 import { useWaveHeight } from './hooks';
-import { AnimatePresence } from 'framer-motion';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 
 function App() {
   const { parentRef, waveHeight } = useWaveHeight(.3);
 
   return (
     <div className="App" ref={parentRef}>
-      <AnimatePresence>
-        <Route path="/">
-          <Landing />
-        </Route>
-        <Route path="/game/:gameId">
-          {params => <GameView id={params.gameId} />}
-        </Route>
-        <Route path="/system/:systemId">
-          {params => <SystemView id={params.systemId} />}
-        </Route>
-        <Route path="/ingame">
-          <InGame />
-        </Route>
-      </AnimatePresence>
+      <HashRouter>
+        <AppRoutes />
+      </HashRouter>
       {waveHeight && <Wave
         fill="hsla(0, 0%, 0%, 50%)"
         className="wave"
@@ -39,6 +26,31 @@ function App() {
       />}
       <Settings />
     </div>
+  )
+}
+
+const appRoutes = [
+  {
+    path: "/",
+    element: <Landing />
+  },
+  {
+    path: "/game/:gameId",
+    element: <GameViewWrapper />
+  },
+  {
+    path: "/system/:systemId",
+    element: <SystemView />
+  }
+]
+
+const AppRoutes = () => {
+  return (
+    <Routes>
+      {appRoutes.map(route => (
+        <Route key={route.path} {...route} />
+      ))}
+    </Routes>
   )
 }
 

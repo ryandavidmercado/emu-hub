@@ -30,9 +30,8 @@ dmg:
   artifactName: ${name}-${version}.${ext}
 linux:
   target:
-    - AppImage
-    - snap
-    - deb
+    - target: AppImage
+      arch: x64
   maintainer: electronjs.org
   category: Utility
 appImage:

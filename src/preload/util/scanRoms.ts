@@ -57,7 +57,8 @@ const scanRoms = (cleanupMissingGames = false) => {
         rompath: pathTokens.length ? pathTokens : undefined,
         romname: entry,
         system: systemConfig.id,
-        name: path.basename(entry, entryExt)
+        name: path.basename(entry, entryExt),
+        added: new Date().toUTCString()
       })
     }
   }

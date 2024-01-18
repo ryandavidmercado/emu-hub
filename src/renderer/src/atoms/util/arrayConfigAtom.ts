@@ -21,17 +21,19 @@ export const arrayConfigAtoms = <T extends { id: string }>(options: ArrayConfigO
     atom(
       (get) => {
         const entries = get(all);
-        return entries.find(entry => entry.id == id)
+        const entry = entries.find(entry => entry.id == id);
+
+        return entry;
       },
       (_, set, update: Partial<Omit<T, "id">>) => {
         set(immerized, (draft) => {
-          const emulatorIndex = draft.findIndex(emulator => emulator.id === id);
-          if(emulatorIndex === -1) {
-            return console.error("Tried to update invalid emulator ID!")
+          const entryIndex = draft.findIndex(emulator => emulator.id === id);
+          if(entryIndex === -1) {
+            throw `Tried to update invalid ${options.storageKey} ID!`
           }
 
-          draft[emulatorIndex] = {
-            ...draft[emulatorIndex],
+          draft[entryIndex] = {
+            ...draft[entryIndex],
             ...update
           }
         })
@@ -39,11 +41,24 @@ export const arrayConfigAtoms = <T extends { id: string }>(options: ArrayConfigO
     )
   )
 
+  const add = atom(null,
+    (_, set, newElem: T) => {
+      set(all, (elems) => [...elems, newElem])
+    }
+  )
+
+  const remove = atom(null,
+    (_, set, id: string) => {
+      set(all, (elems) => elems.filter(elem => elem.id !== id))
+    }
+  )
+
   return {
     lists: {
       all,
       immerized
     },
-    single
+    single,
+    add,remove
   }
 }

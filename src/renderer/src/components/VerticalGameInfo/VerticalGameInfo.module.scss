@@ -1,0 +1,54 @@
+@import "@renderer/scss/colors";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 8px;
+    position: relative;
+    flex-shrink: 0;
+    overflow: hidden;
+
+    img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .overlay {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      top: 0;
+    }
+
+    .logoOverlay {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      top: 0;
+      left: 0;
+      object-fit: contain;
+      padding: 8rem;
+    }
+  }
+
+  .description {
+    font-family: 'Figtree', sans-serif;
+    font-size: 1.1em;
+    font-weight: 400;
+    color: white;
+    margin-top: 2rem;
+    height: 100%;
+    overflow: hidden;
+  }
+}
+
+.hero {
+  filter: brightness(60%) blur(1px);
+}

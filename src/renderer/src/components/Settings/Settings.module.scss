@@ -29,7 +29,7 @@
 
 .right {
   flex: 3;
-  transition: filter .2s ease;
+  transition: filter .1s ease;
 
   &.inactive {
     filter: opacity(50%);

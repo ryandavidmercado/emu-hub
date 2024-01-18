@@ -1,14 +1,22 @@
-export interface Game {
-  id: string,
-  players?: number,
-  name?: string,
-  poster?: string,
-  hero?: string,
-  logo?: string,
-  description?: string,
-  system: string
-  lastPlayed?: string
-  romname: string
-  rompath?: string[]
-  timesPlayed?: number
+export interface MediaTypes {
+  poster?: string
+  hero?: string
+  logo?: string
+  screenshot?: string
 }
+
+export type Game = {
+  id: string
+  romname: string
+  system: string
+  rompath?: string[]
+  players?: string
+  description?: string
+  lastPlayed?: string
+  timesPlayed?: number
+  developer?: string
+  publisher?: string
+  genre?: string
+  name?: string
+  added?: string
+} & MediaTypes

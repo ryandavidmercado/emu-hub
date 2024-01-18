@@ -4,3 +4,16 @@
   flex-direction: column;
   justify-content: stretch;
 }
+
+.scrollers {
+  overflow: hidden;
+  scroll-behavior: smooth;
+  padding: 0 0 20px 0;
+  height: 100%;
+
+  transition: opacity .2s ease;
+
+  &.hidden {
+    opacity: .4;
+  }
+}

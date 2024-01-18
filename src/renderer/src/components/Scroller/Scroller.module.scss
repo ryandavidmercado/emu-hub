@@ -13,18 +13,6 @@
   }
 }
 
-.label {
-  padding: 15px 0 0 18px;
-  font-family: Figtree, sans-serif;
-  font-weight: 500;
-  font-size: 1.2em;
-  color: $faded;
-
-  span {
-    color: $fadedplus;
-  }
-}
-
 .main {
   width: 100%;
   display: flex;
@@ -37,66 +25,6 @@
   overflow: hidden;
 }
 
-.elem {
-  height: clamp(120px, 12vh, 300px);
-  filter: brightness(85%);
-  transition: all .15s ease-in-out;
-  border: 3px solid transparent;
-  border-radius: 3px;
-  filter: drop-shadow(1px 4px 3px rgba(0, 0, 0, 0.6));
-
-  &.square {
-    aspect-ratio: 1 / 1;
-    height: clamp(150px, 15vh, 300px);
-  }
-
-  &.landscape {
-    aspect-ratio: 92 / 43;
-  }
-}
-
-.noPoster {
-  background-color: hsl(200, 10%, 40%);
-  background-clip: padding-box;
-
-  display: flex;
-  justify-content: center;
-  text-align: center;
-  align-items: center;
-
-  padding: 1em;
-}
-
-.elemText {
-  font-family: Figree, sans-serif;
-  font-size: 2em;
-  color: hsl(200, 15%, 90%);
-
-  width: 100%;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.image {
-  object-fit: fill;
-  width: 100%;
-  height: 100%;
-}
-
-.active {
-  filter: brightness(100%);
-  transform: scale(1.04);
-  filter: drop-shadow(1px 4px 3px rgba(0, 0, 0, 0.6));
-
-  border: 3px solid $highlight;
-}
-
-.logo {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-
-  filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, .2))
+.label {
+  padding: 15px 0 0 18px;
 }

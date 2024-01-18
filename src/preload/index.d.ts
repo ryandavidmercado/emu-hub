@@ -4,6 +4,11 @@ import { PromiseWithChild } from 'child_process'
 import { PlatformPath } from 'path'
 import launchGame from "./util/launchGame";
 import scanRoms from "./util/scanRoms"
+import downloadGame from "./util/downloadGame"
+import downloadGameMedia from "./util/downloadGameMedia"
+import getRomFileInfo from "./util/getRomFileInfo"
+import loadSystemStore from "./util/loadSystemStore";
+import loadGameMedia from "./util/loadGameMedia";
 
 declare global {
   interface Window {
@@ -13,5 +18,10 @@ declare global {
     launchGame: typeof launchGame
     path: PlatformPath
     scanRoms: typeof scanRoms
+    loadGameMedia: typeof loadGameMedia
+    loadSystemStore: typeof loadSystemStore
+    downloadGame: typeof downloadGame
+    downloadGameMedia: typeof downloadGameMedia
+    getRomFileInfo: typeof getRomFileInfo
   }
 }

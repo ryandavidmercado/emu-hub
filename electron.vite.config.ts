@@ -7,7 +7,11 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()]
   },
   preload: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin({ exclude: [
+      "mime",
+      "buffer-to-data-url",
+      "unzipper"
+    ]})]
   },
   renderer: {
     resolve: {

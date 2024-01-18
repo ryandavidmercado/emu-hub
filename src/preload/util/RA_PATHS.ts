@@ -9,7 +9,8 @@ interface Paths {
 const RA_PATHS = {
   darwin: {
     bin: path.join("/", "Applications", "RetroArch.app", "Contents", "MacOS", "RetroArch"),
-    cores: path.join(os.homedir(), "Library", "Application Support", "RetroArch", "cores")
+    cores: path.join(os.homedir(), "Library", "Application Support", "RetroArch", "cores"),
+    coreExtension: 'dylib'
   }
 }
 

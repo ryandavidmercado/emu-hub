@@ -1,13 +1,17 @@
 import { IconType } from "react-icons"
 import css from "./ControllerForm.module.scss";
-import { useState } from "react";
+import { Dispatch, useEffect, useMemo, useRef, useState } from "react";
 import { useOnInput } from "@renderer/hooks";
 import { Input } from "@renderer/enums";
 import classNames from "classnames";
+import { FixedSizeList, FixedSizeList as List } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
+import { SetStateAction } from "jotai";
 
 export type FormEntry = {
   id: string,
   label: string,
+  sublabel?: string
   Icon?: IconType
   IconActive?: IconType
 } & ({
@@ -22,14 +26,21 @@ export type FormEntry = {
 interface Props {
   entries: FormEntry[],
   isActive: boolean
+  controlledActiveIndex?: number;
+  controlledSetActiveIndex?: Dispatch<SetStateAction<number>>
 }
 
-const ControllerForm = ({ entries, isActive }: Props) => {
-  const [activeIndex, setActiveIndex] = useState(0);
+const ControllerForm = ({ entries, isActive, controlledActiveIndex, controlledSetActiveIndex }: Props) => {
+  const [localActiveIndex, localSetActiveIndex] = useState(0);
+
+  const activeIndex = controlledActiveIndex ?? localActiveIndex;
+  const setActiveIndex = controlledSetActiveIndex ?? localSetActiveIndex;
+
   const activeEntry = entries[activeIndex];
+  const scrollerRef = useRef<FixedSizeList>(null);
 
   const onSelect = () => {
-    switch(activeEntry.type) {
+    switch (activeEntry.type) {
       case "action":
         activeEntry.onSelect(activeEntry.id);
         break;
@@ -39,7 +50,7 @@ const ControllerForm = ({ entries, isActive }: Props) => {
   }
 
   useOnInput((input) => {
-    switch(input) {
+    switch (input) {
       case Input.A:
         onSelect();
         break;
@@ -55,14 +66,65 @@ const ControllerForm = ({ entries, isActive }: Props) => {
     disabled: !isActive
   })
 
+  const itemData = useMemo(() => ({
+    entries, activeIndex
+  }), [entries, activeIndex])
+
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if(!scroller) return;
+    scroller.scrollToItem(activeIndex, "center");
+  }, [activeIndex])
+
   return (
     <div className={css.controllerForm}>
-      {entries.map((entry, i) => (
-        <div className={classNames(css.entry, (i === activeIndex) && css.active)}>
-          <div>{entry.label}</div>
-        </div>
-      ))}
+      <AutoSizer>
+      {({ height, width }) => (
+        <List
+          className={css.transparentScrollBar}
+          itemData={itemData}
+          height={height}
+          width={width}
+          itemCount={entries.length}
+          itemSize={100}
+          ref={scrollerRef}
+          style={{
+            scrollBehavior: "smooth"
+          }}
+        >
+          {ListEntry}
+        </List>
+      )}
+      </AutoSizer>
+
     </div>
+  )
+}
+
+const ListEntry = ({ index, style, data }) => {
+  const { entries, activeIndex } = data;
+  const entry = entries[index];
+
+  return (
+    <div key={entry.id} className={classNames(css.entry, (index === activeIndex) && css.active)} style={style}>
+      <div className={css.left}>
+        <div>{entry.label}</div>
+        {entry.sublabel &&
+          <div className={classNames(css.sublabel, (index === activeIndex) && css.active)}>
+            {entry.sublabel}
+          </div>
+        }
+      </div>
+      {entry.type === "toggle" &&
+        <Toggle />
+      }
+    </div>
+  )
+}
+
+const Toggle = () => {
+  return (
+    <div>"toggle"</div>
   )
 }
 

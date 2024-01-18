@@ -1,62 +1,68 @@
+@import "@renderer/scss/colors";
+
 .main {
   width: 100vw;
-  height: 40vh;
+  height: 35vh;
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
 
   transition: height 0.3s ease;
 
+  display: flex;
+
   &.hidden {
     height: 0;
   }
 }
 
-.content {
-  position: absolute;
+.outerContent {
+  flex: 3;
+  background: rgba(0, 0, 0, .2);
+}
+
+.innerContent {
   height: 100%;
   width: 100%;
+
+  padding: 2rem;
   display: flex;
+  overflow: hidden;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 5%;
-  background-image: linear-gradient(
-    to left,
-    rgba(0, 0, 0, 0.6),
-    rgba(0, 0, 0, 0.4) 50%,
-    rgba(0, 0, 0, 0.20) 80%,
-    transparent
-  );
+  gap: 2rem;
+}
 
-  &.noBg {
-    background-image: none;
-  }
+.description, .pills {
+  font-family: 'Figtree', sans-serif;
+  font-size: 1.1em;
+  font-weight: 400;
+  color: white;
 }
 
 .description {
   position: relative;
-  width: 450px;
-  color: white;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 10px;
-  font-family: 'Figtree', sans-serif;
-  font-size: 1.1em;
-  font-weight: 400;
-  height: 100%;
   margin: 0;
+  width: 100%;
+  overflow: hidden;
 }
 
 .hero {
-  width: 100%;
-  height: 100%;
+  position: relative;
+  flex: 5;
+  background-color: rgba(0, 0, 0, .5);
 }
 
 
 .logo {
-  width: 25vw;
-  height: 20vh;
+  max-width: 80%;
+  max-height: 100px;
+
   object-fit: contain;
   filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, .4));
 
@@ -66,16 +72,45 @@
   display: flex;
   justify-content: center;
   align-items: center;
-
-
 }
 
 .pills {
+  width: 100%;
   display: flex;
+  justify-content: flex-end;
+  gap: .8rem;
+  flex-wrap: wrap;
 }
 
 .image {
   height: 100%;
   width: 100%;
   object-fit: cover;
+}
+
+.logoText {
+  color: white;
+  font-family: 'Figtree', sans-serif;
+  font-size: 1.5em;
+  font-weight: 400;
+}
+
+.heroOverlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, .8), transparent 60%);
+}
+
+.logoOverlay {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  padding-left: 1.5rem;
+  transform: translateY(-50%);
+  width: 30%;
+  height: 100%;
+  object-fit: contain;
 }

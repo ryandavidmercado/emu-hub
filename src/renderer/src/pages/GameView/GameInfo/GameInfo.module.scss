@@ -1,0 +1,17 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pills {
+  display: flex;
+  gap: 1rem;
+}
+
+.pill {
+  font-size: 1rem;
+  padding: none;
+  gap: .5rem;
+  background-color: transparent;
+}

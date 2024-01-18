@@ -3,11 +3,16 @@
 .controllerForm {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
 }
 
 .entry {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
   padding: 30px;
 
   font-family: Figtree, sans-serif;
@@ -20,3 +25,25 @@
     background-color: $primary;
   }
 }
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  .sublabel {
+    font-size: .6em;
+    transition: opacity .1s ease;
+
+    &.active {
+      opacity: 1;
+    }
+  }
+}
+
+/* .transparentScrollBar { */
+
+/*   &::-webkit-scrollbar { */
+/*     display: none; */
+/*   } */
+/* } */

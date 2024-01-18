@@ -1,0 +1,51 @@
+@import "@renderer/scss/colors";
+
+.container {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: flex-end;
+}
+
+.selectorWrapper {
+  height: 100%;
+  width: 100px;
+  background: rgba(0, 0, 0, .4);
+  color: hsl(0, 0%, 70%);
+  transition: translate .2s ease;
+
+  font-family: Figtree;
+  font-size: 1.3rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+
+  &.hidden {
+    translate: 100px;
+  }
+}
+
+.selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.alphabetEntry {
+  transition: color .1s ease, transform .1s ease;
+
+  &.active {
+    color: $primary;
+    transform: scale(1.5)
+  }
+}

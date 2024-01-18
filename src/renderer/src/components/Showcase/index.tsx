@@ -1,69 +1,107 @@
-import { BsPersonFill } from "react-icons/bs";
 import Pill from "../Pill";
 import css from "./Showcase.module.scss"
 import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
-import GameLogo from "../GameLogo";
-import { PropsWithChildren, useEffect, useState } from "react";
+import { PropsWithChildren } from "react";
+import MediaImage from "../MediaImage/MediaImage";
+import { IconType } from "react-icons";
 
 export interface ShowcaseContent {
-  id: string | number
+  id: string
   logo?: string,
   description?: string
-  players?: number
+  players?: string
+  name?: string;
   hero?: string
 }
 
-interface Props {
-  content?: ShowcaseContent | null
-  hidden?: boolean
-  className?: string
+export interface Pill {
+  Icon: IconType,
+  text: string
+  id: string
 }
 
-export const Showcase = ({ content, hidden = false, className, children }: PropsWithChildren<Props>) => {
-  const [initialOpacity, setInitialOpacity] = useState(1);
-  useEffect(() => {
-    setInitialOpacity(0)
-  }, [])
+type Props = PropsWithChildren<{
+  content?: ShowcaseContent | null
+  className?: string
+  pills?: Pill[]
+  hideEmptyHero?: boolean;
+  logoClassName?: string;
+  hideLogo?: boolean;
+}>
 
+export const Showcase = ({ content, className, children, pills, hideEmptyHero, logoClassName, hideLogo }: Props) => {
   if (!content) return <div className={css.main} />
+
   return (
-    <AnimatePresence mode="popLayout" initial={false}>
-      <motion.div
-        key={content.id ?? "null"}
-        initial={{
-          opacity: initialOpacity
-        }}
-        animate={{
-          opacity: 1,
-          transition: {
-            duration: .2
-          },
-        }}
-        exit={{
-          opacity: 0,
-          transition: {
-            duration: .2
-          }
-        }}
-        className={classNames(css.main, (hidden || !content) && css.hidden, className)}
-      >
-        <div className={classNames(css.content, !content.hero && css.noBg)}>
-          <GameLogo game={content} className={css.logo} />
-          <div className={css.description}>
-            <div className={css.descText}>{content.description}</div>
-            <div className={css.pills}>
-              {content.players && <Pill Icon={BsPersonFill} label={String(content.players)} />}
-            </div>
-            {children}
-          </div>
-        </div>
-        <div className={css.hero}>
-          {content.hero && (
-            <img src={content.hero} className={css.image} />
-          )}
-        </div>
-      </motion.div>
-    </AnimatePresence>
+    <div
+      className={classNames(css.main, className)}
+    >
+      <AnimatePresence mode="popLayout" initial={false}>
+      {
+        ((content.hero || content.logo) || !hideEmptyHero) && (
+          <motion.div
+            key={content.hero}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: .1 } }}
+            exit={{ opacity: 0, transition: { duration: .1 } }}
+            className={css.hero}
+          >
+            <MediaImage
+              mediaContent={content}
+              mediaType="hero"
+              className={css.image}
+            />
+            {!hideLogo && content.logo && (
+              <>
+                <div className={css.heroOverlay} />
+                <MediaImage
+                  mediaContent={content}
+                  mediaType="logo"
+                  className={classNames(css.logoOverlay, logoClassName)}
+                />
+              </>
+            )}
+          </motion.div>
+        )
+      }
+      </AnimatePresence>
+      <ShowcaseContent
+        key={`content-${content.id}`}
+        content={content}
+        pills={pills}
+        children={children}
+      />
+    </div>
   );
+}
+
+type ContentProps = PropsWithChildren<{
+  content: ShowcaseContent
+  pills?: Pill[]
+}>
+
+const ShowcaseContent = ({ content, pills, children }: ContentProps) => {
+  // const [opacity, setOpacity] = useState(0);
+  return (
+    <div
+      className={css.outerContent}
+    >
+      <div
+        className={css.innerContent}
+      >
+        {content.description &&
+          <div className={css.description}>
+            {content.description}
+          </div>
+        }
+        {Boolean(pills?.length) &&
+          <div className={css.pills}>
+            {pills!.map(pill => <Pill key={pill.id} Icon={pill.Icon} label={pill.text} />)}
+          </div>
+        }
+        {children}
+      </div>
+    </div>
+  )
 }

@@ -1,0 +1,85 @@
+@import "@renderer/scss/colors";
+
+.elem {
+  height: clamp(120px, 12vh, 300px);
+  filter: brightness(85%);
+  transition: all .15s ease-in-out;
+  border: 3px solid transparent;
+  border-radius: 3px;
+  filter: drop-shadow(1px 4px 3px rgba(0, 0, 0, 0.6));
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+
+  &.square {
+    aspect-ratio: 1 / 1;
+    height: clamp(150px, 15vh, 300px);
+  }
+
+  &.landscape {
+    aspect-ratio: 92 / 43;
+  }
+
+  &.swapTransform {
+    transform: scale(.96);
+  }
+}
+
+.active {
+  filter: brightness(100%);
+  transform: scale(1.04);
+  filter: drop-shadow(1px 4px 3px rgba(0, 0, 0, 0.6));
+
+  border: 3px solid $primary;
+
+  &.swapTransform {
+    transform: unset;
+  }
+}
+
+.noPoster {
+  background-color: hsl(200, 10%, 40%);
+  background-clip: padding-box;
+
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+
+  overflow: hidden;
+  padding: 1em;
+}
+
+.elemText {
+  font-family: Figree, sans-serif;
+  font-size: 2em;
+  color: hsl(200, 15%, 90%);
+
+  width: 100%;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.image {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+
+  filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, .2))
+}
+
+.bg {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  position: absolute;
+  filter: brightness(70%) blur(.5px);
+}

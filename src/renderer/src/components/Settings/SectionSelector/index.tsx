@@ -28,7 +28,7 @@ const SectionSelector = ({ activeSection, setActiveSection, sections, isActive }
 
   return (
     <div className={classNames(css.sectionSelector, !isActive && css.inactive)}>
-      {sections.map((section, i) => <SectionButton section={section} active={i === activeSection} />)}
+      {sections.map((section, i) => <SectionButton key={section.id} section={section} active={i === activeSection} />)}
     </div>
   );
 }

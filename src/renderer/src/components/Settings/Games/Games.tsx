@@ -1,26 +1,35 @@
 import games from "@renderer/atoms/games"
 import ControllerForm, { FormEntry } from "@renderer/components/ControllerForm/ControllerForm"
+import { Input } from "@renderer/enums"
+import { useOnInput } from "@renderer/hooks"
 import { useAtom } from "jotai"
 import { useMemo } from "react"
 
-const Games = ({ isActive }: { isActive: boolean }) => {
+const General = ({ isActive, onExit }: { isActive: boolean, onExit: () => void }) => {
   const [, scanRoms] = useAtom(games.scan)
+
+  useOnInput((input) => {
+    switch(input) {
+      case Input.B:
+      case Input.LEFT:
+        onExit();
+    }
+  }, {
+    disabled: !isActive,
+    parentCaptureKeys: ["settings-modal"],
+  })
+
   const entries = useMemo<FormEntry[]>(() => [
     {
       id: 'scan-roms',
       label: "Rescan ROMs",
       onSelect: scanRoms,
+      sublabel: "Scan ROMs directory to populate missing game entries.",
       type: "action"
     },
-    {
-      id: 'scan-roms-2',
-      label: "Scan ROMs",
-      onSelect: scanRoms,
-      type: "action"
-    }
   ], [])
 
   return <ControllerForm entries={entries} isActive={isActive} />
 }
 
-export default Games;
+export default General;

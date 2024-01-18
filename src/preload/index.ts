@@ -4,6 +4,11 @@ import configStorage from './util/configStorage'
 import path from 'path';
 import launchGame from './util/launchGame';
 import scanRoms from './util/scanRoms';
+import loadSystemStore from './util/loadSystemStore';
+import downloadGame from './util/downloadGame';
+import getRomFileInfo from './util/getRomFileInfo';
+import downloadGameMedia from './util/downloadGameMedia';
+import loadGameMedia from './util/loadGameMedia';
 
 // Custom APIs for renderer
 const api = {}
@@ -17,6 +22,11 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('launchGame', launchGame)
     contextBridge.exposeInMainWorld('path', path),
     contextBridge.exposeInMainWorld('scanRoms', scanRoms)
+    contextBridge.exposeInMainWorld('loadSystemStore', loadSystemStore)
+    contextBridge.exposeInMainWorld('downloadGame', downloadGame)
+    contextBridge.exposeInMainWorld('downloadGameMedia', downloadGameMedia)
+    contextBridge.exposeInMainWorld('getRomFileInfo', getRomFileInfo)
+    contextBridge.exposeInMainWorld('loadGameMedia', loadGameMedia)
   } catch (error) {
     console.error(error)
   }

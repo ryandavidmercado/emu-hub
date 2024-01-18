@@ -5,6 +5,16 @@ import { CONFIG_PATH } from "./const";
 
 const configFilePath = (configType: string) => path.join(CONFIG_PATH, `${configType}.yml`);
 
+const saveConfig = <T>(configType: string, value: T) => {
+  const yaml = YAML.stringify(value);
+
+  writeFileSync(
+    configFilePath(configType),
+    yaml,
+    { encoding: "utf8" }
+  )
+}
+
 const loadConfig = <T>(configType: string, defaultValue: T) => {
   try {
     const file = readFileSync(
@@ -14,18 +24,9 @@ const loadConfig = <T>(configType: string, defaultValue: T) => {
 
     return YAML.parse(file) as T
   } catch(e) {
+    saveConfig(configType, defaultValue)
     return defaultValue
   }
-}
-
-const saveConfig = <T>(configType: string, value: T) => {
-  const yaml = YAML.stringify(value);
-
-  writeFileSync(
-    configFilePath(configType),
-    yaml,
-    { encoding: "utf8" }
-  )
 }
 
 const deleteConfig = (configType: string) => {
