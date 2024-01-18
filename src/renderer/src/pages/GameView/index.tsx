@@ -1,4 +1,4 @@
-import games, { Game } from "@renderer/atoms/games"
+import games from "@renderer/atoms/games"
 import { Input } from "@renderer/enums";
 import { useOnInput, useRecommendationScrollers } from "@renderer/hooks";
 import { useAtom } from "jotai"
@@ -75,7 +75,15 @@ const GameView = ({ gameId }: { gameId?: string }) => {
           className={css.bg}
         />
         <div className={css.buttonsAndLogo}>
-          <MediaImage mediaContent={game} mediaType="logo" className={css.logo} />
+          <MediaImage
+            mediaContent={game}
+            mediaType="logo"
+            className={css.logo}
+          >
+            <div className={css.name}>
+              {game.name || game.romname}
+            </div>
+          </MediaImage>
           <IconButtons
             buttons={[
               {

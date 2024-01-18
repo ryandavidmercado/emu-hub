@@ -5,7 +5,6 @@ interface Props {
   className?: string;
   mediaContent: MediaTypes;
   mediaType: keyof MediaTypes | (keyof MediaTypes)[];
-  onFail?: () => void;
   onLoaded?: () => void;
 }
 

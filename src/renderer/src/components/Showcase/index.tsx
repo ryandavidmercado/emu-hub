@@ -2,7 +2,7 @@ import Pill from "../Pill";
 import css from "./Showcase.module.scss"
 import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useState } from "react";
 import MediaImage from "../MediaImage/MediaImage";
 import { IconType } from "react-icons";
 
@@ -12,6 +12,7 @@ export interface ShowcaseContent {
   description?: string
   players?: string
   name?: string;
+  romname?: string;
   hero?: string
 }
 
@@ -39,7 +40,7 @@ export const Showcase = ({ content, className, children, pills, hideEmptyHero, l
     >
       <AnimatePresence mode="popLayout" initial={false}>
       {
-        ((content.hero || content.logo) || !hideEmptyHero) && (
+        (content.hero || !hideEmptyHero) && (
           <motion.div
             key={content.hero}
             initial={{ opacity: 0 }}
@@ -52,16 +53,6 @@ export const Showcase = ({ content, className, children, pills, hideEmptyHero, l
               mediaType="hero"
               className={css.image}
             />
-            {!hideLogo && content.logo && (
-              <>
-                <div className={css.heroOverlay} />
-                <MediaImage
-                  mediaContent={content}
-                  mediaType="logo"
-                  className={classNames(css.logoOverlay, logoClassName)}
-                />
-              </>
-            )}
           </motion.div>
         )
       }
@@ -82,23 +73,34 @@ type ContentProps = PropsWithChildren<{
 }>
 
 const ShowcaseContent = ({ content, pills, children }: ContentProps) => {
-  // const [opacity, setOpacity] = useState(0);
+  const [opacity, setOpacity] = useState(0);
   return (
     <div
       className={css.outerContent}
     >
       <div
         className={css.innerContent}
+        style={{ opacity: (!pills || !pills.length) ? 1 : opacity }}
       >
-        {content.description &&
+        {!(pills && pills.length) && content.description && (
           <div className={css.description}>
             {content.description}
           </div>
-        }
+        )}
         {Boolean(pills?.length) &&
-          <div className={css.pills}>
-            {pills!.map(pill => <Pill key={pill.id} Icon={pill.Icon} label={pill.text} />)}
-          </div>
+          <>
+            <MediaImage
+              mediaContent={content}
+              mediaType="logo"
+              className={css.logo}
+              onLoaded={() => { setOpacity(1) }}
+            >
+              <div className={css.name}>{content.name || content.romname}</div>
+            </MediaImage>
+            <div className={css.pills}>
+              {pills!.map(pill => <Pill key={pill.id} Icon={pill.Icon} label={pill.text} />)}
+            </div>
+          </>
         }
         {children}
       </div>
