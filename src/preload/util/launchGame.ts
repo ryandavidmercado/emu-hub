@@ -14,10 +14,11 @@ const launchGame = (game: Game, emulator: Emulator) => {
   let args: string[];
 
   if("core" in emulator) {
-    bin = RA_PATHS.bin
+    bin = RA_PATHS.bin;
+
     args = [
       "-f",
-      `-L "${path.join(RA_PATHS.cores, emulator.core)}.dylib"`,
+      `-L "${path.join(RA_PATHS.cores, emulator.core)}.${RA_PATHS.coreExtension}"`,
       `"${romLocation}"`
     ]
   } else {

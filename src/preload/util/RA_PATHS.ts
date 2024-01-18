@@ -4,6 +4,7 @@ import os from "os"
 interface Paths {
   bin: string,
   cores: string
+  coreExtension: string
 }
 
 const RA_PATHS = {
@@ -11,6 +12,11 @@ const RA_PATHS = {
     bin: path.join("/", "Applications", "RetroArch.app", "Contents", "MacOS", "RetroArch"),
     cores: path.join(os.homedir(), "Library", "Application Support", "RetroArch", "cores"),
     coreExtension: 'dylib'
+  },
+  linux: {
+    bin: "org.libretro.RetroArch",
+    cores: path.join(os.homedir(), ".var", "app", "org.libretro.RetroArch", "config", "retroarch", "cores"),
+    coreExtension: 'so'
   }
 }
 
