@@ -22,6 +22,7 @@ import TabSelector from "@renderer/components/TabSelector/TabSelector";
 import { motion } from "framer-motion";
 import GameInfo from "./GameInfo/GameInfo";
 import Recommendations from "./Recommendations/Recommendations";
+import CollectionModal from "@renderer/components/CollectionModal/CollectionModal";
 
 const GameView = ({ gameId }: { gameId?: string }) => {
   const [game] = useAtom(games.single(gameId ?? ""));
@@ -31,6 +32,8 @@ const GameView = ({ gameId }: { gameId?: string }) => {
 
   const [activeSection, setActiveSection] = useState<"game" | "tabs">("game");
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const [collectionModalOpen, setCollectionModalOpen] = useState(false);
 
   const onGameSection = () => {
     setActiveSection('game');
@@ -49,6 +52,8 @@ const GameView = ({ gameId }: { gameId?: string }) => {
       case Input.B:
         return navigate(-1);
     }
+  }, {
+    disabled: collectionModalOpen
   })
 
   if (!game) {
@@ -96,7 +101,8 @@ const GameView = ({ gameId }: { gameId?: string }) => {
               {
                 id: 'add-to-collection',
                 Icon: FaPlus,
-                label: "Add to Collection"
+                label: "Add to Collection",
+                onSelect: () => { setCollectionModalOpen(true) }
               },
               {
                 id: 'scrape',
@@ -106,7 +112,7 @@ const GameView = ({ gameId }: { gameId?: string }) => {
                 onSelect: () => { scrapeGame(game.id) }
               }
             ]}
-            isActive={activeSection === "game"}
+            isActive={activeSection === "game" && !collectionModalOpen}
             onExitDown={onTabsSection}
           />
         </div>
@@ -141,6 +147,11 @@ const GameView = ({ gameId }: { gameId?: string }) => {
           />
         </div>
       }
+      <CollectionModal
+        open={collectionModalOpen}
+        setOpen={setCollectionModalOpen}
+        game={game}
+      />
     </motion.div>
   );
 }

@@ -1,11 +1,15 @@
 import { atomFamily, atomWithStorage } from "jotai/utils";
 import { withImmer } from "jotai-immer";
 import { atom } from "jotai";
+import ShortUniqueId from "short-unique-id";
+import { PartialBy } from "@renderer/types/util";
 
 interface ArrayConfigOptions<T> {
   storageKey: string,
   default?: T[]
 }
+
+const uid = new ShortUniqueId;
 
 export const arrayConfigAtoms = <T extends { id: string }>(options: ArrayConfigOptions<T>) => {
   const all = atomWithStorage<T[]>(
@@ -42,8 +46,11 @@ export const arrayConfigAtoms = <T extends { id: string }>(options: ArrayConfigO
   )
 
   const add = atom(null,
-    (_, set, newElem: T) => {
-      set(all, (elems) => [...elems, newElem])
+    (_, set, newElem: PartialBy<T, "id">) => {
+      set(all, (elems) => [...elems, {
+        ...newElem,
+        id: newElem.id ?? uid.rnd(),
+      } as T])
     }
   )
 
@@ -59,6 +66,7 @@ export const arrayConfigAtoms = <T extends { id: string }>(options: ArrayConfigO
       immerized
     },
     single,
-    add,remove
+    add,
+    remove
   }
 }

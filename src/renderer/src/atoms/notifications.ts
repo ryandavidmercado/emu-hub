@@ -1,8 +1,7 @@
+import { PartialBy } from "@renderer/types/util";
 import { atom } from "jotai";
 import ShortUniqueId from "short-unique-id";
 const uid = new ShortUniqueId();
-
-type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<T>
 
 interface Notification {
   id: string;
@@ -19,6 +18,7 @@ const add = atom(null,
     alert(notification.text)
   }
 )
+
 const remove = atom(null,
   (_, set, id: Notification["id"]) => {
     set(notifications, (notifs) => notifs.filter(notif => notif.id !== id))

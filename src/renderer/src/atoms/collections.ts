@@ -25,6 +25,16 @@ const getWithGames = atomFamily((id: string) => atom((get) => {
   return collection;
 }))
 
+const addGame = atom(null, (get, set, collectionId: string, gameId: string) => {
+  const collection = get(mainAtoms.single(collectionId));
+  if(!collection) throw `Tried to add game to invalid collection: ${collectionId}`
+
+  const currentGames = collection.games;
+  set(mainAtoms.single(collectionId), {
+    games: [...currentGames, gameId]
+  })
+})
+
 export default {
   ...mainAtoms,
   lists: {
@@ -34,5 +44,6 @@ export default {
   single: {
     base: mainAtoms.single,
     withGames: getWithGames
-  }
+  },
+  addGame
 }

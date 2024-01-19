@@ -44,6 +44,7 @@ export const useOnInput = (cb: (input: Input) => void, captureSettings?: Capture
     if(disabled) return;
 
     const capturedKey = captureStack[0];
+
     if(capturedKey && (capturedKey !== captureKey) && !parentCaptureKeys.includes(capturedKey) && !bypassCapture) return;
 
     if (isKey(e.key)) cb(keyMap[e.key])

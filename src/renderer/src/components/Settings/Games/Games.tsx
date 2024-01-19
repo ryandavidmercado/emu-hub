@@ -1,5 +1,5 @@
 import games from "@renderer/atoms/games"
-import ControllerForm, { FormEntry } from "@renderer/components/ControllerForm/ControllerForm"
+import ControllerForm, { ControllerFormEntry } from "@renderer/components/ControllerForm/ControllerForm"
 import { Input } from "@renderer/enums"
 import { useOnInput } from "@renderer/hooks"
 import { useAtom } from "jotai"
@@ -19,7 +19,7 @@ const General = ({ isActive, onExit }: { isActive: boolean, onExit: () => void }
     parentCaptureKeys: ["settings-modal"],
   })
 
-  const entries = useMemo<FormEntry[]>(() => [
+  const entries = useMemo<ControllerFormEntry[]>(() => [
     {
       id: 'scan-roms',
       label: "Rescan ROMs",

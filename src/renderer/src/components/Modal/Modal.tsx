@@ -1,13 +1,25 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useEffect } from "react";
 import css from "./Modal.module.scss";
+import { createPortal } from "react-dom";
+import { atom, useAtom } from "jotai";
 
 interface Props {
   open: boolean;
+  id: string;
 }
 
-const Modal = ({ open, children }: PropsWithChildren<Props>) => {
-  return (
+export const openModalAtom = atom<null | string>(null);
+
+const Modal = ({ open, children, id }: PropsWithChildren<Props>) => {
+  const [, setOpenModal] = useAtom(openModalAtom);
+
+  useEffect(() => {
+    if(!open) return setOpenModal(null);
+    return setOpenModal(id);
+  }, [open, id])
+
+  return createPortal(
     <AnimatePresence>
       {open &&
         <motion.div
@@ -20,7 +32,8 @@ const Modal = ({ open, children }: PropsWithChildren<Props>) => {
           {children}
         </motion.div>
       }
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }
 

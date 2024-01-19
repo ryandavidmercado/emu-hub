@@ -47,7 +47,6 @@ const handleHorizontal = (elementBox: DOMRect, parentBox: DOMRect, elementRef: R
 
 const handleVertical = (elementBox: DOMRect, parentBox: DOMRect, elementRef: RefObject<HTMLDivElement>) => {
   if (!elementRef.current?.parentElement) return;
-
   if ((elementBox.bottom > parentBox.bottom) || (elementBox.top < parentBox.top)) {
     elementRef.current.scrollIntoView({
       block: "center"

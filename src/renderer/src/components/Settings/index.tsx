@@ -2,7 +2,6 @@ import { Input } from "@renderer/enums";
 import { useOnInput } from "@renderer/hooks";
 import { ReactNode, useEffect, useMemo, useState } from "react"
 import css from "./Settings.module.scss";
-import { AnimatePresence, motion } from "framer-motion";
 import SectionSelector from "./SectionSelector";
 import Games from "./Games/Games";
 import classNames from "classnames";
@@ -12,7 +11,8 @@ import { IconType } from "react-icons";
 import { IoGameController, IoGameControllerOutline } from "react-icons/io5";
 import { AiOutlineAppstore, AiFillAppstore } from "react-icons/ai";
 import { BsCollection, BsCollectionFill } from "react-icons/bs";
-import Modal from "../Modal/Modal";
+import Modal, { openModalAtom } from "../Modal/Modal";
+import { useAtom } from "jotai";
 
 const sections: Section[] = [
   {
@@ -51,6 +51,8 @@ const Settings = () => {
   const [activeSide, setActiveSide] = useState<"left" | "right">("left");
   const [activeSection, setActiveSection] = useState(0);
 
+  const [openModal] = useAtom(openModalAtom);
+
   useEffect(() => {
     setActiveSide("left");
     setActiveSection(0);
@@ -67,7 +69,7 @@ const Settings = () => {
     {
       captureKey: "settings-modal",
       isCaptured: open,
-      bypassCapture: true
+      bypassCapture: (!openModal || (openModal === "settings-modal"))
     }
   )
 
@@ -97,7 +99,7 @@ const Settings = () => {
   const ActiveComponent = useMemo(() => sections[activeSection]?.component, [activeSection])
 
   return (
-    <Modal open={open}>
+    <Modal open={open} id="settings-modal">
       <div className={css.body}>
         <div className={css.left}>
           <SectionSelector

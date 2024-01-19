@@ -1,6 +1,6 @@
 import { IconType } from "react-icons"
 import css from "./ControllerForm.module.scss";
-import { Dispatch, useEffect, useMemo, useRef, useState } from "react";
+import { CSSProperties, Dispatch, useEffect, useMemo, useRef, useState } from "react";
 import { useOnInput } from "@renderer/hooks";
 import { Input } from "@renderer/enums";
 import classNames from "classnames";
@@ -8,7 +8,7 @@ import { FixedSizeList, FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { SetStateAction } from "jotai";
 
-export type FormEntry = {
+export type ControllerFormEntry = {
   id: string,
   label: string,
   sublabel?: string
@@ -23,14 +23,20 @@ export type FormEntry = {
   setEnabled: (enabled: boolean) => void
 })
 
+interface ItemData {
+  entries: ControllerFormEntry[];
+  activeIndex: number;
+}
+
 interface Props {
-  entries: FormEntry[],
+  entries: ControllerFormEntry[],
   isActive: boolean
   controlledActiveIndex?: number;
   controlledSetActiveIndex?: Dispatch<SetStateAction<number>>
+  parentCaptureKey?: string;
 }
 
-const ControllerForm = ({ entries, isActive, controlledActiveIndex, controlledSetActiveIndex }: Props) => {
+const ControllerForm = ({ entries, isActive, controlledActiveIndex, controlledSetActiveIndex, parentCaptureKey }: Props) => {
   const [localActiveIndex, localSetActiveIndex] = useState(0);
 
   const activeIndex = controlledActiveIndex ?? localActiveIndex;
@@ -62,11 +68,11 @@ const ControllerForm = ({ entries, isActive, controlledActiveIndex, controlledSe
         break;
     }
   }, {
-    parentCaptureKeys: ["settings-modal"],
+    parentCaptureKeys: [parentCaptureKey ?? "settings-modal"],
     disabled: !isActive
   })
 
-  const itemData = useMemo(() => ({
+  const itemData = useMemo<ItemData>(() => ({
     entries, activeIndex
   }), [entries, activeIndex])
 
@@ -83,7 +89,7 @@ const ControllerForm = ({ entries, isActive, controlledActiveIndex, controlledSe
         <List
           className={css.transparentScrollBar}
           itemData={itemData}
-          height={height}
+          height={Math.min(entries.length * 100, height)}
           width={width}
           itemCount={entries.length}
           itemSize={100}
@@ -101,7 +107,13 @@ const ControllerForm = ({ entries, isActive, controlledActiveIndex, controlledSe
   )
 }
 
-const ListEntry = ({ index, style, data }) => {
+interface ListEntryProps {
+  style: CSSProperties;
+  data: ItemData;
+  index: number;
+}
+
+const ListEntry = ({ index, style, data }: ListEntryProps) => {
   const { entries, activeIndex } = data;
   const entry = entries[index];
 
@@ -117,6 +129,9 @@ const ListEntry = ({ index, style, data }) => {
       </div>
       {entry.type === "toggle" &&
         <Toggle />
+      }
+      {entry.type === "action" && entry.Icon &&
+        <entry.Icon />
       }
     </div>
   )

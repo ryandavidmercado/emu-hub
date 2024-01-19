@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { useState, useMemo } from "react"
 import systems from "@renderer/atoms/systems";
-import ControllerForm, { FormEntry } from "@renderer/components/ControllerForm/ControllerForm";
+import ControllerForm, { ControllerFormEntry } from "@renderer/components/ControllerForm/ControllerForm";
 import Loading from "react-loading";
 import games from "@renderer/atoms/games";
 import css from "./Stores.module.scss";
@@ -72,7 +72,7 @@ interface MainProps {
 const Main = ({ isActive, onSelect }: MainProps) => {
   const [systemsList] = useAtom(systems.lists.withStores);
 
-  const entries: FormEntry[] = systemsList.map(system => ({
+  const entries: ControllerFormEntry[] = systemsList.map(system => ({
     id: system.id,
     type: "action",
     label: system.name,
@@ -90,7 +90,7 @@ interface SystemProps {
 
 const System = ({ system, isActive, onSelect }: SystemProps) => {
   const [systemData] = useAtom(systems.single(system || ""));
-  const entries: FormEntry[] = systemData?.stores?.map(store => ({
+  const entries: ControllerFormEntry[] = systemData?.stores?.map(store => ({
     id: store.id,
     type: "action",
     label: store.name,
@@ -135,7 +135,7 @@ const Store = ({ system, store, isActive, onExit }: StoreProps) => {
     return storeContents.data.filter(entry => entry.name.includes("USA"));
   }, [storeContents])
 
-  const entries: FormEntry[] = useMemo(() => filtered.map(storeEntry => ({
+  const entries: ControllerFormEntry[] = useMemo(() => filtered.map(storeEntry => ({
     id: storeEntry.name,
     label: storeEntry.name,
     type: "action",
