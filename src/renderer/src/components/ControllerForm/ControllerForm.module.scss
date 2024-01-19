@@ -45,9 +45,8 @@
   }
 }
 
-/* .transparentScrollBar { */
-
-/*   &::-webkit-scrollbar { */
-/*     display: none; */
-/*   } */
-/* } */
+.transparentScrollBar {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
