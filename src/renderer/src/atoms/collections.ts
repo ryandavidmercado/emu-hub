@@ -20,18 +20,30 @@ const allWithGames = atom((get) => {
 
 const getWithGames = atomFamily((id: string) => atom((get) => {
   const collection = get(allWithGames).find(collection => collection.id === id);
-  if(!collection) throw(`Tried to access collection with invalid ID: ${id}`);
+  if(!collection) return null
 
   return collection;
 }))
 
+const curriedGetWithGames = atom((get) => (id: string) => get(getWithGames(id)));
+
 const addGame = atom(null, (get, set, collectionId: string, gameId: string) => {
+  const collection = get(mainAtoms.single(collectionId));
+  if(!collection) return;
+
+  const currentGames = collection.games;
+  set(mainAtoms.single(collectionId), {
+    games: [...currentGames, gameId]
+  })
+})
+
+const removeGame = atom(null, (get, set, collectionId: string, gameId: string) => {
   const collection = get(mainAtoms.single(collectionId));
   if(!collection) throw `Tried to add game to invalid collection: ${collectionId}`
 
   const currentGames = collection.games;
   set(mainAtoms.single(collectionId), {
-    games: [...currentGames, gameId]
+    games: currentGames.filter(game => game !== gameId)
   })
 })
 
@@ -43,7 +55,9 @@ export default {
   },
   single: {
     base: mainAtoms.single,
-    withGames: getWithGames
+    withGames: getWithGames,
+    curriedWithGames: curriedGetWithGames
   },
-  addGame
+  addGame,
+  removeGame
 }

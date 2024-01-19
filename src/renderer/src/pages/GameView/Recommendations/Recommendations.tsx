@@ -14,6 +14,7 @@ const Recommendations = ({ game, className, onExitUp, isDisabled }: TabContentPr
   if(!game) return null;
   return <Scrollers
     className={classNames(css.scrollers, className)}
+    key={`${game.id}-${scrollers.length}`}
     isDisabled={isDisabled}
     onExitUp={onExitUp}
     scrollers={scrollers}

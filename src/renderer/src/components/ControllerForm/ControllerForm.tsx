@@ -8,12 +8,14 @@ import { FixedSizeList, FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { SetStateAction } from "jotai";
 
+type ColorScheme = "default" | "caution" | "warning" | "confirm"
 export type ControllerFormEntry = {
   id: string,
   label: string,
   sublabel?: string
   Icon?: IconType
   IconActive?: IconType
+  colorScheme?: ColorScheme
 } & ({
   type: "action",
   onSelect: (id: string) => void
@@ -118,7 +120,11 @@ const ListEntry = ({ index, style, data }: ListEntryProps) => {
   const entry = entries[index];
 
   return (
-    <div key={entry.id} className={classNames(css.entry, (index === activeIndex) && css.active)} style={style}>
+    <div key={entry.id} className={classNames(
+      css.entry,
+      (index === activeIndex) && css.active,
+      css[entry.colorScheme ?? "default"]
+    )} style={style}>
       <div className={css.left}>
         <div>{entry.label}</div>
         {entry.sublabel &&

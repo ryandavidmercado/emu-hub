@@ -7,7 +7,6 @@ import notifications from "./notifications";
 import { ScreenScraper } from "@renderer/apiWrappers/ScreenScraper";
 import screenScraperAtom from "./screenscaper";
 import deepEqual from "fast-deep-equal"
-import { landingKeyAtom } from "@renderer/pages/Landing";
 
 export interface MediaTypes {
   poster?: string,
@@ -38,7 +37,6 @@ const scanGamesAtom = atom(null,
   (_, set) => {
     const newGames = window.scanRoms(true);
     set(mainAtoms.lists.all, newGames)
-    set(landingKeyAtom, (key) => Number(!key)) // re-render the landing page when we rescan
   }
 )
 

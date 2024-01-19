@@ -43,7 +43,7 @@ export const useRecommendationScrollers = (game: Game | undefined, onSelectGame?
       },
       {
         id: "recs-publisher",
-        label: `More Published By ${game.developer}`,
+        label: `More Published By ${game.publisher}`,
         elems: publisherElems,
         onSelect: onSelectGame
       }

@@ -38,7 +38,8 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
       label: "New Collection",
       type: "action",
       Icon: FaPlus,
-      onSelect: () => { setActiveSection("new") }
+      onSelect: () => { setActiveSection("new") },
+      colorScheme: "confirm"
     },
     ...collectionsList
       .filter(collection => !collection.games.includes(game?.id))
@@ -77,6 +78,7 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
               setOpen(false);
             }}
             game={game}
+            capturedParent="collection-modal"
           />
         }
       </div>
@@ -87,15 +89,18 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
 interface NewCollectionProps {
   onCancel: () => void;
   onComplete: () => void;
-  game: Game
+  game?: Game
+  capturedParent: string
+  captureKey?: string;
+  isCaptured?: boolean;
 }
 
-const NewCollection = ({ onCancel, game, onComplete }: NewCollectionProps) => {
+export const NewCollection = ({ onCancel, game, onComplete, capturedParent, captureKey, isCaptured }: NewCollectionProps) => {
   const [input, setInput] = useState("");
   const [, addCollection] = useAtom(collections.add);
 
   const onSubmit = () => {
-    addCollection({ name: input, games: [game.id] });
+    addCollection({ name: input, games: game ? [game.id] : [] });
     onComplete();
   }
 
@@ -107,7 +112,9 @@ const NewCollection = ({ onCancel, game, onComplete }: NewCollectionProps) => {
         return onSubmit();
     }
   }, {
-    parentCaptureKeys: ["collection-modal"]
+    captureKey,
+    isCaptured,
+    parentCaptureKeys: [capturedParent]
   })
 
   return (

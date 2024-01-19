@@ -13,6 +13,7 @@ import { AiOutlineAppstore, AiFillAppstore } from "react-icons/ai";
 import { BsCollection, BsCollectionFill } from "react-icons/bs";
 import Modal, { openModalAtom } from "../Modal/Modal";
 import { useAtom } from "jotai";
+import Collections from "./Collections/Collections";
 
 const sections: Section[] = [
   {
@@ -27,7 +28,7 @@ const sections: Section[] = [
     label: 'Collections',
     Icon: BsCollection,
     IconActive: BsCollectionFill,
-    component: () => null
+    component: Collections
   },
   {
     id: 'stores',
@@ -38,8 +39,13 @@ const sections: Section[] = [
   }
 ]
 
+export interface SectionProps {
+  isActive: boolean,
+  onExit: () => void
+}
+
 export interface Section {
-  component: ({ isActive, onExit }: { isActive: boolean, onExit: () => void }) => ReactNode
+  component: (props: SectionProps) => ReactNode
   id: string;
   label: string;
   Icon: IconType;

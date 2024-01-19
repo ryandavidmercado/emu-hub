@@ -4,8 +4,9 @@ import { Input } from "@renderer/enums"
 import { useOnInput } from "@renderer/hooks"
 import { useAtom } from "jotai"
 import { useMemo } from "react"
+import { SectionProps } from ".."
 
-const General = ({ isActive, onExit }: { isActive: boolean, onExit: () => void }) => {
+const General = ({ isActive, onExit }: SectionProps) => {
   const [, scanRoms] = useAtom(games.scan)
 
   useOnInput((input) => {

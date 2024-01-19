@@ -3,7 +3,6 @@ import { Scroller, ScrollerProps } from "../Scroller"
 import { ScrollElement } from "@renderer/types";
 import { useKeepVisible } from "@renderer/hooks";
 import { ScrollType } from "@renderer/enums";
-import { motion } from "framer-motion";
 
 export type ScrollerConfig<T extends ScrollElement> = Omit<ScrollerProps<T>, "isActive" | "onPrevScroller" | "onNextScroller"> & { id: string }
 interface Props {
@@ -33,7 +32,7 @@ const Scrollers = ({ className, scrollers, isDisabled, onExitUp, onExitDown }: P
     return filteredScrollers.map((scroller, i) => (
       <Scroller
         {...scroller}
-        key={scroller.id}
+        key={`${scroller.id}-${scroller.elems.length}`}
         isActive={activeIndex === i && !isDisabled}
         onPrevScroller={onPrevScroller}
         onNextScroller={onNextScroller}

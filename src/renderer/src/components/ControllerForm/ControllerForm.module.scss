@@ -22,7 +22,11 @@
 
   &.active {
     color: $background;
-    background-color: $primary;
+
+    &.default { background-color: $primary; }
+    &.caution { background-color: $caution; }
+    &.warning { background-color: $warning; }
+    &.confirm { background-color: $confirm; }
   }
 }
 

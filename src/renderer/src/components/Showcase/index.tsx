@@ -40,7 +40,7 @@ export const Showcase = ({ content, className, children, pills, hideEmptyHero }:
     >
       <AnimatePresence mode="popLayout" initial={false}>
       {
-        (content.hero || !hideEmptyHero) && (
+        (content.hero || content.screenshot || !hideEmptyHero) && (
           <motion.div
             key={`${content.hero}-${content.screenshot}`}
             initial={{ opacity: 0 }}
@@ -50,7 +50,7 @@ export const Showcase = ({ content, className, children, pills, hideEmptyHero }:
           >
             <MediaImage
               mediaContent={content}
-              mediaType="hero"
+              mediaType={["hero", "screenshot"]}
               className={css.image}
             />
           </motion.div>

@@ -45,6 +45,8 @@ export const arrayConfigAtoms = <T extends { id: string }>(options: ArrayConfigO
     )
   )
 
+  const curriedSingle = atom((get) => (id: string) => get(single(id)))
+
   const add = atom(null,
     (_, set, newElem: PartialBy<T, "id">) => {
       set(all, (elems) => [...elems, {
@@ -66,6 +68,7 @@ export const arrayConfigAtoms = <T extends { id: string }>(options: ArrayConfigO
       immerized
     },
     single,
+    curriedSingle,
     add,
     remove
   }

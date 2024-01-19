@@ -8,10 +8,12 @@ import css from "./Stores.module.scss";
 import { useOnInput } from "@renderer/hooks";
 import { Input } from "@renderer/enums/Input";
 import AlphabetSelector from "./AlphabetSelector/AlphabetSelector";
+import { SectionProps } from "..";
+import { FaAngleRight } from "react-icons/fa";
 
 type Page = "main" | "system" | "store"
 
-const Stores = ({ isActive, onExit }: { isActive: boolean, onExit: () => void }) => {
+const Stores = ({ isActive, onExit }: SectionProps) => {
   const [pageStack, setPageStack] = useState<Page[]>(["main"]);
   const [activeSystem, setActiveSystem] = useState<string>();
   const [activeStore, setActiveStore] = useState<string>();
@@ -76,7 +78,8 @@ const Main = ({ isActive, onSelect }: MainProps) => {
     id: system.id,
     type: "action",
     label: system.name,
-    onSelect
+    onSelect,
+    Icon: FaAngleRight
   }))
 
   return <ControllerForm entries={entries} isActive={isActive} />
@@ -94,7 +97,8 @@ const System = ({ system, isActive, onSelect }: SystemProps) => {
     id: store.id,
     type: "action",
     label: store.name,
-    onSelect
+    onSelect,
+    Icon: FaAngleRight
   })) ?? []
 
   if(!systemData) return null;

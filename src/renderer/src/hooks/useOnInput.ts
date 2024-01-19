@@ -36,6 +36,10 @@ export const useOnInput = (cb: (input: Input) => void, captureSettings?: Capture
     } else if (!isCaptured && captureStack.includes(captureKey)) {
       captureStack = captureStack.filter(entry => entry !== captureKey)
     }
+
+    return () => {
+      captureStack = captureStack.filter(entry => entry !== captureKey) // remove from stack on unmount
+    }
   }, [captureKey, isCaptured])
 
   const isKey = (key: string): key is keyof typeof keyMap => key in keyMap

@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { Showcase, ShowcaseContent } from "../../components/Showcase"
 import css from "./Landing.module.css"
-import { atom, useAtom } from "jotai";
+import { useAtom } from "jotai";
 import games, { Game } from "@renderer/atoms/games";
 import systems, { System } from "@renderer/atoms/systems";
 import Scrollers, { ScrollerConfig } from "@renderer/components/Scrollers/Scrollers";
@@ -9,10 +9,7 @@ import useGamePills from "@renderer/components/Pill/hooks/useGamePills";
 import { useNavigate } from "react-router-dom";
 import collections from "@renderer/atoms/collections";
 
-export const landingKeyAtom = atom(0);
-
 export const Landing = () => {
-  const [landingKey] = useAtom(landingKeyAtom);
   const [systemsList] = useAtom(systems.lists.onlyWithGames);
 
   const [recentGamesList] = useAtom(games.lists.recents);
@@ -76,10 +73,9 @@ export const Landing = () => {
   return (
     <div
       className={css.landing}
-      key={landingKey}
     >
       <Showcase content={currentContent} pills={pills} />
-      <Scrollers scrollers={scrollers} className={css.scrollers} />
+      <Scrollers scrollers={scrollers} className={css.scrollers} key={scrollers.length} />
     </div>
   )
 }
