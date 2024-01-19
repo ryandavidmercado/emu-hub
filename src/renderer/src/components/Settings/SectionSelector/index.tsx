@@ -11,9 +11,10 @@ interface Props {
   setActiveSection: Dispatch<SetStateAction<number>>,
   isActive: boolean
   sections: Section[]
+  inputPriority?: number
 }
 
-const SectionSelector = ({ activeSection, setActiveSection, sections, isActive }: Props) => {
+const SectionSelector = ({ activeSection, setActiveSection, sections, isActive, inputPriority }: Props) => {
   useOnInput((input) => {
     switch(input) {
       case Input.UP:
@@ -22,8 +23,8 @@ const SectionSelector = ({ activeSection, setActiveSection, sections, isActive }
         return setActiveSection(active => Math.min(active + 1, sections.length - 1))
     }
   }, {
-    parentCaptureKeys: ["settings-modal"],
-    disabled: !isActive
+    disabled: !isActive,
+    priority: inputPriority
   });
 
   return (

@@ -12,8 +12,8 @@ import { IoGameController, IoGameControllerOutline } from "react-icons/io5";
 import { AiOutlineAppstore, AiFillAppstore } from "react-icons/ai";
 import { BsCollection, BsCollectionFill } from "react-icons/bs";
 import Modal, { openModalAtom } from "../Modal/Modal";
-import { useAtom } from "jotai";
 import Collections from "./Collections/Collections";
+import { useAtom } from "jotai";
 
 const sections: Section[] = [
   {
@@ -42,6 +42,7 @@ const sections: Section[] = [
 export interface SectionProps {
   isActive: boolean,
   onExit: () => void
+  inputPriority?: number
 }
 
 export interface Section {
@@ -56,8 +57,7 @@ const Settings = () => {
   const [open, setOpen] = useState(false);
   const [activeSide, setActiveSide] = useState<"left" | "right">("left");
   const [activeSection, setActiveSection] = useState(0);
-
-  const [openModal] = useAtom(openModalAtom);
+  const [openedModal] = useAtom(openModalAtom);
 
   useEffect(() => {
     setActiveSide("left");
@@ -68,14 +68,13 @@ const Settings = () => {
     (input) => {
       switch(input) {
         case Input.START: {
+          console.log('running this')
           return setOpen(open => !open);
         }
       }
     },
     {
-      captureKey: "settings-modal",
-      isCaptured: open,
-      bypassCapture: (!openModal || (openModal === "settings-modal"))
+      bypass: !openedModal || openedModal === "settings-modal"
     }
   )
 
@@ -96,8 +95,7 @@ const Settings = () => {
       }
     },
     {
-      captureKey: "settings-modal",
-      isCaptured: open,
+      priority: 10,
       disabled: !open
     }
   )
@@ -113,10 +111,15 @@ const Settings = () => {
             activeSection={activeSection}
             setActiveSection={setActiveSection}
             isActive={activeSide === "left"}
+            inputPriority={10}
           />
         </div>
         <div className={classNames(css.right, (activeSide !== "right") && css.inactive)}>
-          <ActiveComponent isActive={activeSide === "right"} onExit={() => setActiveSide("left") }/>
+          <ActiveComponent
+            inputPriority={11}
+            isActive={activeSide === "right"}
+            onExit={() => setActiveSide("left") }
+          />
         </div>
       </div>
     </Modal>

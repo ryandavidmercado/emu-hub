@@ -13,7 +13,7 @@ import { FaAngleRight } from "react-icons/fa";
 
 type Page = "main" | "system" | "store"
 
-const Stores = ({ isActive, onExit }: SectionProps) => {
+const Stores = ({ isActive, onExit, inputPriority }: SectionProps) => {
   const [pageStack, setPageStack] = useState<Page[]>(["main"]);
   const [activeSystem, setActiveSystem] = useState<string>();
   const [activeStore, setActiveStore] = useState<string>();
@@ -30,8 +30,8 @@ const Stores = ({ isActive, onExit }: SectionProps) => {
         setPageStack(stack => stack.slice(0, -1));
     }
   }, {
-    parentCaptureKeys: ["settings-modal"],
-    disabled: !isActive
+    disabled: !isActive,
+    priority: inputPriority
   })
 
   if(currentPage === "main") return (
@@ -41,6 +41,7 @@ const Stores = ({ isActive, onExit }: SectionProps) => {
         setActiveSystem(systemId);
         setPageStack(stack => [...stack, "system"])
       }}
+      inputPriority={inputPriority}
     />
   );
 
@@ -52,6 +53,7 @@ const Stores = ({ isActive, onExit }: SectionProps) => {
         setPageStack(stack => [...stack, "store"])
       }}
       system={activeSystem}
+      inputPriority={inputPriority}
     />
   )
 
@@ -61,17 +63,19 @@ const Stores = ({ isActive, onExit }: SectionProps) => {
       system={activeSystem}
       store={activeStore}
       onExit={onExit}
+      inputPriority={inputPriority}
     />
   )
   return null;
 }
 
 interface MainProps {
-  isActive: boolean,
-  onSelect: (id: string) => void
+  isActive: boolean;
+  onSelect: (id: string) => void;
+  inputPriority?: number;
 }
 
-const Main = ({ isActive, onSelect }: MainProps) => {
+const Main = ({ isActive, onSelect, inputPriority }: MainProps) => {
   const [systemsList] = useAtom(systems.lists.withStores);
 
   const entries: ControllerFormEntry[] = systemsList.map(system => ({
@@ -82,16 +86,17 @@ const Main = ({ isActive, onSelect }: MainProps) => {
     Icon: FaAngleRight
   }))
 
-  return <ControllerForm entries={entries} isActive={isActive} />
+  return <ControllerForm entries={entries} isActive={isActive} inputPriority={inputPriority} />
 }
 
 interface SystemProps {
   system?: string
   isActive: boolean
   onSelect: (id: string) => void
+  inputPriority?: number;
 }
 
-const System = ({ system, isActive, onSelect }: SystemProps) => {
+const System = ({ system, isActive, onSelect, inputPriority }: SystemProps) => {
   const [systemData] = useAtom(systems.single(system || ""));
   const entries: ControllerFormEntry[] = systemData?.stores?.map(store => ({
     id: store.id,
@@ -102,7 +107,7 @@ const System = ({ system, isActive, onSelect }: SystemProps) => {
   })) ?? []
 
   if(!systemData) return null;
-  return <ControllerForm entries={entries} isActive={isActive} />
+  return <ControllerForm entries={entries} isActive={isActive} inputPriority={inputPriority} />
 }
 
 interface StoreProps {
@@ -110,9 +115,10 @@ interface StoreProps {
   store?: string;
   isActive: boolean;
   onExit: () => void;
+  inputPriority?: number;
 }
 
-const Store = ({ system, store, isActive, onExit }: StoreProps) => {
+const Store = ({ system, store, isActive, onExit, inputPriority }: StoreProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [alphabetOpen, setAlphabetOpen] = useState(false);
 
@@ -131,7 +137,7 @@ const Store = ({ system, store, isActive, onExit }: StoreProps) => {
     }
   }, {
     disabled: !isActive,
-    parentCaptureKeys: ["settings-modal"]
+    priority: inputPriority
   })
 
   const filtered = useMemo(() => {
@@ -161,12 +167,14 @@ const Store = ({ system, store, isActive, onExit }: StoreProps) => {
         isActive={isActive && !alphabetOpen}
         controlledActiveIndex={activeIndex}
         controlledSetActiveIndex={setActiveIndex}
+        inputPriority={inputPriority}
       />
       <AlphabetSelector
         entries={entries}
         activeIndex={activeIndex}
         setActiveIndex={setActiveIndex}
         isActive={alphabetOpen}
+        inputPriority={inputPriority}
       />
     </div>
   )

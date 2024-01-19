@@ -21,12 +21,13 @@ interface Props {
   entries: {
     label: string
   }[],
-  activeIndex: number
-  setActiveIndex: Dispatch<SetStateAction<number>>
+  activeIndex: number;
+  setActiveIndex: Dispatch<SetStateAction<number>>;
   isActive: boolean;
+  inputPriority?: number;
 }
 
-const AlphabetSelector = ({ entries, activeIndex, setActiveIndex, isActive }: Props) => {
+const AlphabetSelector = ({ entries, activeIndex, setActiveIndex, isActive, inputPriority }: Props) => {
   const alphaRef = useRef<HTMLDivElement>(null);
 
   const lookupMap = useMemo(() => {
@@ -58,8 +59,8 @@ const AlphabetSelector = ({ entries, activeIndex, setActiveIndex, isActive }: Pr
       }
     }
   }, {
-    parentCaptureKeys: ["settings-modal"],
-    disabled: !isActive
+    disabled: !isActive,
+    priority: inputPriority
   })
 
   useShrinkToFit(alphaRef, .95);

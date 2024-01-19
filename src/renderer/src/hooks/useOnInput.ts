@@ -1,60 +1,74 @@
-import { useEffect } from "react"
+import { useEffect, useId } from "react"
 import { Input } from "../enums"
 
-let captureStack: string[] = []
+type Callback = (input: Input) => void;
 
-interface Capture {
-  bypassCapture?: boolean;
-  captureKey?: string
-  parentCaptureKeys?: string[]
-  isCaptured?: boolean
-  disabled?: boolean
+interface Subscriber {
+  id: string;
+  priority: number;
+  bypass: boolean;
+  cb: Callback;
 }
 
-export const useOnInput = (cb: (input: Input) => void, captureSettings?: Capture) => {
-  const { bypassCapture, captureKey, isCaptured, disabled, parentCaptureKeys = [] } = captureSettings ?? {};
+interface PrioritySettings {
+  priority?: number
+  bypass?: boolean;
+  disabled?: boolean;
+}
 
-  const keyMap = {
-    ArrowLeft: Input.LEFT,
-    ArrowRight: Input.RIGHT,
-    ArrowUp: Input.UP,
-    ArrowDown: Input.DOWN,
-    a: Input.LEFT,
-    d: Input.RIGHT,
-    w: Input.UP,
-    s: Input.DOWN,
-    "Enter": Input.A,
-    "Escape": Input.B,
-    "Backspace": Input.START
+let subscribers: Subscriber[] = [];
+const keyMap: Record<KeyboardEvent['key'], Input> = {
+  ArrowLeft: Input.LEFT,
+  ArrowRight: Input.RIGHT,
+  ArrowUp: Input.UP,
+  ArrowDown: Input.DOWN,
+  a: Input.LEFT,
+  d: Input.RIGHT,
+  w: Input.UP,
+  s: Input.DOWN,
+  "Enter": Input.A,
+  "Escape": Input.B,
+  "Backspace": Input.START
+}
+
+document.addEventListener("keydown", (e) => {
+  const input = keyMap[e.key];
+  const maxPriority = subscribers.reduce((acc, sub) => {
+    return Math.max(sub.priority, acc)
+  }, 0)
+
+  for(const subscriber of subscribers) {
+    if((subscriber.priority < maxPriority) && !subscriber.bypass) continue;
+    subscriber.cb(input)
   }
+})
+
+
+export const useOnInput = (cb: Callback, prioritySettings?: PrioritySettings) => {
+  const { priority = 0, disabled = false, bypass = false } = prioritySettings ?? {};
+  const id = useId();
 
   useEffect(() => {
-    if(!captureKey) return;
+    if(disabled) {
+      subscribers = subscribers.filter(sub => sub.id !== id);
+      return;
+    }
 
-    if(isCaptured && !captureStack.includes(captureKey)) {
-      captureStack = [captureKey, ...captureStack]
-    } else if (!isCaptured && captureStack.includes(captureKey)) {
-      captureStack = captureStack.filter(entry => entry !== captureKey)
+    const currentSubscriber = subscribers.find((sub) => sub.id === id);
+    if(!currentSubscriber) {
+      subscribers.push({
+        priority,
+        cb,
+        id,
+        bypass
+      })
+    } else {
+      currentSubscriber.priority = priority;
+      currentSubscriber.cb = cb;
     }
 
     return () => {
-      captureStack = captureStack.filter(entry => entry !== captureKey) // remove from stack on unmount
+      subscribers = subscribers.filter(sub => sub.id !== id);
     }
-  }, [captureKey, isCaptured])
-
-  const isKey = (key: string): key is keyof typeof keyMap => key in keyMap
-  const handleKey = (e: KeyboardEvent) => {
-    if(disabled) return;
-
-    const capturedKey = captureStack[0];
-
-    if(capturedKey && (capturedKey !== captureKey) && !parentCaptureKeys.includes(capturedKey) && !bypassCapture) return;
-
-    if (isKey(e.key)) cb(keyMap[e.key])
-  }
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleKey)
-    return () => { window.removeEventListener("keydown", handleKey) }
-  }, [cb])
+  }, [cb, priority, disabled]);
 }

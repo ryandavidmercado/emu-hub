@@ -29,13 +29,11 @@ const GameTile = ({
   style,
   swapTransform
 }: Props) => {
-  const [posterHasFailed, setPosterHasFailed] = useState(false);
-
   return (
     <div
       className={classNames(css.elem, css[aspectRatio], {
         [css.active]: active,
-        [css.noPoster]: !poster || posterHasFailed || aspectRatio !== "landscape",
+        [css.noPoster]: !poster || aspectRatio !== "landscape",
         [css.swapTransform]: swapTransform
       }, className)}
       ref={active ? activeRef : null}
@@ -46,7 +44,6 @@ const GameTile = ({
           mediaContent={{ poster }}
           mediaType="poster"
           className={css.image}
-          onFail={() => { setPosterHasFailed(true) }}
         >
           <GameLogo
             game={{ logo, name }}

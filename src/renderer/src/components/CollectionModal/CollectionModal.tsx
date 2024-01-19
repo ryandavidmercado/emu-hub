@@ -26,9 +26,8 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
         setOpen(false);
     }
   }, {
-    captureKey: "collection-modal",
-    isCaptured: open,
-    disabled: !open || (activeSection !== "selection")
+    disabled: !open || (activeSection !== "selection"),
+    priority: 11
   })
 
   // TODO: this list doesn't work properly when it exceeds container height
@@ -66,7 +65,7 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
             <ControllerForm
               entries={entries}
               isActive={true}
-              parentCaptureKey="collection-modal"
+              inputPriority={11}
             />
           </div>
         }
@@ -78,7 +77,6 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
               setOpen(false);
             }}
             game={game}
-            capturedParent="collection-modal"
           />
         }
       </div>
@@ -90,12 +88,10 @@ interface NewCollectionProps {
   onCancel: () => void;
   onComplete: () => void;
   game?: Game
-  capturedParent: string
-  captureKey?: string;
-  isCaptured?: boolean;
+  inputPriority?: number;
 }
 
-export const NewCollection = ({ onCancel, game, onComplete, capturedParent, captureKey, isCaptured }: NewCollectionProps) => {
+export const NewCollection = ({ onCancel, game, onComplete, inputPriority }: NewCollectionProps) => {
   const [input, setInput] = useState("");
   const [, addCollection] = useAtom(collections.add);
 
@@ -112,9 +108,7 @@ export const NewCollection = ({ onCancel, game, onComplete, capturedParent, capt
         return onSubmit();
     }
   }, {
-    captureKey,
-    isCaptured,
-    parentCaptureKeys: [capturedParent]
+    priority: inputPriority
   })
 
   return (

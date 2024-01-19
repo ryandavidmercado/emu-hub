@@ -20,10 +20,10 @@ interface Props {
   onExitLeft?: () => void;
   onExitBack?: () => void;
   active: boolean;
-  capturedParent?: string;
+  inputPriority?: number
 }
 
-const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, capturedParent }: Props) => {
+const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, inputPriority }: Props) => {
   const [activePage, setActivePage] = useState(0);
   const currentPage = pages[activePage];
 
@@ -51,8 +51,8 @@ const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, captur
         setActivePage(page => page - 1);
     }
   }, {
-    parentCaptureKeys: capturedParent ? [capturedParent] : undefined,
-    disabled: !active
+    disabled: !active,
+    priority: inputPriority
   });
 
   const entries = useMemo(() => {
@@ -89,6 +89,7 @@ const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, captur
     key={`${currentPage.id}-${entries.length}`}
     entries={entries}
     isActive={active}
+    inputPriority={inputPriority}
   />
 }
 

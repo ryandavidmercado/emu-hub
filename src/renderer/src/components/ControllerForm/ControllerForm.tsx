@@ -35,10 +35,10 @@ interface Props {
   isActive: boolean
   controlledActiveIndex?: number;
   controlledSetActiveIndex?: Dispatch<SetStateAction<number>>
-  parentCaptureKey?: string;
+  inputPriority?: number
 }
 
-const ControllerForm = ({ entries, isActive, controlledActiveIndex, controlledSetActiveIndex, parentCaptureKey }: Props) => {
+const ControllerForm = ({ entries, isActive, controlledActiveIndex, controlledSetActiveIndex, inputPriority }: Props) => {
   const [localActiveIndex, localSetActiveIndex] = useState(0);
 
   const activeIndex = controlledActiveIndex ?? localActiveIndex;
@@ -70,8 +70,8 @@ const ControllerForm = ({ entries, isActive, controlledActiveIndex, controlledSe
         break;
     }
   }, {
-    parentCaptureKeys: [parentCaptureKey ?? "settings-modal"],
-    disabled: !isActive
+    disabled: !isActive,
+    priority: inputPriority
   })
 
   const itemData = useMemo<ItemData>(() => ({

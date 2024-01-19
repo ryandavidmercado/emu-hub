@@ -6,7 +6,7 @@ import { useAtom } from "jotai"
 import { useMemo } from "react"
 import { SectionProps } from ".."
 
-const General = ({ isActive, onExit }: SectionProps) => {
+const General = ({ isActive, onExit, inputPriority }: SectionProps) => {
   const [, scanRoms] = useAtom(games.scan)
 
   useOnInput((input) => {
@@ -17,7 +17,7 @@ const General = ({ isActive, onExit }: SectionProps) => {
     }
   }, {
     disabled: !isActive,
-    parentCaptureKeys: ["settings-modal"],
+    priority: inputPriority
   })
 
   const entries = useMemo<ControllerFormEntry[]>(() => [
@@ -30,7 +30,7 @@ const General = ({ isActive, onExit }: SectionProps) => {
     },
   ], [])
 
-  return <ControllerForm entries={entries} isActive={isActive} />
+  return <ControllerForm entries={entries} isActive={isActive} inputPriority={inputPriority} />
 }
 
 export default General;

@@ -9,7 +9,7 @@ import Modal from "@renderer/components/Modal/Modal";
 import { NewCollection } from "@renderer/components/CollectionModal/CollectionModal";
 import { HiPlus } from "react-icons/hi";
 
-const Collections = ({ isActive, onExit }: SectionProps) => {
+const Collections = ({ isActive, onExit, inputPriority }: SectionProps) => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const [collectionsList] = useAtom(collections.lists.all)
@@ -78,15 +78,13 @@ const Collections = ({ isActive, onExit }: SectionProps) => {
         active={isActive && !modalOpen}
         onExitBack={onExit}
         onExitLeft={onExit}
-        capturedParent="settings-modal"
+        inputPriority={inputPriority}
       />
       <Modal id="new-collection-modal" open={modalOpen}>
         <NewCollection
           onCancel={() => { setModalOpen(false) }}
           onComplete={() => { setModalOpen(false) }}
-          capturedParent="settings-modal"
-          captureKey="new-collection-modal"
-          isCaptured={modalOpen}
+          inputPriority={11}
         />
       </Modal>
     </>
