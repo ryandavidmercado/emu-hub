@@ -39,8 +39,6 @@ const TabSelector = ({ tabsClassName, tabs: unfilteredTabs, disabled, onExitUp }
     return unfilteredTabs.filter(tab => !tab.isInvalid)
   }, [unfilteredTabs]);
 
-  console.log(unfilteredTabs, tabs)
-
   useOnInput((input) => {
     switch(input) {
       case Input.LEFT:

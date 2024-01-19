@@ -126,6 +126,7 @@ const Store = ({ system, store, isActive, onExit }: StoreProps) => {
         setAlphabetOpen(true);
     }
   }, {
+    disabled: !isActive,
     parentCaptureKeys: ["settings-modal"]
   })
 

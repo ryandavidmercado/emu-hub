@@ -64,7 +64,7 @@ const downloadGame = async (system: System, url: string) => {
   return {
     romname: gameFile,
     rompath,
-    name,
+    name: path.basename(gameFile, path.extname(gameFile)),
     id,
     system: system.id,
     added: new Date().toUTCString()

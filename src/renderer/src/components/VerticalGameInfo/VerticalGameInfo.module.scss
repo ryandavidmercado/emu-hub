@@ -5,7 +5,7 @@
   flex-direction: column;
   overflow: hidden;
 
-  .img {
+  .bgAndLogo {
     width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
@@ -13,28 +13,22 @@
     position: relative;
     flex-shrink: 0;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-    img {
+    .hero {
+      position: absolute;
       height: 100%;
       width: 100%;
       object-fit: cover;
+      filter: brightness(60%) blur(1px);
     }
 
-    .overlay {
-      position: absolute;
-      height: 100%;
-      width: 100%;
-      top: 0;
-    }
-
-    .logoOverlay {
-      position: absolute;
-      height: 100%;
-      width: 100%;
-      top: 0;
-      left: 0;
-      object-fit: contain;
-      padding: 8rem;
+    .logo {
+      max-width: 60%;
+      max-height: 60%;
+      z-index: 1;
     }
   }
 
@@ -49,6 +43,3 @@
   }
 }
 
-.hero {
-  filter: brightness(60%) blur(1px);
-}

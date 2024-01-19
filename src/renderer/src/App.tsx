@@ -5,7 +5,8 @@ import Wave from 'react-wavify';
 import { SystemView } from './pages/SystemView';
 import Settings from './components/Settings';
 import { useWaveHeight } from './hooks';
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 
 function App() {
   const { parentRef, waveHeight } = useWaveHeight(.3);
@@ -45,12 +46,28 @@ const appRoutes = [
 ]
 
 const AppRoutes = () => {
+  const location = useLocation();
   return (
-    <Routes>
-      {appRoutes.map(route => (
-        <Route key={route.path} {...route} />
-      ))}
-    </Routes>
+    <AnimatePresence>
+      <Routes>
+        {appRoutes.map(route => (
+          <Route key={route.path}
+            {...route}
+            element={
+              <motion.div
+                className="motion-wrapper"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1, transition: { duration: .15 }}}
+                exit={{ opacity: 0, transition: { duration: 5 }}}
+                key={route.path}
+              >
+                {route.element}
+              </motion.div>
+            }
+          />
+        ))}
+      </Routes>
+    </AnimatePresence>
   )
 }
 

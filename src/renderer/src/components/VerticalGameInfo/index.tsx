@@ -12,10 +12,9 @@ interface Props {
 const VerticalGameInfo = ({ className, game }: Props) => {
   return (
     <div className={classNames(css.container, className)}>
-      <div className={css.img}>
+      <div className={css.bgAndLogo}>
         <MediaImage className={css.hero} mediaContent={game} mediaType={["screenshot", "hero"]} />
-        <div className={css.overlay} />
-        <MediaImage className={css.logoOverlay} mediaContent={game} mediaType="logo" />
+        <MediaImage className={css.logo} mediaContent={game} mediaType="logo" />
       </div>
       <Marquee
         className={css.description}

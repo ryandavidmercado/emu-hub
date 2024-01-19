@@ -12,6 +12,7 @@ import { IconType } from "react-icons";
 import { IoGameController, IoGameControllerOutline } from "react-icons/io5";
 import { AiOutlineAppstore, AiFillAppstore } from "react-icons/ai";
 import { BsCollection, BsCollectionFill } from "react-icons/bs";
+import Modal from "../Modal/Modal";
 
 const sections: Section[] = [
   {
@@ -96,31 +97,21 @@ const Settings = () => {
   const ActiveComponent = useMemo(() => sections[activeSection]?.component, [activeSection])
 
   return (
-    <AnimatePresence>
-      {open &&
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: .1 }}
-          className={css.modal}
-        >
-          <div className={css.body}>
-            <div className={css.left}>
-              <SectionSelector
-                sections={sections}
-                activeSection={activeSection}
-                setActiveSection={setActiveSection}
-                isActive={activeSide === "left"}
-              />
-            </div>
-            <div className={classNames(css.right, (activeSide !== "right") && css.inactive)}>
-              <ActiveComponent isActive={activeSide === "right"} onExit={() => setActiveSide("left") }/>
-            </div>
-          </div>
-        </motion.div>
-      }
-    </AnimatePresence>
+    <Modal open={open}>
+      <div className={css.body}>
+        <div className={css.left}>
+          <SectionSelector
+            sections={sections}
+            activeSection={activeSection}
+            setActiveSection={setActiveSection}
+            isActive={activeSide === "left"}
+          />
+        </div>
+        <div className={classNames(css.right, (activeSide !== "right") && css.inactive)}>
+          <ActiveComponent isActive={activeSide === "right"} onExit={() => setActiveSide("left") }/>
+        </div>
+      </div>
+    </Modal>
   )
 }
 

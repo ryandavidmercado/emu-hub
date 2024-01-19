@@ -3,11 +3,13 @@ import { readFile } from "fs/promises";
 import mime from "mime"
 import bufferToDataUrl from "buffer-to-data-url";
 
+const map: Record<string, string> = {};
 
 const loadGameMedia = async (game: MediaTypes, mediaType: keyof MediaTypes) => {
   const mediaPath = game[mediaType];
   if(!mediaPath) return "";
 
+  if(map[mediaPath]) return map[mediaPath];
   if(mediaPath.includes("http://") || mediaPath.includes("https://")) return mediaPath;
 
   const imgFile = await readFile(mediaPath);
@@ -21,6 +23,7 @@ const loadGameMedia = async (game: MediaTypes, mediaType: keyof MediaTypes) => {
   } catch(e) {
     console.error(e)
   } finally {
+    map[mediaPath] = url;
     return url;
   }
 }
