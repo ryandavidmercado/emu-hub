@@ -4,12 +4,14 @@
   height: clamp(120px, 12vh, 300px);
   filter: brightness(85%);
   transition: all .15s ease-in-out;
-  border: 3px solid transparent;
   border-radius: 3px;
-  filter: drop-shadow(1px 4px 3px rgba(0, 0, 0, 0.6));
+  border: 3px solid transparent;
+  box-shadow: 1px 4px 3px rgba(0, 0, 0, 0.5);
   overflow: hidden;
   flex-shrink: 0;
   position: relative;
+  box-sizing: border-box;
+  z-index: 1;
 
   &.square {
     aspect-ratio: 1 / 1;
@@ -27,10 +29,8 @@
 
 .active {
   filter: brightness(100%);
-  transform: scale(1.04);
-  filter: drop-shadow(1px 4px 3px rgba(0, 0, 0, 0.6));
-
   border: 3px solid $primary;
+  transform: scale(1.04);
 
   &.swapTransform {
     transform: unset;
@@ -72,8 +72,6 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-
-  filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, .2))
 }
 
 .bg {
