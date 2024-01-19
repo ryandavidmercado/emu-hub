@@ -46,8 +46,10 @@ export class ScreenScraper {
   async scrapeByRomInfo(game: Game): Promise<Game> {
     const path = "jeuInfos.php";
 
-    const getArt = (ssMediaType: string, ehMediaType: keyof MediaTypes, region: string, response: any) => {
-      const entriesOfType = response.jeu.medias.filter(media => media.type === ssMediaType);
+    const getArt = (ssMediaType: string | string[], ehMediaType: keyof MediaTypes, region: string, response: any) => {
+      const ssMediaTypes = typeof ssMediaType === "string" ? [ssMediaType] : ssMediaType;
+
+      const entriesOfType = response.jeu.medias.filter(media => ssMediaTypes.includes(media.type));
       const artEntry = entriesOfType.find(entry => !entry.region || ["wor", region].includes(entry.region)) ?? entriesOfType[0];
 
       return {
@@ -75,7 +77,7 @@ export class ScreenScraper {
     const medias = [
       getArt("fanart", "hero", "us", response),
       getArt("steamgrid", "poster", "us", response),
-      getArt("wheel", "logo", "us", response),
+      getArt(["wheel", "wheel-hd"], "logo", "us", response),
       getArt("ss", "screenshot", "us", response)
     ].filter(media => media.url && media.format)
 

@@ -78,7 +78,7 @@ export const Landing = () => {
       className={css.landing}
       key={landingKey}
     >
-      <Showcase content={currentContent} pills={pills} hideLogo={currentContentType === "system"} />
+      <Showcase content={currentContent} pills={pills} />
       <Scrollers scrollers={scrollers} className={css.scrollers} />
     </div>
   )

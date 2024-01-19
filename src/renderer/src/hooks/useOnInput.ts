@@ -23,7 +23,6 @@ export const useOnInput = (cb: (input: Input) => void, captureSettings?: Capture
     d: Input.RIGHT,
     w: Input.UP,
     s: Input.DOWN,
-    " ": Input.A,
     "Enter": Input.A,
     "Escape": Input.B,
     "Backspace": Input.START

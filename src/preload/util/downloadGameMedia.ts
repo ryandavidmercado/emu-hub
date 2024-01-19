@@ -31,7 +31,7 @@ const downloadGameMedia = async (game: Game, medias: GameMedia[]) => {
         await jimpHandle.autocrop()
           .writeAsync(mediaPath);
 
-        return { mediaType, mediaPath}
+        return { mediaType, mediaPath }
       } catch {}
     }
 

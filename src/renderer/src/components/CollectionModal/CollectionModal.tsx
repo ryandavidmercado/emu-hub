@@ -31,6 +31,7 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
     disabled: !open || (activeSection !== "selection")
   })
 
+  // TODO: this list doesn't work properly when it exceeds container height
   const entries: ControllerFormEntry[] = [
     {
       id: "new-collection",
@@ -49,7 +50,7 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
           addGameToCollection(collection.id, game.id);
           setOpen(false);
         }
-      }))
+      })),
   ]
 
   return (
