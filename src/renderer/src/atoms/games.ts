@@ -107,7 +107,7 @@ const forSystemAtom = atomFamily((systemId: string, sortType = "alphabetical") =
 ))
 
 const downloadGameAtom = atom(null,
-  async (get, set, systemId: string, { name, href }: { name: string, href: string }, _autoScrape = false) => {
+  async (get, set, systemId: string, { name, href }: { name: string, href: string }) => {
     const system = get(systems.single(systemId))
     if(!system) throw new Error(`Tried to download game for undefined system: ${systemId}`)
 

@@ -1,17 +1,24 @@
 import path from "path";
 import { SystemStore } from "../types/System";
 
-const loadSystemStore = async (systemStore: SystemStore) => {
-  const test = await fetch(systemStore.url);
-  const text = await test.text()
+const loadSystemStore = (systemStore: SystemStore, systemId: string) => {
+  switch(systemStore.type) {
+    case "html": return handleHTMLStore(systemStore);
+    case "emudeck": return handleEmuDeckStore(systemId);
+  }
+}
 
-  const dom = new DOMParser().parseFromString(text, 'text/html')
-  const nodes = dom.querySelectorAll<HTMLAnchorElement>(systemStore.selector);
+const handleHTMLStore = async (store: SystemStore & { type: "html" }) => {
+  const storeHTMLResponse = await fetch(store.url);
+  const storeHTML = await storeHTMLResponse.text()
+
+  const dom = new DOMParser().parseFromString(storeHTML, 'text/html')
+  const nodes = dom.querySelectorAll<HTMLAnchorElement>(store.selector);
 
   return [...nodes].map(node => {
     const rawHref = node.href;
     const relativePath = path.basename(rawHref)
-    const href = systemStore.url + '/' + relativePath;
+    const href = store.url + '/' + relativePath;
 
     const rawName = node.innerText;
     const name = path.basename(rawName, path.extname(rawName))
@@ -21,6 +28,24 @@ const loadSystemStore = async (systemStore: SystemStore) => {
       name
     }
   })
+}
+
+const handleEmuDeckStore = async (systemId: string) => {
+  const storeJSONResponse = await fetch(`https://api.github.com/repos/dragoonDorise/EmuDeck/contents/store/${systemId}?ref=main`);
+  const storeJSON = await storeJSONResponse.json();
+
+  const games = await Promise.all(storeJSON.map(async (storeGameEntry) => {
+    const gameDataUrl = storeGameEntry.download_url;
+    const gameDataResponse = await fetch(gameDataUrl);
+    const gameData = await gameDataResponse.json();
+
+    return {
+      href: gameData.file,
+      name: gameData.title
+    }
+  }));
+
+  return games;
 }
 
 export default loadSystemStore;

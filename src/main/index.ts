@@ -33,10 +33,16 @@ function createWindow(): void {
   );
 
   mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    if(!details.responseHeaders) return callback({})
+
+    for(const header of Object.keys(details.responseHeaders)) {
+      if(header.toLowerCase() === 'access-control-allow-origin') delete details.responseHeaders[header];
+    }
+
     callback({
       responseHeaders: {
-        'Access-Control-Allow-Origin': ['*'],
         ...details.responseHeaders,
+        'Access-Control-Allow-Origin': ['*'],
       },
     });
   });

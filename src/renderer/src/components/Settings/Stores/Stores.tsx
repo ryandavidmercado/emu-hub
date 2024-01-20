@@ -124,7 +124,8 @@ const Store = ({ system, store, isActive, onExit, inputPriority }: StoreProps) =
   const [alphabetOpen, setAlphabetOpen] = useState(false);
 
   const [storeData] = useAtom(systems.store.get({ storeId: store ?? "", systemId: system ?? "" }));
-  const [storeContents] = useAtom(systems.store.load(storeData));
+  const [storeContents] = useAtom(systems.store.load({ storeData, systemId: system ?? "" }));
+
   const [, downloadGame] = useAtom(games.download);
 
   useOnInput((input) => {
@@ -141,23 +142,19 @@ const Store = ({ system, store, isActive, onExit, inputPriority }: StoreProps) =
     priority: inputPriority
   })
 
-  const filtered = useMemo(() => {
-    if(storeContents.state !== "hasData") return [];
-    return storeContents.data.filter(entry => entry.name.includes("USA"));
-  }, [storeContents])
-
-  const entries: ControllerFormEntry[] = useMemo(() => filtered.map(storeEntry => ({
+  const entries: ControllerFormEntry[] = useMemo(() => ("data" in storeContents ? storeContents.data : []).map(storeEntry => ({
     id: storeEntry.name,
     label: storeEntry.name,
     type: "action",
     onSelect: (name) => {
-      const storeEntry = filtered.find(entry => entry.name === name);
+      if(!("data" in storeContents)) return;
+      const storeEntry = storeContents.data.find(entry => entry.name === name);
       if(!storeEntry || !system) return;
 
-      downloadGame(system, storeEntry, Boolean(storeData.autoScrape))
+      downloadGame(system, storeEntry)
     },
     IconActive: IoMdDownload
-  })), [filtered])
+  })), [storeContents])
 
   if(storeContents.state === "loading") return <div className={css.loading}><Loading type="spin" /></div>
   if(storeContents.state === "hasError") return null;

@@ -46,10 +46,16 @@ const getStoreAtom = atomFamily(
   deepEqual
 )
 
+interface LoadStoreProps {
+  storeData: SystemStore,
+  systemId: string
+}
+
 const loadStoreAtom = atomFamily(
-  (storeData: SystemStore) => loadable(
+  (props: LoadStoreProps) => loadable(
     atom(async (_) => {
-      const contents = await window.loadSystemStore(storeData)
+      const contents = await window.loadSystemStore(props.storeData, props.systemId)
+      console.log(contents)
       return contents;
     })
   ),

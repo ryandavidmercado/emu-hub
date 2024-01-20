@@ -1,11 +1,13 @@
 export type SystemStore = {
   id: string
-  url: string
   name: string
 } & ({
   type: "html"
+  url: string
   selector: string
-})
+} | ({
+  type: "emudeck"
+}))
 
 export interface System {
   id: string,
