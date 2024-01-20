@@ -2,7 +2,7 @@ import path from "path";
 import { SystemStore } from "../types/System";
 import { MediaTypes } from "../types/Game";
 
-interface StoreEntry {
+export interface StoreEntry {
   href: string,
   name: string,
   description?: string,
