@@ -69,7 +69,6 @@ const Settings = () => {
     (input) => {
       switch(input) {
         case Input.START: {
-          console.log('running this')
           return setOpen(open => !open);
         }
       }
