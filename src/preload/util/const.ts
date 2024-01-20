@@ -1,10 +1,27 @@
+import { existsSync, mkdirSync } from "fs";
 import os from "os";
 import path from "path";
+import defaultPathConfig from "../defaults/pathConfig";
+import { loadConfig } from "./configStorage";
 
 const HOME_PATH = os.homedir();
 
-export const EMUHUB_PATH = path.join(HOME_PATH, "Documents", "EmuHub");
-export const USER_PATH = path.join(EMUHUB_PATH, "user");
-export const CONFIG_PATH = path.join(USER_PATH, "config");
-export const ROM_PATH = path.join(USER_PATH, "roms");
-export const ASSETS_PATH = path.join(USER_PATH, "assets");
+const EMUHUB_PATH = path.join(HOME_PATH, "Documents", "EmuHub");
+const CONFIG_PATH = path.join(EMUHUB_PATH, "config");
+const ASSETS_PATH = path.join(EMUHUB_PATH, "assets");
+
+const pathsConfig = loadConfig("paths", defaultPathConfig);
+const ROM_PATH = pathsConfig.ROMs || path.join(EMUHUB_PATH, "roms");
+
+for(const path of [EMUHUB_PATH, CONFIG_PATH, ROM_PATH, ASSETS_PATH]) {
+  if(!existsSync(path)) {
+    mkdirSync(path);
+  }
+}
+
+export {
+  EMUHUB_PATH,
+  CONFIG_PATH,
+  ROM_PATH,
+  ASSETS_PATH
+}

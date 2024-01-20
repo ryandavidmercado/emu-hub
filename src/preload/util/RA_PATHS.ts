@@ -1,5 +1,6 @@
 import path from "path";
 import os from "os"
+import { loadConfig } from "./configStorage"
 
 interface Paths {
   bin: string,
@@ -20,5 +21,18 @@ const RA_PATHS = {
   }
 }
 
-const paths = RA_PATHS[process.platform];
+const pathsConfig = loadConfig("paths", {
+  RetroArch: {
+    bin: "",
+    cores: "",
+  },
+  ROMs: ""
+});
+
+const paths = {
+  bin: pathsConfig.RetroArch?.bin || RA_PATHS[process.platform as keyof typeof RA_PATHS].bin,
+  cores: pathsConfig.RetroArch?.cores || RA_PATHS[process.platform as keyof typeof RA_PATHS].cores,
+  coreExtension: RA_PATHS[process.platform as keyof typeof RA_PATHS].coreExtension
+}
+
 export default paths as Paths;
