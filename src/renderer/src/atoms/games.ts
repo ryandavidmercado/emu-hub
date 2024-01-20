@@ -104,33 +104,31 @@ const forSystemAtom = atomFamily((systemId: string, sortType = "alphabetical") =
 ))
 
 const downloadGameAtom = atom(null,
-  async (get, set, systemId: string, { name, href }: { name: string, href: string }, autoScrape = false) => {
-    const ssCreds = get(screenScraperAtom);
+  async (get, set, systemId: string, { name, href }: { name: string, href: string }, _autoScrape = false) => {
     const system = get(systems.single(systemId))
     if(!system) throw new Error(`Tried to download game for undefined system: ${systemId}`)
 
     set(notifications.add, {
       id: `dl-${name}`,
-      text: `Downloading ${name}!`
+      text: `Downloading ${name}!`,
+      type: "download"
     });
 
-    let downloadedGame = await window.downloadGame(system, href);
-    if(autoScrape) {
-      const ss = new ScreenScraper({
-        userId: ssCreds.username,
-        userPassword: ssCreds.password
-      });
-
-      try {
-        downloadedGame = await ss.scrapeByRomInfo(downloadedGame);
-      } catch {}
+    try {
+      const downloadedGame = await window.downloadGame(system, href);
+      set(mainAtoms.add, downloadedGame);
+      set(notifications.add, {
+        id: `dl-${name}`,
+        text: `Done downloading ${downloadedGame.name}!`,
+        type: "success"
+      })
+    } catch {
+       set(notifications.add, {
+        id: `dl-${name}`,
+        text: `Failed to download ${name}`,
+        type: "error"
+      })
     }
-
-    set(mainAtoms.add, downloadedGame);
-    set(notifications.add, {
-      id: `dl-${downloadedGame.id}`,
-      text: `Done downloading ${downloadedGame.name}!`
-    })
   }
 )
 
@@ -140,13 +138,17 @@ const scrapeGameAtom = atom(null,
     const game = get(mainAtoms.single(gameId))
     if(!game) throw new Error(`Tried to scrape undefined game: ${gameId}`);
 
-    set(notifications.add, { id: `dl-${gameId}`, text: `Scraping ${game.name}!`})
+    set(notifications.add, { id: `scrape-${gameId}`, text: `Scraping ${game.name}!`, type: "download"})
 
     const ss = new ScreenScraper({ userId: ssCreds.username, userPassword: ssCreds.password });
-    const finalGame = await ss.scrapeByRomInfo(game);
 
-    set(mainAtoms.single(gameId), finalGame)
-    set(notifications.add, { id: `dl-${gameId}-done`, text: `Done scraping ${game.name}!`})
+    try {
+      const finalGame = await ss.scrapeByRomInfo(game)
+      set(mainAtoms.single(gameId), finalGame)
+      set(notifications.add, { id: `scrape-${gameId}-done`, text: `Done scraping ${game.name}!`, type: "success"})
+    } catch {
+      set(notifications.add, { id: `scrape-${gameId}-fail`, text: `Failed to scrape ${game.name}`, type: "error"})
+    }
   }
 )
 

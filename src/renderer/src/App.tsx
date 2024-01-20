@@ -7,6 +7,7 @@ import Settings from './components/Settings';
 import { useWaveHeight } from './hooks';
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import Notifications from './components/Notifications/Notifications';
 
 function App() {
   const { parentRef, waveHeight } = useWaveHeight(.3);
@@ -26,6 +27,7 @@ function App() {
         }}
       />}
       <Settings />
+      <Notifications />
     </div>
   )
 }

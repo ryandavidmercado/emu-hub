@@ -11,7 +11,6 @@
   flex-shrink: 0;
   position: relative;
   box-sizing: border-box;
-  z-index: 1;
 
   &.square {
     aspect-ratio: 1 / 1;
@@ -72,6 +71,7 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
+  z-index: 1;
 }
 
 .bg {

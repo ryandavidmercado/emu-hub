@@ -10,6 +10,7 @@ import { Input } from "@renderer/enums/Input";
 import AlphabetSelector from "./AlphabetSelector/AlphabetSelector";
 import { SectionProps } from "..";
 import { FaAngleRight } from "react-icons/fa";
+import { IoMdDownload } from "react-icons/io";
 
 type Page = "main" | "system" | "store"
 
@@ -154,7 +155,8 @@ const Store = ({ system, store, isActive, onExit, inputPriority }: StoreProps) =
       if(!storeEntry || !system) return;
 
       downloadGame(system, storeEntry, Boolean(storeData.autoScrape))
-    }
+    },
+    IconActive: IoMdDownload
   })), [filtered])
 
   if(storeContents.state === "loading") return <div className={css.loading}><Loading type="spin" /></div>

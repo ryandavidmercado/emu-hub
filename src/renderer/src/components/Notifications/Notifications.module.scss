@@ -1,0 +1,47 @@
+@import "@renderer/scss/colors";
+
+.notificationsOverlay {
+  position: fixed;
+
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 1.5rem;
+
+  padding: 2rem;
+  z-index: 99;
+}
+
+.notificationDisplay {
+  background-color: $primary;
+  padding: 1.5rem 2rem;
+  font-family: Figtree;
+  font-size: 1.2rem;
+
+  color: $background-dark;
+  border-radius: 1rem;
+  width: 35vw;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+
+  .icon {
+    font-size: 2rem;
+  }
+
+  &.error {
+    background-color: $caution;
+  }
+
+  &.success {
+    background-color: $confirm;
+  }
+}

@@ -43,6 +43,7 @@ export interface SectionProps {
   isActive: boolean,
   onExit: () => void
   inputPriority?: number
+  onExitModal: () => void
 }
 
 export interface Section {
@@ -119,6 +120,7 @@ const Settings = () => {
             inputPriority={11}
             isActive={activeSide === "right"}
             onExit={() => setActiveSide("left") }
+            onExitModal={() => setOpen(false) }
           />
         </div>
       </div>

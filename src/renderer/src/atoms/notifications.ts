@@ -3,19 +3,24 @@ import { atom } from "jotai";
 import ShortUniqueId from "short-unique-id";
 const uid = new ShortUniqueId();
 
-interface Notification {
+export interface Notification {
   id: string;
   text: string;
+  type: "download" | "error" | "info" | "success"
 }
 
 const notifications = atom<Notification[]>([]);
 const add = atom(null,
   (_, set, notification: PartialBy<Notification, 'id'>) => {
-    set(notifications, (notifs)=> [...notifs, {
+    const newNotification = {
       ...notification,
       id: notification.id ?? uid.rnd()
-    }])
-    alert(notification.text)
+    }
+
+    set(notifications, (notifs)=> [...notifs, newNotification])
+
+    const event = new CustomEvent("notification", { detail: newNotification });
+    window.dispatchEvent(event);
   }
 )
 

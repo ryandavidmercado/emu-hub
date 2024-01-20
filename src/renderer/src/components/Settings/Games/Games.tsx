@@ -5,8 +5,9 @@ import { useOnInput } from "@renderer/hooks"
 import { useAtom } from "jotai"
 import { useMemo } from "react"
 import { SectionProps } from ".."
+import { GrScan } from "react-icons/gr";
 
-const General = ({ isActive, onExit, inputPriority }: SectionProps) => {
+const General = ({ isActive, onExit, inputPriority, onExitModal }: SectionProps) => {
   const [, scanRoms] = useAtom(games.scan)
 
   useOnInput((input) => {
@@ -24,13 +25,21 @@ const General = ({ isActive, onExit, inputPriority }: SectionProps) => {
     {
       id: 'scan-roms',
       label: "Rescan ROMs",
-      onSelect: scanRoms,
+      onSelect: () => {
+        scanRoms();
+        onExitModal();
+      },
       sublabel: "Scan ROMs directory to populate missing game entries.",
-      type: "action"
+      type: "action",
+      Icon: GrScan
     },
   ], [])
 
-  return <ControllerForm entries={entries} isActive={isActive} inputPriority={inputPriority} />
+  return <ControllerForm
+    entries={entries}
+    isActive={isActive}
+    inputPriority={inputPriority}
+  />
 }
 
 export default General;

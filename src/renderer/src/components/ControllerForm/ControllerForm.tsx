@@ -119,6 +119,8 @@ const ListEntry = ({ index, style, data }: ListEntryProps) => {
   const { entries, activeIndex } = data;
   const entry = entries[index];
 
+  const isActive = index === activeIndex;
+
   return (
     <div key={entry.id} className={classNames(
       css.entry,
@@ -128,7 +130,7 @@ const ListEntry = ({ index, style, data }: ListEntryProps) => {
       <div className={css.left}>
         <div>{entry.label}</div>
         {entry.sublabel &&
-          <div className={classNames(css.sublabel, (index === activeIndex) && css.active)}>
+          <div className={classNames(css.sublabel, isActive && css.active)}>
             {entry.sublabel}
           </div>
         }
@@ -136,8 +138,14 @@ const ListEntry = ({ index, style, data }: ListEntryProps) => {
       {entry.type === "toggle" &&
         <Toggle />
       }
-      {entry.type === "action" && entry.Icon &&
-        <entry.Icon />
+      {
+        (() => {
+          const Elem = isActive
+            ? entry.IconActive ?? entry.Icon
+            : entry.Icon
+
+          return Elem ? <Elem /> : null;
+        })()
       }
     </div>
   )
