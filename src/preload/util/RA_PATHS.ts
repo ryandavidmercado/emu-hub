@@ -15,10 +15,10 @@ const RA_PATHS = {
     coreExtension: 'dylib'
   },
   linux: {
-    bin: "org.libretro.RetroArch",
+    bin: path.join(os.homedir(), ".local", "share", "flatpak", "exports", "bin", "org.libretro.RetroArch"),
     cores: path.join(os.homedir(), ".var", "app", "org.libretro.RetroArch", "config", "retroarch", "cores"),
     coreExtension: 'so'
-  }
+  },
 }
 
 const pathsConfig = loadConfig("paths", {
