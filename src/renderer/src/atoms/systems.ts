@@ -4,15 +4,16 @@ import { arrayConfigAtoms } from "./util/arrayConfigAtom";
 import deepEqual from "fast-deep-equal";
 import games, { Game } from "./games"
 
-type SystemStore = {
+export type SystemStore = {
   id: string
-  url: string
   name: string
-  autoScrape?: boolean;
 } & ({
   type: "html"
+  url: string
   selector: string
-})
+} | ({
+  type: "emudeck"
+}))
 
 export interface System {
   id: string,
