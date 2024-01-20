@@ -7,6 +7,9 @@ import notifications from "./notifications";
 import { ScreenScraper } from "@renderer/apiWrappers/ScreenScraper";
 import screenScraperAtom from "./screenscaper";
 import deepEqual from "fast-deep-equal"
+import ShortUniqueId from "short-unique-id";
+
+const uid = new ShortUniqueId();
 
 export interface MediaTypes {
   poster?: string,
@@ -108,8 +111,10 @@ const downloadGameAtom = atom(null,
     const system = get(systems.single(systemId))
     if(!system) throw new Error(`Tried to download game for undefined system: ${systemId}`)
 
+    const notificationId = `dl-${name}-${uid.rnd()}`
+
     set(notifications.add, {
-      id: `dl-${name}`,
+      id: notificationId,
       text: `Downloading ${name}!`,
       type: "download"
     });
@@ -117,14 +122,14 @@ const downloadGameAtom = atom(null,
     try {
       const downloadedGame = await window.downloadGame(system, href);
       set(mainAtoms.add, downloadedGame);
-      set(notifications.add, {
-        id: `dl-${name}`,
+      set(notifications.update, {
+        id: notificationId,
         text: `Done downloading ${downloadedGame.name}!`,
         type: "success"
       })
     } catch {
-       set(notifications.add, {
-        id: `dl-${name}`,
+       set(notifications.update, {
+        id: notificationId,
         text: `Failed to download ${name}`,
         type: "error"
       })
@@ -138,16 +143,30 @@ const scrapeGameAtom = atom(null,
     const game = get(mainAtoms.single(gameId))
     if(!game) throw new Error(`Tried to scrape undefined game: ${gameId}`);
 
-    set(notifications.add, { id: `scrape-${gameId}`, text: `Scraping ${game.name}!`, type: "download"})
+    const notificationId = `dl-${game.id}-${uid.rnd()}`
+
+    set(notifications.add, {
+      id: notificationId,
+      text: `Scraping ${game.name}!`,
+      type: "download"
+    })
 
     const ss = new ScreenScraper({ userId: ssCreds.username, userPassword: ssCreds.password });
 
     try {
       const finalGame = await ss.scrapeByRomInfo(game)
       set(mainAtoms.single(gameId), finalGame)
-      set(notifications.add, { id: `scrape-${gameId}-done`, text: `Done scraping ${game.name}!`, type: "success"})
+      set(notifications.update, {
+        id: notificationId,
+        text: `Done scraping ${game.name}!`,
+        type: "success"
+      });
     } catch {
-      set(notifications.add, { id: `scrape-${gameId}-fail`, text: `Failed to scrape ${game.name}`, type: "error"})
+      set(notifications.update, {
+        id: notificationId,
+        text: `Failed to scrape ${game.name}`,
+        type: "error"
+      })
     }
   }
 )

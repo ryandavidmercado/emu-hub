@@ -6,7 +6,8 @@ const uid = new ShortUniqueId();
 export interface Notification {
   id: string;
   text: string;
-  type: "download" | "error" | "info" | "success"
+  type: "download" | "error" | "info" | "success",
+  timeout?: number;
 }
 
 const notifications = atom<Notification[]>([]);
@@ -19,7 +20,12 @@ const add = atom(null,
 
     set(notifications, (notifs)=> [...notifs, newNotification])
 
-    const event = new CustomEvent("notification", { detail: newNotification });
+    const displayNotificationId = uid.rnd();
+    const event = new CustomEvent("notification-display", { detail: {
+      ...newNotification,
+      id: displayNotificationId
+    }});
+
     window.dispatchEvent(event);
   }
 )
@@ -29,11 +35,39 @@ const remove = atom(null,
     set(notifications, (notifs) => notifs.filter(notif => notif.id !== id))
   }
 )
+
+const update = atom(null,
+  (get, set, update: Partial<Notification> & { id: string }) => {
+    const notifs = get(notifications);
+    const notifToUpdate = notifs.find(n => n.id === update.id);
+    if(!notifToUpdate) return;
+
+    const newNotif = {
+      ...notifToUpdate,
+      ...update
+    }
+
+    set(notifications, ns => ns.map(n => {
+      if(n.id !== update.id) return n;
+      return newNotif
+    }));
+
+    const displayNotificationId = uid.rnd();
+    const event = new CustomEvent("notification-display", { detail: {
+      ...newNotif,
+      id: displayNotificationId
+    }});
+
+    window.dispatchEvent(event);
+  }
+)
+
 const clear = atom(null, (_, set) => { set(notifications, [])})
 
 export default {
   list: notifications,
   add,
   remove,
-  clear
+  clear,
+  update
 }

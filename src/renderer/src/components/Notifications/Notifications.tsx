@@ -1,7 +1,7 @@
 import { createPortal } from "react-dom";
 import css from "./Notifications.module.scss";
 import { Notification } from "@renderer/atoms/notifications";
-import useNotifications from "./hooks/useNotifications";
+import useNotificationDisplay from "./hooks/useNotificationDisplay";
 import { IconType } from "react-icons";
 import { FaCircleInfo } from "react-icons/fa6";
 import { MdDownloadForOffline } from "react-icons/md";
@@ -10,7 +10,7 @@ import classNames from "classnames";
 import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
 
 const Notifications = () => {
-  const notifications = useNotifications();
+  const notifications = useNotificationDisplay();
 
   return createPortal(
     <motion.div layout className={css.notificationsOverlay}>

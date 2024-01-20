@@ -8,6 +8,7 @@ import { Input } from "@renderer/enums/Input";
 import { FaPlus } from "react-icons/fa6"
 import { Game } from "@renderer/atoms/games";
 import collections from "@renderer/atoms/collections";
+import notifications from "@renderer/atoms/notifications";
 
 interface Props {
   open: boolean
@@ -19,6 +20,7 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
   const [activeSection, setActiveSection] = useState<"selection" | "new">("selection");
   const [collectionsList] = useAtom(collections.lists.all);
   const [,addGameToCollection] = useAtom(collections.addGame);
+  const [,addNotification] = useAtom(notifications.add);
 
   useOnInput((input) => {
     switch(input) {
@@ -48,6 +50,11 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
         type: "action",
         onSelect: () => {
           addGameToCollection(collection.id, game.id);
+          addNotification({
+            type: "success",
+            text: `Added ${game.name ?? game.romname} to "${collection.name}"!`,
+            timeout: 2
+          })
           setOpen(false);
         }
       })),
@@ -77,6 +84,7 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
               setOpen(false);
             }}
             game={game}
+            notify={true}
           />
         }
       </div>
@@ -89,14 +97,25 @@ interface NewCollectionProps {
   onComplete: () => void;
   game?: Game
   inputPriority?: number;
+  notify?: boolean;
 }
 
-export const NewCollection = ({ onCancel, game, onComplete, inputPriority }: NewCollectionProps) => {
+export const NewCollection = ({ onCancel, game, onComplete, inputPriority, notify }: NewCollectionProps) => {
   const [input, setInput] = useState("");
   const [, addCollection] = useAtom(collections.add);
+  const [, addNotification] = useAtom(notifications.add);
 
   const onSubmit = () => {
     addCollection({ name: input, games: game ? [game.id] : [] });
+
+    if(notify) {
+      addNotification({
+        text: `Created "${input}" collection!`,
+        type: "success",
+        timeout: 2
+      })
+    }
+
     onComplete();
   }
 
