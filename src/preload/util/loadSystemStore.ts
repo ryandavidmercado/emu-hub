@@ -1,7 +1,19 @@
 import path from "path";
 import { SystemStore } from "../types/System";
+import { MediaTypes } from "../types/Game";
 
-const loadSystemStore = (systemStore: SystemStore, systemId: string) => {
+interface StoreEntry {
+  href: string,
+  name: string,
+  description?: string,
+  genre?: string,
+  media?: Record<keyof MediaTypes, {
+    url: string,
+    format: string
+  } | undefined>
+}
+
+const loadSystemStore = (systemStore: SystemStore, systemId: string): Promise<StoreEntry[]> => {
   switch(systemStore.type) {
     case "html": return handleHTMLStore(systemStore);
     case "emudeck": return handleEmuDeckStore(systemId);
@@ -39,10 +51,21 @@ const handleEmuDeckStore = async (systemId: string) => {
     const gameDataResponse = await fetch(gameDataUrl);
     const gameData = await gameDataResponse.json();
 
+    const screenshotUrl = gameData.pictures.screenshots?.[0];
+    const screenshotFormat = path.extname(screenshotUrl ?? "").split("?")[0].slice(1)
+
     return {
       href: gameData.file,
-      name: gameData.title
-    }
+      name: gameData.title,
+      description: gameData.description,
+      genre: gameData.tags?.join(" / "),
+      media: {
+        screenshot: {
+          url: screenshotUrl,
+          format: screenshotFormat,
+        }
+      }
+    } as StoreEntry
   }));
 
   return games;
