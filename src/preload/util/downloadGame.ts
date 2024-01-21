@@ -21,7 +21,11 @@ const downloadGame = async (system: System, url: string) => {
   // if we don't need to unzip, return early
   if(path.extname(romname) !== ".zip" || system.fileExtensions.includes(".zip")) {
     return {
-      romname, name, id, system: system.id
+      romname,
+      name,
+      id,
+      system: system.id,
+      added: new Date().toUTCString()
     } as Game
   }
 
