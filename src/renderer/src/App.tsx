@@ -4,13 +4,14 @@ import { GameViewWrapper } from './pages/GameView';
 import Wave from 'react-wavify';
 import { SystemView } from './pages/SystemView';
 import Settings from './components/Settings';
-import { useWaveHeight } from './hooks';
-import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { useWaveHeight, useWindowFocus } from './hooks';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Notifications from './components/Notifications/Notifications';
 
 function App() {
   const { parentRef, waveHeight } = useWaveHeight(.3);
+  const windowFocused = useWindowFocus();
 
   return (
     <div className="App" ref={parentRef}>
@@ -23,8 +24,9 @@ function App() {
         style={{ display: "flex" }}
         options={{
           height: waveHeight,
-          amplitude: 50
+          amplitude: 50,
         }}
+        paused={!windowFocused}
       />}
       <Settings />
       <Notifications />
@@ -48,7 +50,6 @@ const appRoutes = [
 ]
 
 const AppRoutes = () => {
-  const location = useLocation();
   return (
     <AnimatePresence>
       <Routes>

@@ -54,6 +54,10 @@
   &.hidden {
     opacity: 0;
   }
+
+  &.noAnimate {
+    animation-name: unset;
+  }
 }
 
 .logo {

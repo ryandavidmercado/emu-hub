@@ -27,7 +27,7 @@ export interface System {
 
 export type SystemWithGames = System & { games: Game[] }
 
-const mainAtoms = arrayConfigAtoms<System>({ storageKey: 'systems' });
+export const mainAtoms = arrayConfigAtoms<System>({ storageKey: 'systems' });
 
 interface GetStoreParms {
   systemId: string,

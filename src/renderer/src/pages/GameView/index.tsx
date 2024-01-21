@@ -1,6 +1,6 @@
 import games from "@renderer/atoms/games"
 import { Input } from "@renderer/enums";
-import { useOnInput, useRecommendationScrollers } from "@renderer/hooks";
+import { focusAtom, useOnInput, useRecommendationScrollers } from "@renderer/hooks";
 import { useAtom } from "jotai"
 import css from "./GameView.module.scss"
 import IconButtons from "@renderer/components/IconButtons";
@@ -23,14 +23,23 @@ import { motion } from "framer-motion";
 import GameInfo from "./GameInfo/GameInfo";
 import Recommendations from "./Recommendations/Recommendations";
 import CollectionModal from "@renderer/components/CollectionModal/CollectionModal";
+import notifications from "@renderer/atoms/notifications";
+import ShortUniqueId from "short-unique-id";
+
+const uid = new ShortUniqueId();
 
 const GameView = ({ gameId }: { gameId?: string }) => {
   const [game] = useAtom(games.single(gameId ?? ""));
   const [, launchGame] = useAtom(games.launch);
-  // const [, removeGame] = useAtom(games.remove);
   const [, scrapeGame] = useAtom(games.scrape);
 
+  const [, addNotification] = useAtom(notifications.add);
+  const [, updateNotification] = useAtom(notifications.update);
+
+  const [windowFocused] = useAtom(focusAtom);
+
   const [activeSection, setActiveSection] = useState<"game" | "tabs">("game");
+  const [isInGame, setIsInGame] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [collectionModalOpen, setCollectionModalOpen] = useState(false);
@@ -41,6 +50,8 @@ const GameView = ({ gameId }: { gameId?: string }) => {
 
   const onTabsSection = () => {
     if(!game?.description) return;
+    if(isInGame) return;
+
     setActiveSection('tabs');
   }
 
@@ -96,20 +107,41 @@ const GameView = ({ gameId }: { gameId?: string }) => {
                 Icon: IoPlayOutline,
                 IconActive: IoPlay,
                 label: "Play",
-                onSelect: () => { launchGame(game.id) }
+                onSelect: () => {
+                  const notifId = uid.rnd();
+                  addNotification({
+                    id: notifId,
+                    text: `Launching ${game.name ?? game.romname} ...`,
+                    type: "info"
+                  })
+
+                  setIsInGame(true);
+                  launchGame(game.id)
+                    .catch(() => {
+                      updateNotification({
+                        id: notifId,
+                        text: `Failed to launch ${game.name ?? game.romname}`,
+                        type: 'error'
+                      })
+                    })
+                    .finally(() => { setIsInGame(false) })
+                },
+                disabled: isInGame
               },
               {
                 id: 'add-to-collection',
                 Icon: FaPlus,
                 label: "Add to Collection",
-                onSelect: () => { setCollectionModalOpen(true) }
+                onSelect: () => { setCollectionModalOpen(true) },
+                disabled: isInGame
               },
               {
                 id: 'scrape',
                 Icon: IoCloudDownloadOutline,
                 IconActive: IoCloudDownload,
                 label: "Scrape",
-                onSelect: () => { scrapeGame(game.id) }
+                onSelect: () => { scrapeGame(game.id) },
+                disabled: isInGame
               }
             ]}
             isActive={activeSection === "game" && !collectionModalOpen}
@@ -117,7 +149,11 @@ const GameView = ({ gameId }: { gameId?: string }) => {
           />
         </div>
         {game.description &&
-          <FaAngleDown className={classNames(css.indicator, activeSection !== "game" && css.hidden)} />
+          <FaAngleDown className={classNames(
+            css.indicator,
+            activeSection !== "game" && css.hidden,
+            !windowFocused && css.noAnimate
+          )} />
         }
       </div>
       {game.description &&

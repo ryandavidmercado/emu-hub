@@ -48,6 +48,11 @@ const gamepadReader = (cb: Cb) => {
 
   const handleGamepads = () => {
     const gamepads = navigator.getGamepads()
+    if(document.hasFocus() === false) {
+      requestAnimationFrame(handleGamepads)
+      return;
+    }
+
     for (const gamepad of gamepads) {
       if (!gamepad) continue;
       if (!pressedButtons[gamepad.id]) pressedButtons[gamepad.id] = new Set();

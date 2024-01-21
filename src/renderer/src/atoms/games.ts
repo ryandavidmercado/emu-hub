@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import systems from "./systems";
+import { mainAtoms as systemMainAtoms } from "./systems";
 import emulators from "./emulators";
 import { arrayConfigAtoms } from "./util/arrayConfigAtom";
 import { atomFamily } from "jotai/utils";
@@ -68,7 +68,7 @@ const newGamesAtom = atom((get) => {
 })
 
 const launchGameAtom = atom(null, async (get, set, gameId: string) => {
-  const systemsList = get(systems.lists.all);
+  const systemsList = get(systemMainAtoms.lists.all);
   const game = get(mainAtoms.single(gameId))
 
   if(!game) throw new Error(`Tried to launch undefined game ID: ${gameId}`)
@@ -88,9 +88,9 @@ const launchGameAtom = atom(null, async (get, set, gameId: string) => {
     lastPlayed: new Date().toUTCString()
   })
 
-  await window
+  return window
     .launchGame(game, emulator);
-})
+ })
 
 const forSystemAtom = atomFamily((systemId: string, sortType = "alphabetical") => (
   atom((get) => {
@@ -108,7 +108,7 @@ const forSystemAtom = atomFamily((systemId: string, sortType = "alphabetical") =
 
 const downloadGameAtom = atom(null,
   async (get, set, systemId: string, { name, href }: { name: string, href: string }) => {
-    const system = get(systems.single(systemId))
+    const system = get(systemMainAtoms.single(systemId))
     if(!system) throw new Error(`Tried to download game for undefined system: ${systemId}`)
 
     const notificationId = `dl-${name}-${uid.rnd()}`

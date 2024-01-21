@@ -16,6 +16,7 @@ interface Button {
   onSelect?: () => void
   className?: string
   iconClassName?: string
+  disabled?: boolean;
 }
 
 interface Props {
@@ -81,7 +82,7 @@ const Button = ({ button, label, isActive, isParentActive }: ButtonProps) => {
         button.onSelect?.();
     }
   }, {
-    disabled: !isParentActive || !isActive
+    disabled: !isParentActive || !isActive || button.disabled
   })
 
   return (
@@ -102,14 +103,14 @@ const Button = ({ button, label, isActive, isParentActive }: ButtonProps) => {
             className={css.labelWrapper}
           >
             <Label
-              className={css.label}
+              className={classNames(css.label, button.disabled && css.disabled)}
               label={label}
             />
           </motion.div>
         }
       </AnimatePresence>
 
-      <div className={classNames(css.button, isActive && css.active, button.className )}>
+      <div className={classNames(css.button, isActive && css.active, button.disabled && css.disabled, button.className )}>
         {icon}
       </div>
     </div>

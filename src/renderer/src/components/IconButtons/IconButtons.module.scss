@@ -58,4 +58,6 @@
   position: relative;
 }
 
-
+.disabled {
+  filter: brightness(50%) opacity(50%);
+}
