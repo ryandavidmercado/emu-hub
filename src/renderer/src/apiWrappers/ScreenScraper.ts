@@ -14,7 +14,7 @@ export class ScreenScraper {
 
   private url: URL;
 
-  private addParmamsToUrl(params: Record<string, string | undefined>, url: URL) {
+  private addParamsToUrl(params: Record<string, string | undefined>, url: URL) {
     Object.entries(params).forEach(([key, value]) => {
       if(value) url.searchParams.append(key, String(value));
     })
@@ -23,7 +23,7 @@ export class ScreenScraper {
   private async fetchWithParams(path: string, params: URLParams) {
     const url = new URL(this.url.href);
     url.pathname += path;
-    this.addParmamsToUrl(params, url)
+    this.addParamsToUrl(params, url)
 
     const res = await (await fetch(url)).json();
     return res.response;
@@ -40,7 +40,7 @@ export class ScreenScraper {
       sspassword: userPassword || undefined
     }
 
-    this.addParmamsToUrl(params, this.url);
+    this.addParamsToUrl(params, this.url);
   }
 
   async scrapeByRomInfo(game: Game): Promise<Game> {
