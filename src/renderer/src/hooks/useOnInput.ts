@@ -1,23 +1,10 @@
 import { useEffect, useId } from "react"
 import { Input } from "../enums"
+import gamepadReader from "./util/gamepadReader";
 
 type Callback = (input: Input) => void;
 
-interface Subscriber {
-  id: string;
-  priority: number;
-  bypass: boolean;
-  cb: Callback;
-}
-
-interface PrioritySettings {
-  priority?: number
-  bypass?: boolean;
-  disabled?: boolean;
-}
-
-let subscribers: Subscriber[] = [];
-const keyMap: Record<KeyboardEvent['key'], Input> = {
+const kbKeyMap: Partial<Record<KeyboardEvent['key'], Input>> = {
   ArrowLeft: Input.LEFT,
   ArrowRight: Input.RIGHT,
   ArrowUp: Input.UP,
@@ -31,36 +18,67 @@ const keyMap: Record<KeyboardEvent['key'], Input> = {
   "Backspace": Input.START
 }
 
-document.addEventListener("keydown", (e) => {
-  const input = keyMap[e.key];
+interface Subscriber {
+  id: string;
+  priority: number;
+  bypass: boolean;
+  cb: Callback;
+  enforcePriority: boolean
+}
+
+let subscribers: Subscriber[] = [];
+
+const passInputToSubscribers = (input: Input) => {
   const maxPriority = subscribers.reduce((acc, sub) => {
-    return Math.max(sub.priority, acc)
+    return Math.max(sub.enforcePriority ? sub.priority : 0, acc)
   }, 0)
 
-  for(const subscriber of subscribers) {
-    if((subscriber.priority < maxPriority) && !subscriber.bypass) continue;
+  for (const subscriber of subscribers) {
+    if ((subscriber.priority < maxPriority) && !subscriber.bypass) continue;
     subscriber.cb(input)
   }
+}
+
+gamepadReader(passInputToSubscribers);
+
+document.addEventListener("keydown", (e) => {
+  const input = kbKeyMap[e.key];
+  if(!input) return;
+
+  passInputToSubscribers(input)
 })
 
 
+interface PrioritySettings {
+  priority?: number
+  bypass?: boolean;
+  disabled?: boolean;
+  enforcePriority?: boolean;
+}
+
 export const useOnInput = (cb: Callback, prioritySettings?: PrioritySettings) => {
-  const { priority = 0, disabled = false, bypass = false } = prioritySettings ?? {};
+  const {
+    priority = 0,
+    disabled = false,
+    bypass = false,
+    enforcePriority = true
+  } = prioritySettings ?? {};
   const id = useId();
 
   useEffect(() => {
-    if(disabled) {
+    if (disabled) {
       subscribers = subscribers.filter(sub => sub.id !== id);
       return;
     }
 
     const currentSubscriber = subscribers.find((sub) => sub.id === id);
-    if(!currentSubscriber) {
+    if (!currentSubscriber) {
       subscribers.push({
         priority,
         cb,
         id,
-        bypass
+        bypass,
+        enforcePriority
       })
     } else {
       currentSubscriber.priority = priority;

@@ -22,6 +22,8 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
   const [,addGameToCollection] = useAtom(collections.addGame);
   const [,addNotification] = useAtom(notifications.add);
 
+  const INPUT_PRIOIRTY = 11;
+
   useOnInput((input) => {
     switch(input) {
       case Input.B:
@@ -29,7 +31,7 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
     }
   }, {
     disabled: !open || (activeSection !== "selection"),
-    priority: 11
+    priority: INPUT_PRIOIRTY
   })
 
   // TODO: this list doesn't work properly when it exceeds container height
@@ -72,7 +74,7 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
             <ControllerForm
               entries={entries}
               isActive={true}
-              inputPriority={11}
+              inputPriority={INPUT_PRIOIRTY}
             />
           </div>
         }
@@ -85,6 +87,7 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
             }}
             game={game}
             notify={true}
+            inputPriority={INPUT_PRIOIRTY}
           />
         }
       </div>

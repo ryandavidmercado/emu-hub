@@ -1,10 +1,10 @@
 export enum Input {
-  LEFT,
-  RIGHT,
-  UP,
-  DOWN,
-  A,
-  B,
-  START,
-  SELECT
+  LEFT = 'LEFT',
+  RIGHT = 'RIGHT',
+  UP = 'UP',
+  DOWN = 'DOWN',
+  A = 'A',
+  B = 'B',
+  START = 'START',
+  SELECT = 'SELECT'
 }

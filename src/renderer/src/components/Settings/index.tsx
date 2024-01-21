@@ -11,9 +11,8 @@ import { IconType } from "react-icons";
 import { IoGameController, IoGameControllerOutline } from "react-icons/io5";
 import { AiOutlineAppstore, AiFillAppstore } from "react-icons/ai";
 import { BsCollection, BsCollectionFill } from "react-icons/bs";
-import Modal, { openModalAtom } from "../Modal/Modal";
+import Modal from "../Modal/Modal";
 import Collections from "./Collections/Collections";
-import { useAtom } from "jotai";
 
 const sections: Section[] = [
   {
@@ -58,7 +57,6 @@ const Settings = () => {
   const [open, setOpen] = useState(false);
   const [activeSide, setActiveSide] = useState<"left" | "right">("left");
   const [activeSection, setActiveSection] = useState(0);
-  const [openedModal] = useAtom(openModalAtom);
 
   useEffect(() => {
     setActiveSide("left");
@@ -74,7 +72,8 @@ const Settings = () => {
       }
     },
     {
-      bypass: !openedModal || openedModal === "settings-modal"
+      priority: 10,
+      enforcePriority: false
     }
   )
 
@@ -116,7 +115,7 @@ const Settings = () => {
         </div>
         <div className={classNames(css.right, (activeSide !== "right") && css.inactive)}>
           <ActiveComponent
-            inputPriority={11}
+            inputPriority={10}
             isActive={activeSide === "right"}
             onExit={() => setActiveSide("left") }
             onExitModal={() => setOpen(false) }
