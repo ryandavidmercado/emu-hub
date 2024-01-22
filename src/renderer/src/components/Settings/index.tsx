@@ -72,7 +72,7 @@ const Settings = () => {
       }
     },
     {
-      priority: 10,
+      priority: 19,
       enforcePriority: false
     }
   )

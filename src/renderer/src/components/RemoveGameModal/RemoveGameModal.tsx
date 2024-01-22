@@ -25,7 +25,7 @@ const RemoveGameModal = ({ game, open, setOpen }: Props) => {
         setOpen(false)
     }
   }, {
-    priority: 11,
+    priority: 20,
     disabled: !open
   })
 
@@ -70,7 +70,7 @@ const RemoveGameModal = ({ game, open, setOpen }: Props) => {
         <ControllerForm
           entries={entries}
           isActive={true}
-          inputPriority={11}
+          inputPriority={20}
           autoHeight
           defaultSelection="cancel"
         />

@@ -68,7 +68,7 @@ const Stores = ({ isActive, onExit, inputPriority }: SectionProps) => {
       system={activeSystem}
       store={activeStore}
       onExit={onExit}
-      inputPriority={inputPriority}
+      inputPriority={inputPriority ? inputPriority + 1 : undefined}
     />
   )
   return null;
@@ -140,6 +140,11 @@ const Store = ({ system, store, isActive, onExit, inputPriority }: StoreProps) =
         break;
       case Input.RIGHT:
         setAlphabetOpen(true);
+        break;
+      case Input.B:
+        if (!alphabetOpen) return onExit();
+        setAlphabetOpen(false);
+        break;
     }
   }, {
     disabled: !isActive,

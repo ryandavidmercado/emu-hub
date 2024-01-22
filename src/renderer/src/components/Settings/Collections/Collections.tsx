@@ -84,7 +84,7 @@ const Collections = ({ isActive, onExit, inputPriority }: SectionProps) => {
         <NewCollection
           onCancel={() => { setModalOpen(false) }}
           onComplete={() => { setModalOpen(false) }}
-          inputPriority={11}
+          inputPriority={20}
         />
       </Modal>
     </>
