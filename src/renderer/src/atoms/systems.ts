@@ -36,7 +36,7 @@ export interface System {
   stores?: SystemStore[]
 }
 
-export type SystemWithGames = System & { games: Game[] }
+export type SystemWithGames = System & { games: Game[], hero?: string }
 
 export const mainAtoms = arrayConfigAtoms<System>({ storageKey: 'systems' });
 
@@ -81,10 +81,16 @@ const systemsWithStoresAtom = atom((get) => {
 
 const systemsWithGamesAtom = atom((get) => {
   const systems = get(mainAtoms.lists.all);
-  return systems.map<SystemWithGames>(system => ({
-    ...system,
-    games: get(games.lists.system(system.id))
-  }))
+  return systems.map<SystemWithGames>(system => {
+    const gamesList = get(games.lists.system(system.id))
+    const randomScreenshot = gamesList.filter(game => game.screenshot).toSorted(() => Math.random() - .5)[0]?.screenshot
+
+    return {
+      ...system,
+      hero: randomScreenshot,
+      games: gamesList
+    }
+  })
 }) as Atom<SystemWithGames[]>
 
 const onlySystemsWithGamesAtom = atom((get) => {
@@ -93,12 +99,7 @@ const onlySystemsWithGamesAtom = atom((get) => {
 })
 
 const systemWithGamesAtom = atomFamily((id: string) => atom((get) => {
-  const system = get(mainAtoms.single(id));
-  const gamesList = get(games.lists.system(id));
-  return {
-    ...system,
-    games: gamesList
-  } as SystemWithGames
+  return get(systemsWithGamesAtom).find(system => system.id === id)
 }))
 
 export default {
