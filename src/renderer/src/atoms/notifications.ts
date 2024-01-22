@@ -18,21 +18,18 @@ const add = atom(null,
       id: notification.id ?? uid.rnd()
     }
 
-    set(notifications, (notifs)=> [...notifs, newNotification])
+    set(notifications, (notifs) => [...notifs, newNotification])
 
-    const displayNotificationId = uid.rnd();
-    const event = new CustomEvent("notification-display", { detail: {
-      ...newNotification,
-      id: displayNotificationId
-    }});
-
+    const event = new CustomEvent("notification-display", { detail : newNotification });
     window.dispatchEvent(event);
   }
 )
 
 const remove = atom(null,
   (_, set, id: Notification["id"]) => {
-    set(notifications, (notifs) => notifs.filter(notif => notif.id !== id))
+    set(notifications, (notifs) => notifs.filter(notif => notif.id !== id));
+    const event = new CustomEvent("notification-display-dismiss", { detail: { id }});
+    window.dispatchEvent(event);
   }
 )
 

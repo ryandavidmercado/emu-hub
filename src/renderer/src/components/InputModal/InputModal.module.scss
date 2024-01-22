@@ -1,0 +1,16 @@
+@import "@renderer/scss/colors";
+
+.inputModal {
+  > div, input {
+    padding: 30px;
+  }
+
+  > input {
+    all: unset;
+    padding: 30px;
+    width: 100%;
+    font-size: 1.2rem;
+    background-color: $primary;
+    color: $background-dark;
+  }
+}

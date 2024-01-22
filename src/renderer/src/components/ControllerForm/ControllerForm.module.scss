@@ -50,3 +50,37 @@
     display: none;
   }
 }
+
+.toggleOuter {
+  height: 100%;
+  width: 80px;
+  transition: background-color .1s ease, opacity .1s ease;
+  background-color: hsla(0, 0%, 50%, 60%);
+  border-radius: 3rem;
+  display: flex;
+  justify-content: flex-end;
+  padding: .3rem .4rem;
+  opacity: .5;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, .15);
+
+  .toggleInner {
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 100%;
+    background-color: hsla(0, 0%, 70%, 60%);
+    transition: background-color .4s ease, opacity .1s ease;
+    &.enabled {
+      background-color: $primary;
+    }
+  }
+
+  &.enabled {
+    justify-content: flex-start;
+  }
+
+  &.active {
+    background-color: $background;
+    opacity: 1;
+    /* .toggleInner { background-color: $fadedminus;} */
+  }
+}

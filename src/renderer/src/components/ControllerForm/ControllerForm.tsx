@@ -6,9 +6,28 @@ import { Input } from "@renderer/enums";
 import classNames from "classnames";
 import { Align, FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { SetStateAction } from "jotai";
+import type { SetStateAction } from "react";
+import { motion } from "framer-motion";
+import { useInputModal } from "../InputModal/InputModal";
+import { FaRegKeyboard } from "react-icons/fa";
 
 export type ColorScheme = "default" | "caution" | "warning" | "confirm"
+
+export type FormTypes = ({
+  type: "action",
+  onSelect: (id: string) => void
+} | {
+  type: "toggle"
+  enabled: boolean,
+  setEnabled: Dispatch<SetStateAction<boolean>>
+} | {
+  type: "input",
+  defaultValue?: string;
+  inputLabel?: string;
+  isPassword?: boolean;
+  onInput: (input: string) => void
+})
+
 export type ControllerFormEntry = {
   id: string,
   label: string,
@@ -16,14 +35,7 @@ export type ControllerFormEntry = {
   Icon?: IconType
   IconActive?: IconType
   colorScheme?: ColorScheme
-} & ({
-  type: "action",
-  onSelect: (id: string) => void
-} | {
-  type: "toggle"
-  enabled: boolean,
-  setEnabled: Dispatch<SetStateAction<boolean>>
-})
+} & FormTypes
 
 interface ItemData {
   entries: ControllerFormEntry[];
@@ -58,14 +70,25 @@ const ControllerForm = ({
   const setActiveIndex = controlledSetActiveIndex ?? localSetActiveIndex;
 
   const activeEntry = entries[activeIndex];
+  const getInput = useInputModal();
 
-  const onSelect = () => {
+  const onSelect = async () => {
     switch (activeEntry.type) {
       case "action":
         activeEntry.onSelect(activeEntry.id);
         break;
       case "toggle":
+        activeEntry.setEnabled(e => !e)
         break;
+      case "input":
+        const newValue = await getInput({
+          label: activeEntry.inputLabel ?? activeEntry.label,
+          defaultValue: activeEntry.defaultValue,
+          isPassword: activeEntry.isPassword
+        })
+
+        if(!newValue) return;
+        activeEntry.onInput(newValue);
     }
   }
 
@@ -147,24 +170,51 @@ const ListEntry = ({ index, style, data }: ListEntryProps) => {
         }
       </div>
       {entry.type === "toggle" &&
-        <Toggle />
+        <Toggle
+          active={isActive}
+          enabled={entry.enabled}
+        />
       }
       {
         (() => {
-          const Elem = isActive
-            ? entry.IconActive ?? entry.Icon
-            : entry.Icon
+          const defaultIcons: Partial<Record<FormTypes["type"], IconType>> = {
+            "input": FaRegKeyboard
+          }
 
-          return Elem ? <Elem /> : null;
+          const IconElem = (isActive
+            ? entry.IconActive ?? entry.Icon
+            : entry.Icon) ?? defaultIcons[entry.type]
+
+          return IconElem ? <IconElem /> : null;
         })()
       }
     </div>
   )
 }
 
-const Toggle = () => {
+const Toggle = ({ active, enabled }: { active: boolean, enabled: boolean }) => {
   return (
-    <div>"toggle"</div>
+    <motion.div
+      className={classNames(
+        css.toggleOuter,
+        active && css.active,
+        enabled && css.enabled
+      )}
+    >
+      <motion.div
+        layout
+        transition={{
+          type: "spring",
+          mass: .2,
+          damping: 12,
+          stiffness: 180
+        }}
+        className={classNames(
+          css.toggleInner,
+          enabled && css.enabled
+        )}
+      />
+    </motion.div>
   )
 }
 

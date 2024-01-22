@@ -162,7 +162,7 @@ const GameView = ({ gameId }: { gameId?: string }) => {
                 Icon: IoCloudDownloadOutline,
                 IconActive: IoCloudDownload,
                 label: "Scrape",
-                onSelect: () => { scrapeGame(game.id) },
+                onSelect: () => { scrapeGame({ gameId: game.id }) },
                 disabled: isInGame || !canScrape
               }
             ]}

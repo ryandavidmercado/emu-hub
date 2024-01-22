@@ -8,9 +8,6 @@ import notifications from "./notifications";
 import { ScreenScraper } from "@renderer/apiWrappers/ScreenScraper";
 import screenScraperAtom from "./screenscaper";
 import deepEqual from "fast-deep-equal"
-import ShortUniqueId from "short-unique-id";
-
-const uid = new ShortUniqueId();
 
 const mainAtoms = arrayConfigAtoms<Game>({ storageKey: 'games' });
 
@@ -89,12 +86,13 @@ const downloadGameAtom = atom(null,
     const system = get(systemMainAtoms.single(systemId))
     if(!system) throw new Error(`Tried to download game for undefined system: ${systemId}`)
 
-    const notificationId = `dl-${name}-${uid.rnd()}`
+    const notificationId = `dl-${system}-${name}`;
 
     set(notifications.add, {
       id: notificationId,
       text: `Downloading ${name}!`,
-      type: "download"
+      type: "download",
+      timeout: 0
     });
 
     try {
@@ -117,15 +115,16 @@ const downloadGameAtom = atom(null,
       } catch {}
 
       set(mainAtoms.add, downloadedGame);
-
-      set(notifications.update, {
-        id: notificationId,
+      set(notifications.remove, notificationId);
+      set(notifications.add, {
+        id: `${notificationId}-success`,
         text: `Done downloading ${downloadedGame.name}!`,
         type: "success"
       })
     } catch {
-       set(notifications.update, {
-        id: notificationId,
+       set(notifications.remove, notificationId);
+       set(notifications.add, {
+        id: `${notificationId}-error`,
         text: `Failed to download ${name}`,
         type: "error"
       })
@@ -133,18 +132,24 @@ const downloadGameAtom = atom(null,
   }
 )
 
+interface ScrapeSettings {
+  gameId: string
+  extraText?: string
+}
+
 const scrapeGameAtom = atom(null,
-  async (get, set, gameId: string) => {
+  async (get, set, { gameId, extraText }: ScrapeSettings) => {
     const ssCreds = get(screenScraperAtom);
     const game = get(mainAtoms.single(gameId))
     if(!game) throw new Error(`Tried to scrape undefined game: ${gameId}`);
 
-    const notificationId = `scrape-${game.id}-${uid.rnd()}`
+    const notificationId = `scrape-${game.id}`;
 
     set(notifications.add, {
       id: notificationId,
-      text: `Scraping ${game.name}!`,
-      type: "download"
+      text: `Scraping ${game.name}! ${extraText}`,
+      type: "download",
+      timeout: 0
     })
 
     const ss = new ScreenScraper({ userId: ssCreds.username, userPassword: ssCreds.password });
@@ -152,8 +157,9 @@ const scrapeGameAtom = atom(null,
     try {
       const finalGame = await ss.scrapeByRomInfo(game)
       set(mainAtoms.single(gameId), finalGame)
-      set(notifications.update, {
-        id: notificationId,
+      set(notifications.remove, notificationId);
+      set(notifications.add, {
+        id: `${notificationId}-done`,
         text: `Done scraping ${game.name}!`,
         type: "success"
       });
@@ -164,14 +170,33 @@ const scrapeGameAtom = atom(null,
         crc: err.crc,
         romsize: err.size
       })
-      set(notifications.update, {
-        id: notificationId,
+      set(notifications.remove, notificationId);
+      set(notifications.add, {
+        id: `${notificationId}-error`,
         text: `Failed to scrape ${game.name}`,
         type: "error"
       })
     }
   }
 )
+
+interface ScrapeAllGamesSettings {
+  excludeNotMissing: boolean,
+}
+
+const scrapeAllGamesAtom = atom(null, async (get, set, settings: ScrapeAllGamesSettings) => {
+  let gamesList = get(mainAtoms.lists.all);
+  if(settings.excludeNotMissing) {
+    gamesList = gamesList.filter(game => !game.hero && !game.screenshot && !game.logo)
+  }
+
+  for(const [index, game] of gamesList.entries()) {
+    await set(scrapeGameAtom, {
+      gameId: game.id,
+      extraText: `\n(${index + 1} / ${gamesList.length})`
+    })
+  }
+})
 
 type ByAttributeProp = {
   attribute: keyof Game
@@ -215,5 +240,6 @@ export default {
   scan: scanGamesAtom,
   download: downloadGameAtom,
   scrape: scrapeGameAtom,
-  removeWithROMFiles: removeWithROMFilesAtom
+  scrapeAll: scrapeAllGamesAtom,
+  removeWithROMFiles: removeWithROMFilesAtom,
 }

@@ -36,7 +36,6 @@ const NotificationDisplay = ({ notification }: { notification: Notification }) =
 
   return (
     <motion.div
-      layout
       initial={{ opacity: 0, translateY: 12 }}
       animate={{ opacity: 1, translateY: 0 }}
       exit={{ opacity: 0, translateY: -12 }}

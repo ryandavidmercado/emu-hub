@@ -1,15 +1,12 @@
-import { Dispatch, useCallback, useMemo, useState } from "react";
-import ControllerForm, { ControllerFormEntry } from "./ControllerForm";
+import { useCallback, useMemo, useState } from "react";
+import ControllerForm, { ControllerFormEntry, FormTypes } from "./ControllerForm";
 import { useOnInput } from "@renderer/hooks";
 import { Input } from "@renderer/enums/Input";
 import { FaAngleRight } from "react-icons/fa";
 import { Align } from "react-window";
-import { SetStateAction } from "jotai";
 
 type Entry = Omit<ControllerFormEntry, "onSelect" | "type"> & (
-  { type: "action", onSelect?: (id: string, goBack: () => void) => void }
-    | { type: "toggle", enabled: boolean, setEnabled: Dispatch<SetStateAction<boolean>> }
-    | { type: "navigate", navigateTo?: string }
+  FormTypes | { type: "navigate", navigateTo?: string }
 )
 
 export interface MultiFormPage {
@@ -73,10 +70,6 @@ const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, inputP
     // inject navigate entries with form selections setter & routing
     return baseEntries.map(entry => {
       switch (entry.type) {
-        case "toggle":
-          return entry as ControllerFormEntry;
-        case "action":
-          return entry as ControllerFormEntry;
         case "navigate":
           return {
             ...entry,
@@ -90,6 +83,8 @@ const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, inputP
             },
             Icon: FaAngleRight
           } as ControllerFormEntry
+        default:
+          return entry as ControllerFormEntry;
       }
     })
   }, [currentPage, pageSelections, goBack])

@@ -8,18 +8,29 @@ const useNotificationDisplay = (timeout = 4) => {
   const [notifications, setNotifications] = useAtom(notificationsAtom);
 
   useEffect(() => {
-    const handler = ((e: CustomEvent) => {
+    const displayHandler = ((e: CustomEvent) => {
       const notification = e.detail;
       setNotifications(n => [...n, notification]);
 
+      const notificationTimeout = notification.timeout ?? timeout;
+      if(!notificationTimeout) return;
+
       setTimeout(() => {
         setNotifications(n => n.filter(n => n.id !== notification.id));
-      }, (notification.timeout ?? timeout) * 1000)
+      }, (notificationTimeout * 1000))
     }) as EventListener;
 
-    window.addEventListener("notification-display", handler)
+    const dismissHandler = ((e: CustomEvent) => {
+      const dismissId = e.detail.id as string;
+      setNotifications(n => n.filter(n => n.id !== dismissId));
+    }) as EventListener
+
+    window.addEventListener("notification-display", displayHandler)
+    window.addEventListener("notification-display-dismiss", dismissHandler)
+
     return () => {
-      window.removeEventListener("notification-display", handler)
+      window.removeEventListener("notification-display", displayHandler)
+      window.removeEventListener("notification-display-dismiss", dismissHandler)
     }
   }, [])
 
