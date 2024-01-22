@@ -6,7 +6,7 @@ import { FaAngleRight } from "react-icons/fa";
 import { Align } from "react-window";
 
 type Entry = Omit<ControllerFormEntry, "onSelect" | "type"> & (
-  FormTypes | { type: "navigate", navigateTo?: string }
+  FormTypes | { type: "navigate", navigateTo?: string | -1, onSelect?: (id: string) => void }
 )
 
 export interface MultiFormPage {
@@ -75,11 +75,18 @@ const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, inputP
             ...entry,
             type: "action",
             onSelect: (selectedEntryId: string) => {
+              if(entry.onSelect) entry.onSelect(selectedEntryId);
               setPageSelections(pageData => ({
                 ...pageData,
                 [currentPage.id]: selectedEntryId
               }));
-              setPageStack(stack => [...stack, entry.navigateTo ?? defaultNavigateTo])
+
+              const navigateTo = entry.navigateTo;
+              if(navigateTo !== -1) {
+                setPageStack(stack => [...stack, navigateTo ?? defaultNavigateTo])
+              } else {
+                goBack();
+              }
             },
             Icon: FaAngleRight
           } as ControllerFormEntry

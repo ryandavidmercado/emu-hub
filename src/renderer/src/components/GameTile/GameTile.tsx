@@ -27,7 +27,7 @@ const GameTile = ({
   logo,
   name,
   style,
-  swapTransform
+  swapTransform,
 }: Props) => {
   return (
     <div

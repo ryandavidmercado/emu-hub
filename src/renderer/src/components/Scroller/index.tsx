@@ -34,7 +34,7 @@ export const Scroller = <T extends ScrollElement>({
   onPrevScroller,
   onNextScroller,
   onActiveChange,
-  disableInput
+  disableInput,
 }: ScrollerProps<T>) => {
   const [activeIndex, setActiveIndex] = useState(0);
 

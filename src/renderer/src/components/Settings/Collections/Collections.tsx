@@ -47,11 +47,11 @@ const Collections = ({ isActive, onExit, inputPriority }: SectionProps) => {
           {
             id: `remove-${collectionData.name}`,
             label: `Remove "${collectionData.name}"`,
-            type: 'action',
+            type: 'navigate',
+            navigateTo: -1,
             Icon: IoTrash,
             colorScheme: 'warning',
-            onSelect: (_, goBack: () => void) => {
-              goBack();
+            onSelect: () => {
               deleteCollection(collection);
             }
           } as const ,

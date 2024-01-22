@@ -10,10 +10,10 @@ interface GameMedia {
 }
 
 const downloadGameMedia = async (game: Game, medias: GameMedia[]) => {
-  const gameAssetsPath = path.join(ASSETS_PATH, `${game.id} - ${game.name}`);
+  const gameAssetsPath = path.join(ASSETS_PATH, 'games', `${game.id} - ${game.name}`);
 
   try {
-    await mkdir(gameAssetsPath)
+    await mkdir(gameAssetsPath, { recursive: true })
   } catch {}
 
   const requests = medias.map(({ mediaType, url, format }) => async () => {

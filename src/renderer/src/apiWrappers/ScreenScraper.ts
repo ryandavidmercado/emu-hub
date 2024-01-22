@@ -93,6 +93,7 @@ export class ScreenScraper {
       ].filter(media => media.url && media.format)
 
       const gameWithMedias = await window.downloadGameMedia(game, medias)
+
       return {
         ...gameWithMedias,
         description: getByLanguage("en", response.jeu?.synopsis ?? []),
@@ -103,10 +104,10 @@ export class ScreenScraper {
         developer: response.jeu.developpeur?.text,
         crc,
         romsize: size
-      };
-    } catch(e) {
+      }
+    } catch (e) {
       // if we failed to scrape, at least save crc & romsize so we don't have to recalculate these
-      throw({ size, crc, err: e })
+      throw ({ size, crc, err: e })
     }
   }
 }
