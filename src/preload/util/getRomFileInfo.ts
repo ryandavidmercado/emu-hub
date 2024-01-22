@@ -21,7 +21,7 @@ const getRomFileInfo = async (game: Game) => {
 
   return {
     crc: crc!.toString(16),
-    size: stats.size
+    size: String(stats.size)
   }
 }
 

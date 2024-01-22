@@ -1,7 +1,5 @@
 import Scrollers from "@renderer/components/Scrollers/Scrollers"
 import { TabContentProps } from "@renderer/components/TabSelector/TabSelector";
-import classNames from "classnames";
-import css from "./Recommendations.module.scss";
 import { useRecommendationScrollers } from "@renderer/hooks";
 import { useNavigate } from "react-router-dom";
 import { Game } from "@renderer/atoms/games";
@@ -13,7 +11,7 @@ const Recommendations = ({ game, className, onExitUp, isDisabled }: TabContentPr
 
   if(!game) return null;
   return <Scrollers
-    className={classNames(css.scrollers, className)}
+    className={className}
     key={`${game.id}-${scrollers.length}`}
     isDisabled={isDisabled}
     onExitUp={onExitUp}

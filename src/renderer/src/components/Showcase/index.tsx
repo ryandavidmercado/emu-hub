@@ -50,7 +50,7 @@ export const Showcase = ({ content, className, children, pills, hideEmptyHero }:
           >
             <MediaImage
               mediaContent={content}
-              mediaType={["hero", "screenshot"]}
+              mediaType={["screenshot", "hero"]}
               className={css.image}
             />
           </motion.div>

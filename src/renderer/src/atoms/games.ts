@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { mainAtoms as systemMainAtoms } from "./systems";
+import { StoreEntry, mainAtoms as systemMainAtoms } from "./systems";
 import emulators from "./emulators";
 import { arrayConfigAtoms } from "./util/arrayConfigAtom";
 import { atomFamily } from "jotai/utils";
@@ -32,6 +32,8 @@ export type Game = {
   genre?: string
   name?: string
   added?: string
+  crc?: string
+  romsize?: string
 } & MediaTypes
 
 const mainAtoms = arrayConfigAtoms<Game>({ storageKey: 'games' });
@@ -107,7 +109,7 @@ const forSystemAtom = atomFamily((systemId: string, sortType = "alphabetical") =
 ))
 
 const downloadGameAtom = atom(null,
-  async (get, set, systemId: string, { name, href }: { name: string, href: string }) => {
+  async (get, set, systemId: string, { name, href, description, genre, media }: StoreEntry) => {
     const system = get(systemMainAtoms.single(systemId))
     if(!system) throw new Error(`Tried to download game for undefined system: ${systemId}`)
 
@@ -120,8 +122,26 @@ const downloadGameAtom = atom(null,
     });
 
     try {
-      const downloadedGame = await window.downloadGame(system, href);
+      let downloadedGame = await window.downloadGame(system, href);
+      downloadedGame = {
+        ...downloadedGame,
+        name: name ?? downloadedGame.name,
+        description,
+        genre
+      }
+
+      try {
+        if(media) downloadedGame = await window.downloadGameMedia(
+          downloadedGame,
+          Object.entries(media).map(([mediaType, data]) => ({
+            mediaType: mediaType as keyof MediaTypes,
+            ...data
+          }))
+        )
+      } catch {}
+
       set(mainAtoms.add, downloadedGame);
+
       set(notifications.update, {
         id: notificationId,
         text: `Done downloading ${downloadedGame.name}!`,
@@ -143,7 +163,7 @@ const scrapeGameAtom = atom(null,
     const game = get(mainAtoms.single(gameId))
     if(!game) throw new Error(`Tried to scrape undefined game: ${gameId}`);
 
-    const notificationId = `dl-${game.id}-${uid.rnd()}`
+    const notificationId = `scrape-${game.id}-${uid.rnd()}`
 
     set(notifications.add, {
       id: notificationId,
@@ -161,7 +181,13 @@ const scrapeGameAtom = atom(null,
         text: `Done scraping ${game.name}!`,
         type: "success"
       });
-    } catch {
+    } catch(e) {
+      const err = e as { crc: string, size: string }
+      set(mainAtoms.update, {
+        id: gameId,
+        crc: err.crc,
+        romsize: err.size
+      })
       set(notifications.update, {
         id: notificationId,
         text: `Failed to scrape ${game.name}`,
@@ -190,7 +216,15 @@ const byAttributeAtom = atomFamily((config: ByAttributeProp) => atom(get => {
 
   const shuffled = byAttribute.toSorted(() => .5 - Math.random());
   return shuffled.slice(0, config.limit);
-}), deepEqual)
+}), deepEqual);
+
+const removeWithROMFilesAtom = atom(null, (get, set, id: string) => {
+  const game = get(mainAtoms.single(id));
+  if(!game) return;
+
+  window.removeGameFiles(game);
+  set(mainAtoms.remove, id);
+})
 
 export default {
   ...mainAtoms,
@@ -204,5 +238,6 @@ export default {
   launch: launchGameAtom,
   scan: scanGamesAtom,
   download: downloadGameAtom,
-  scrape: scrapeGameAtom
+  scrape: scrapeGameAtom,
+  removeWithROMFiles: removeWithROMFilesAtom
 }

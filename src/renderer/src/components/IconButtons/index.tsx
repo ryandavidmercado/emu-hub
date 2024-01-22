@@ -6,6 +6,7 @@ import { Input } from "@renderer/enums";
 import classNames from "classnames";
 import Label from "../Label/Label";
 import { AnimatePresence, motion } from "framer-motion";
+import { ColorScheme } from "../ControllerForm/ControllerForm";
 
 interface Button {
   id: string
@@ -17,6 +18,7 @@ interface Button {
   className?: string
   iconClassName?: string
   disabled?: boolean;
+  colorScheme?: ColorScheme;
 }
 
 interface Props {
@@ -110,7 +112,13 @@ const Button = ({ button, label, isActive, isParentActive }: ButtonProps) => {
         }
       </AnimatePresence>
 
-      <div className={classNames(css.button, isActive && css.active, button.disabled && css.disabled, button.className )}>
+      <div className={classNames(
+        css.button,
+        isActive && css.active,
+        button.disabled && css.disabled,
+        css[button.colorScheme || "default"],
+        button.className
+      )}>
         {icon}
       </div>
     </div>

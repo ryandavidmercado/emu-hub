@@ -5,6 +5,7 @@
   align-items: center;
   padding: 4px 7px 4px 6px;
   border-radius: 12px;
-  font-size: 0.8em;
+  font-size: 0.8rem;
   gap: 3px;
+  width: max-content;
 }

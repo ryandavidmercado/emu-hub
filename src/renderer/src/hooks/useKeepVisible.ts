@@ -26,7 +26,7 @@ export const useKeepVisible = (
         handleHorizontal(elementBox, parentBox, ref, padding);
         break;
       case ScrollType.VERTICAL:
-        handleVertical(elementBox, parentBox, ref);
+        handleVertical(elementBox, parentBox, ref, padding);
         break;
       default:
         break;
@@ -45,12 +45,22 @@ const handleHorizontal = (elementBox: DOMRect, parentBox: DOMRect, elementRef: R
   }
 }
 
-const handleVertical = (elementBox: DOMRect, parentBox: DOMRect, elementRef: RefObject<HTMLDivElement>) => {
+const handleVertical = (elementBox: DOMRect, parentBox: DOMRect, elementRef: RefObject<HTMLDivElement>, padding: number) => {
   if (!elementRef.current?.parentElement) return;
-  if ((elementBox.bottom > parentBox.bottom) || (elementBox.top < parentBox.top)) {
-    elementRef.current.scrollIntoView({
-      block: "center"
-    });
-    return;
-  }
+
+  elementRef.current.parentElement.scrollTop = elementBox.top - parentBox.top + elementRef.current.parentElement.scrollTop - padding;
+
+  // if (elementBox.bottom > parentBox.bottom) {
+    // elementRef.current.parentElement.scrollTop = elementBox.bottom - parentBox.bottom + padding + elementRef.current.parentElement.scrollLeft;
+  // }
+  // if (elementBox.top < parentBox.top) {
+  //   elementRef.current.parentElement.scrollTop = elementBox.top - parentBox.top + elementRef.current.parentElement.scrollLeft - padding;
+  // }
+
+  // // if ((elementBox.bottom > parentBox.bottom) || (elementBox.top < parentBox.top)) {
+  //   elementRef.current.scrollIntoView({
+  //     block: "start",
+  //   });
+  //   return;
+  // // }
 }

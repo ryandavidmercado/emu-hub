@@ -1,14 +1,14 @@
-import { IconType } from "react-icons"
+import { IconType } from "react-icons";
 import css from "./ControllerForm.module.scss";
-import { CSSProperties, Dispatch, useEffect, useMemo, useRef, useState } from "react";
+import { CSSProperties, Dispatch, useMemo, useState } from "react";
 import { useOnInput } from "@renderer/hooks";
 import { Input } from "@renderer/enums";
 import classNames from "classnames";
-import { FixedSizeList, FixedSizeList as List } from "react-window";
+import { Align, FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { SetStateAction } from "jotai";
 
-type ColorScheme = "default" | "caution" | "warning" | "confirm"
+export type ColorScheme = "default" | "caution" | "warning" | "confirm"
 export type ControllerFormEntry = {
   id: string,
   label: string,
@@ -34,18 +34,30 @@ interface Props {
   entries: ControllerFormEntry[],
   isActive: boolean
   controlledActiveIndex?: number;
-  controlledSetActiveIndex?: Dispatch<SetStateAction<number>>
-  inputPriority?: number
+  controlledSetActiveIndex?: Dispatch<SetStateAction<number>>;
+  inputPriority?: number;
+  autoHeight?: boolean;
+  defaultSelection?: string;
+  scrollType?: Align
 }
 
-const ControllerForm = ({ entries, isActive, controlledActiveIndex, controlledSetActiveIndex, inputPriority }: Props) => {
-  const [localActiveIndex, localSetActiveIndex] = useState(0);
+const ControllerForm = ({
+  entries,
+  isActive,
+  controlledActiveIndex,
+  controlledSetActiveIndex,
+  inputPriority,
+  autoHeight,
+  defaultSelection,
+  scrollType
+}: Props) => {
+  const defaultIndex = entries.findIndex(e => e.id === defaultSelection);
+  const [localActiveIndex, localSetActiveIndex] = useState(defaultIndex > -1 ? defaultIndex : 0);
 
   const activeIndex = controlledActiveIndex ?? localActiveIndex;
   const setActiveIndex = controlledSetActiveIndex ?? localSetActiveIndex;
 
   const activeEntry = entries[activeIndex];
-  const scrollerRef = useRef<FixedSizeList>(null);
 
   const onSelect = () => {
     switch (activeEntry.type) {
@@ -78,14 +90,11 @@ const ControllerForm = ({ entries, isActive, controlledActiveIndex, controlledSe
     entries, activeIndex
   }), [entries, activeIndex])
 
-  useEffect(() => {
-    const scroller = scrollerRef.current;
-    if(!scroller) return;
-    scroller.scrollToItem(activeIndex, "center");
-  }, [activeIndex])
-
   return (
-    <div className={css.controllerForm}>
+    <div
+      className={css.controllerForm}
+      style={{ height: autoHeight ? entries.length * 100 : "100%" }}
+    >
       <AutoSizer>
       {({ height, width }) => (
         <List
@@ -95,7 +104,9 @@ const ControllerForm = ({ entries, isActive, controlledActiveIndex, controlledSe
           width={width}
           itemCount={entries.length}
           itemSize={100}
-          ref={scrollerRef}
+          ref={(elem) => {
+            elem?.scrollToItem(activeIndex, scrollType ?? "auto")
+          }}
           style={{
             scrollBehavior: "smooth"
           }}

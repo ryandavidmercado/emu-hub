@@ -2,7 +2,7 @@ import { Atom, atom } from "jotai";
 import { atomFamily, loadable } from "jotai/utils";
 import { arrayConfigAtoms } from "./util/arrayConfigAtom";
 import deepEqual from "fast-deep-equal";
-import games, { Game } from "./games"
+import games, { Game, MediaTypes } from "./games"
 
 export type SystemStore = {
   id: string
@@ -14,6 +14,17 @@ export type SystemStore = {
 } | ({
   type: "emudeck"
 }))
+
+export interface StoreEntry {
+  href: string,
+  name: string,
+  description?: string,
+  genre?: string,
+  media?: Record<keyof MediaTypes, {
+    url: string,
+    format: string
+  }>
+}
 
 export interface System {
   id: string,

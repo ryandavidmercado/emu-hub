@@ -3,16 +3,17 @@ import ControllerForm, { ControllerFormEntry } from "./ControllerForm";
 import { useOnInput } from "@renderer/hooks";
 import { Input } from "@renderer/enums/Input";
 import { FaAngleRight } from "react-icons/fa";
+import { Align } from "react-window";
 
 type Entry = Omit<ControllerFormEntry, "onSelect" | "type"> & {
-  type: "action" | "navigate",
   onSelect?: (id: string, goBack: () => void) => void
-}
+} & ({ type: "action" } | { type: "navigate", navigateTo?: string })
 
 export interface MultiFormPage {
   id: string;
   entries: Entry[] | ((data: any) => Entry[])
   canExitLeft?: boolean;
+  defaultSelection?: string;
 }
 
 interface Props {
@@ -21,11 +22,17 @@ interface Props {
   onExitBack?: () => void;
   active: boolean;
   inputPriority?: number
+  autoHeight?: boolean;
+  scrollType?: Align
 }
 
-const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, inputPriority }: Props) => {
-  const [activePage, setActivePage] = useState(0);
-  const currentPage = pages[activePage];
+const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, inputPriority, autoHeight, scrollType }: Props) => {
+  const [pageStack, setPageStack] = useState([pages[0].id]);
+  const activePageId = pageStack.at(-1)
+  const currentPageIndex = pages.findIndex(page => page.id === activePageId);
+  const currentPage = pages[currentPageIndex];
+
+  const defaultNavigateTo = pages[currentPageIndex + 1]?.id;
 
   const [pageSelections, setPageSelections] = useState<Record<string, string>>(pages.reduce((acc, page) => ({
     ...acc,
@@ -33,9 +40,9 @@ const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, inputP
   }), {}));
 
   const goBack = useCallback(() => {
-    if(activePage === 0) return onExitBack?.();
-    setActivePage(page => page - 1)
-  }, [onExitBack, activePage])
+    if(pageStack.length === 1) return onExitBack?.();
+    setPageStack(pageStack.slice(0, -1))
+  }, [onExitBack, pageStack])
 
   useOnInput((input) => {
     switch(input) {
@@ -47,8 +54,7 @@ const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, inputP
 
         break;
       case Input.B:
-        if(activePage === 0) return onExitBack?.();
-        setActivePage(page => page - 1);
+        goBack();
     }
   }, {
     disabled: !active,
@@ -71,7 +77,7 @@ const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, inputP
             ...pageData,
             [currentPage.id]: selectedEntryId
           }));
-          if(activePage < pages.length - 1) setActivePage(page => page + 1);
+          setPageStack(stack => [...stack, entry.navigateTo ?? defaultNavigateTo])
         }
 
         entry.onSelect?.(selectedEntryId, goBack);
@@ -90,6 +96,9 @@ const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, inputP
     entries={entries}
     isActive={active}
     inputPriority={inputPriority}
+    autoHeight={autoHeight}
+    defaultSelection={currentPage.defaultSelection}
+    scrollType={scrollType}
   />
 }
 

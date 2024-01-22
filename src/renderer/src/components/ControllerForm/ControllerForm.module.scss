@@ -16,7 +16,7 @@
   padding: 30px;
 
   font-family: Figtree, sans-serif;
-  font-size: 1.3em;
+  font-size: 1.3rem;
   color: $fadedminus;
   transition: all .1s ease;
 
@@ -25,7 +25,7 @@
 
     &.default { background-color: $primary; }
     &.caution { background-color: $caution; }
-    &.warning { background-color: $warning; }
+    &.warning { background-color: $warning; color: $background-dark; }
     &.confirm { background-color: $confirm; }
   }
 }
@@ -36,7 +36,7 @@
   gap: 3px;
 
   .sublabel {
-    font-size: .6em;
+    font-size: .9rem;
     transition: opacity .1s ease;
 
     &.active {

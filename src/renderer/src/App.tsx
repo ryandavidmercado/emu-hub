@@ -1,5 +1,5 @@
 import './App.scss'
-import { Landing } from './pages/Landing';
+import { Home } from './pages/Home';
 import { GameViewWrapper } from './pages/GameView';
 import Wave from 'react-wavify';
 import { SystemView } from './pages/SystemView';
@@ -37,7 +37,7 @@ function App() {
 const appRoutes = [
   {
     path: "/",
-    element: <Landing />
+    element: <Home />
   },
   {
     path: "/game/:gameId",
@@ -46,7 +46,7 @@ const appRoutes = [
   {
     path: "/system/:systemId",
     element: <SystemView />
-  }
+  },
 ]
 
 const AppRoutes = () => {

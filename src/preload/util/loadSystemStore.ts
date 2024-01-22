@@ -1,6 +1,7 @@
 import path from "path";
 import { SystemStore } from "../types/System";
 import { MediaTypes } from "../types/Game";
+import { capitalCase } from "change-case"
 
 export interface StoreEntry {
   href: string,
@@ -10,7 +11,7 @@ export interface StoreEntry {
   media?: Record<keyof MediaTypes, {
     url: string,
     format: string
-  } | undefined>
+  }>
 }
 
 const loadSystemStore = (systemStore: SystemStore, systemId: string): Promise<StoreEntry[]> => {
@@ -58,13 +59,13 @@ const handleEmuDeckStore = async (systemId: string) => {
       href: gameData.file,
       name: gameData.title,
       description: gameData.description,
-      genre: gameData.tags?.join(" / "),
-      media: {
+      genre: gameData.tags?.map(capitalCase).join(" / "),
+      media: screenshotUrl && screenshotFormat ? {
         screenshot: {
           url: screenshotUrl,
           format: screenshotFormat,
         }
-      }
+      } : undefined
     } as StoreEntry
   }));
 

@@ -9,9 +9,7 @@ import downloadGame from './util/downloadGame';
 import getRomFileInfo from './util/getRomFileInfo';
 import downloadGameMedia from './util/downloadGameMedia';
 import loadGameMedia from './util/loadGameMedia';
-
-// Custom APIs for renderer
-const api = {}
+import removeGameFiles from './util/removeGameFiles';
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
@@ -27,6 +25,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('downloadGameMedia', downloadGameMedia)
     contextBridge.exposeInMainWorld('getRomFileInfo', getRomFileInfo)
     contextBridge.exposeInMainWorld('loadGameMedia', loadGameMedia)
+    contextBridge.exposeInMainWorld('removeGameFiles', removeGameFiles)
   } catch (error) {
     console.error(error)
   }

@@ -19,4 +19,6 @@ export type Game = {
   genre?: string
   name?: string
   added?: string
+  crc?: string
+  romsize?: string
 } & MediaTypes

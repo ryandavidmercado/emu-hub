@@ -1,5 +1,12 @@
 import { Game, MediaTypes } from "@renderer/atoms/games";
 import { SOFTNAME } from "@renderer/const/const";
+import fetchRetry from "fetch-retry";
+
+const fetch = fetchRetry(window.fetch, {
+  retries: 3,
+  retryOn: [429],
+  retryDelay: 800
+}) // ScreenScraper fails often on 429
 
 type URLParams = Record<string, string | undefined>
 interface ConstructorProps {
@@ -16,7 +23,7 @@ export class ScreenScraper {
 
   private addParamsToUrl(params: Record<string, string | undefined>, url: URL) {
     Object.entries(params).forEach(([key, value]) => {
-      if(value) url.searchParams.append(key, String(value));
+      if (value) url.searchParams.append(key, String(value));
     })
   }
 
@@ -69,27 +76,37 @@ export class ScreenScraper {
       return entry?.text;
     }
 
-    const { crc = undefined, size = undefined } = await window.getRomFileInfo(game);
-    const params = { romnom: game.romname, crc, size: String(size) };
+    const { crc, size } = (game.crc && game.romsize)
+      ? { crc: game.crc, size: game.romsize }
+      : await window.getRomFileInfo(game);
 
-    const response = await this.fetchWithParams(path, params);
+    const params = { romnom: game.romname, crc, size };
 
-    const medias = [
-      getArt("fanart", "hero", "us", response),
-      getArt("steamgrid", "poster", "us", response),
-      getArt(["wheel", "wheel-hd"], "logo", "us", response),
-      getArt("ss", "screenshot", "us", response)
-    ].filter(media => media.url && media.format)
+    try {
+      const response = await this.fetchWithParams(path, params);
 
-    const gameWithMedias = await window.downloadGameMedia(game, medias)
-    return {
-      ...gameWithMedias,
-      description: getByLanguage("en", response.jeu?.synopsis ?? []),
-      players: response.jeu.joueurs?.text,
-      name: getByRegion("us", response.jeu?.noms),
-      genre: getByLanguage("en", response.jeu.genres?.[0]?.noms ?? []),
-      publisher: response.jeu.editeur?.text,
-      developer: response.jeu.developpeur?.text
-    };
+      const medias = [
+        getArt("fanart", "hero", "us", response),
+        getArt("steamgrid", "poster", "us", response),
+        getArt(["wheel", "wheel-hd"], "logo", "us", response),
+        getArt("ss", "screenshot", "us", response)
+      ].filter(media => media.url && media.format)
+
+      const gameWithMedias = await window.downloadGameMedia(game, medias)
+      return {
+        ...gameWithMedias,
+        description: getByLanguage("en", response.jeu?.synopsis ?? []),
+        players: response.jeu.joueurs?.text,
+        name: getByRegion("us", response.jeu?.noms),
+        genre: getByLanguage("en", response.jeu.genres?.[0]?.noms ?? []),
+        publisher: response.jeu.editeur?.text,
+        developer: response.jeu.developpeur?.text,
+        crc,
+        romsize: size
+      };
+    } catch(e) {
+      // if we failed to scrape, at least save crc & romsize so we don't have to recalculate these
+      throw({ size, crc, err: e })
+    }
   }
 }

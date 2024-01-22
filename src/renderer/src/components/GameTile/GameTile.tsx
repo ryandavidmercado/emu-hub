@@ -39,7 +39,7 @@ const GameTile = ({
       ref={active ? activeRef : null}
       style={style}
     >
-      {aspectRatio === "landscape" &&
+      {aspectRatio === "landscape" && poster &&
         <MediaImage
           mediaContent={{ poster }}
           mediaType="poster"
@@ -51,6 +51,20 @@ const GameTile = ({
             imgClassName={css.logo}
           />
         </MediaImage>
+      }
+      {aspectRatio === "landscape" && !poster &&
+        <>
+          <MediaImage
+            mediaContent={{ screenshot }}
+            mediaType="screenshot"
+            className={css.bg}
+          />
+          <GameLogo
+            game={{ logo, name }}
+            textClassName={css.elemText}
+            imgClassName={css.logo}
+          />
+        </>
       }
       {aspectRatio === "square" &&
         <>

@@ -1,6 +1,6 @@
 import { useAtom } from "jotai";
 import { useState, useMemo } from "react"
-import systems from "@renderer/atoms/systems";
+import systems, { StoreEntry } from "@renderer/atoms/systems";
 import ControllerForm, { ControllerFormEntry } from "@renderer/components/ControllerForm/ControllerForm";
 import Loading from "react-loading";
 import games from "@renderer/atoms/games";
@@ -11,6 +11,10 @@ import AlphabetSelector from "./AlphabetSelector/AlphabetSelector";
 import { SectionProps } from "..";
 import { FaAngleRight } from "react-icons/fa";
 import { IoMdDownload } from "react-icons/io";
+import Pill from "@renderer/components/Pill";
+import { MdOutlineCategory } from "react-icons/md";
+import { AnimatePresence, motion } from "framer-motion";
+import classNames from "classnames";
 
 type Page = "main" | "system" | "store"
 
@@ -22,12 +26,12 @@ const Stores = ({ isActive, onExit, inputPriority }: SectionProps) => {
   const currentPage = pageStack[pageStack.length - 1];
 
   useOnInput((input) => {
-    switch(input) {
+    switch (input) {
       case Input.LEFT:
-        if(currentPage !== "store") onExit();
+        if (currentPage !== "store") onExit();
         break;
       case Input.B:
-        if(pageStack.length === 1) return onExit();
+        if (pageStack.length === 1) return onExit();
         setPageStack(stack => stack.slice(0, -1));
     }
   }, {
@@ -35,7 +39,7 @@ const Stores = ({ isActive, onExit, inputPriority }: SectionProps) => {
     priority: inputPriority
   })
 
-  if(currentPage === "main") return (
+  if (currentPage === "main") return (
     <Main
       isActive={isActive}
       onSelect={(systemId: string) => {
@@ -46,7 +50,7 @@ const Stores = ({ isActive, onExit, inputPriority }: SectionProps) => {
     />
   );
 
-  if(currentPage === "system") return (
+  if (currentPage === "system") return (
     <System
       isActive={isActive}
       onSelect={(store) => {
@@ -58,7 +62,7 @@ const Stores = ({ isActive, onExit, inputPriority }: SectionProps) => {
     />
   )
 
-  if(currentPage === "store") return (
+  if (currentPage === "store") return (
     <Store
       isActive={isActive}
       system={activeSystem}
@@ -107,7 +111,7 @@ const System = ({ system, isActive, onSelect, inputPriority }: SystemProps) => {
     Icon: FaAngleRight
   })) ?? []
 
-  if(!systemData) return null;
+  if (!systemData) return null;
   return <ControllerForm entries={entries} isActive={isActive} inputPriority={inputPriority} />
 }
 
@@ -129,9 +133,9 @@ const Store = ({ system, store, isActive, onExit, inputPriority }: StoreProps) =
   const [, downloadGame] = useAtom(games.download);
 
   useOnInput((input) => {
-    switch(input) {
+    switch (input) {
       case Input.LEFT:
-        if(!alphabetOpen) return onExit();
+        if (!alphabetOpen) return onExit();
         setAlphabetOpen(false);
         break;
       case Input.RIGHT:
@@ -147,27 +151,43 @@ const Store = ({ system, store, isActive, onExit, inputPriority }: StoreProps) =
     label: storeEntry.name,
     type: "action",
     onSelect: (name) => {
-      if(!("data" in storeContents)) return;
+      if (!("data" in storeContents)) return;
       const storeEntry = storeContents.data.find(entry => entry.name === name);
-      if(!storeEntry || !system) return;
+      if (!storeEntry || !system) return;
 
       downloadGame(system, storeEntry)
     },
     IconActive: IoMdDownload
   })), [storeContents])
 
-  if(storeContents.state === "loading") return <div className={css.loading}><Loading type="spin" /></div>
-  if(storeContents.state === "hasError") return null;
+  if (storeContents.state === "loading") return <div className={css.loading}><Loading type="spin" /></div>
+  if (storeContents.state === "hasError") return null;
 
   return (
     <div className={css.storeWrapper}>
-      <ControllerForm
-        entries={entries}
-        isActive={isActive && !alphabetOpen}
-        controlledActiveIndex={activeIndex}
-        controlledSetActiveIndex={setActiveIndex}
-        inputPriority={inputPriority}
-      />
+      {storeData.type === "emudeck" && (
+        <div className={css.emudeckWrapper}>
+          <ControllerForm
+            entries={entries}
+            isActive={isActive && !alphabetOpen}
+            controlledActiveIndex={activeIndex}
+            controlledSetActiveIndex={setActiveIndex}
+            inputPriority={inputPriority}
+            scrollType="center"
+          />
+          <GamePreview entry={storeContents.data[activeIndex]} />
+        </div>
+      )}
+      {storeData.type === "html" && (
+        <ControllerForm
+          entries={entries}
+          isActive={isActive && !alphabetOpen}
+          controlledActiveIndex={activeIndex}
+          controlledSetActiveIndex={setActiveIndex}
+          inputPriority={inputPriority}
+          scrollType="center"
+        />
+      )}
       <AlphabetSelector
         entries={entries}
         activeIndex={activeIndex}
@@ -176,6 +196,33 @@ const Store = ({ system, store, isActive, onExit, inputPriority }: StoreProps) =
         inputPriority={inputPriority}
       />
     </div>
+  )
+}
+
+const GamePreview = ({ entry }: { entry: StoreEntry }) => {
+  return (
+    <AnimatePresence mode="popLayout">
+      <motion.div
+        key={entry.name}
+        initial={{opacity: 0}}
+        animate={{opacity: 1, transition: { duration: .1 }}}
+        exit={{opacity: 0, transition: { duration: .1 }}}
+        className={css.gamePreview}
+      >
+        <img src={entry.media?.["screenshot"]?.url} />
+        <div className={classNames(
+          css.description,
+          !entry.description && css.centered
+        )}>
+          {entry.description}
+           <Pill
+            className={css.pill}
+            Icon={MdOutlineCategory}
+            label={entry.genre ?? ""}
+          />
+        </div>
+      </motion.div>
+    </AnimatePresence>
   )
 }
 

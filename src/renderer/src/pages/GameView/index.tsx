@@ -10,6 +10,8 @@ import {
   IoCloudDownloadOutline,
   IoPlay,
   IoPlayOutline,
+  IoTrash,
+  IoTrashOutline,
 } from "react-icons/io5"
 import { FaAngleDown } from "react-icons/fa"
 
@@ -25,6 +27,7 @@ import Recommendations from "./Recommendations/Recommendations";
 import CollectionModal from "@renderer/components/CollectionModal/CollectionModal";
 import notifications from "@renderer/atoms/notifications";
 import ShortUniqueId from "short-unique-id";
+import RemoveGameModal from "@renderer/components/RemoveGameModal/RemoveGameModal";
 
 const uid = new ShortUniqueId();
 
@@ -33,6 +36,7 @@ const GameView = ({ gameId }: { gameId?: string }) => {
   const [, launchGame] = useAtom(games.launch);
   const [, scrapeGame] = useAtom(games.scrape);
 
+  const [notificationsList] = useAtom(notifications.list);
   const [, addNotification] = useAtom(notifications.add);
   const [, updateNotification] = useAtom(notifications.update);
 
@@ -43,6 +47,12 @@ const GameView = ({ gameId }: { gameId?: string }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [collectionModalOpen, setCollectionModalOpen] = useState(false);
+  const [removeGameModalOpen, setRemoveGameModalOpen] = useState(false);
+
+  const canScrape = !notificationsList.some(notif =>
+    notif.id.startsWith(`scrape-${game?.id}`)
+      && notif.type === "download"
+  )
 
   const onGameSection = () => {
     setActiveSection('game');
@@ -87,7 +97,7 @@ const GameView = ({ gameId }: { gameId?: string }) => {
       <div className={css.upperContainer}>
         <MediaImage
           mediaContent={game}
-          mediaType={["hero", "screenshot"]}
+          mediaType={"screenshot"}
           className={css.bg}
         />
         <div className={css.buttonsAndLogo}>
@@ -133,6 +143,18 @@ const GameView = ({ gameId }: { gameId?: string }) => {
                 Icon: FaPlus,
                 label: "Add to Collection",
                 onSelect: () => { setCollectionModalOpen(true) },
+                disabled: isInGame,
+                colorScheme: "confirm"
+              },
+              {
+                id: 'remove',
+                Icon: IoTrashOutline,
+                IconActive: IoTrash,
+                label: "Remove",
+                onSelect: () => {
+                  setRemoveGameModalOpen(true);
+                },
+                colorScheme: "caution",
                 disabled: isInGame
               },
               {
@@ -141,7 +163,7 @@ const GameView = ({ gameId }: { gameId?: string }) => {
                 IconActive: IoCloudDownload,
                 label: "Scrape",
                 onSelect: () => { scrapeGame(game.id) },
-                disabled: isInGame
+                disabled: isInGame || !canScrape
               }
             ]}
             isActive={activeSection === "game" && !collectionModalOpen}
@@ -186,6 +208,11 @@ const GameView = ({ gameId }: { gameId?: string }) => {
       <CollectionModal
         open={collectionModalOpen}
         setOpen={setCollectionModalOpen}
+        game={game}
+      />
+      <RemoveGameModal
+        open={removeGameModalOpen}
+        setOpen={setRemoveGameModalOpen}
         game={game}
       />
     </motion.div>

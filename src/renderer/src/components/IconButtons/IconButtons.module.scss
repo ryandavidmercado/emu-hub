@@ -26,6 +26,11 @@
     .label {
       max-width: 150px;
     }
+
+    &.default { background-color: $primary; }
+    &.caution { background-color: $caution; }
+    &.warning { background-color: $warning; color: $background-dark; }
+    &.confirm { background-color: $confirm; }
   }
 }
 

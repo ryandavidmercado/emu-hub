@@ -9,7 +9,6 @@ const useNotificationDisplay = (timeout = 4) => {
 
   useEffect(() => {
     const handler = ((e: CustomEvent) => {
-      console.log('handle');
       const notification = e.detail;
       setNotifications(n => [...n, notification]);
 
