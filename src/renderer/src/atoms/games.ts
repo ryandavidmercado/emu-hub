@@ -147,7 +147,7 @@ const scrapeGameAtom = atom(null,
 
     set(notifications.add, {
       id: notificationId,
-      text: `Scraping ${game.name}! ${extraText}`,
+      text: `Scraping ${game.name}!${extraText ?? ""}`,
       type: "download",
       timeout: 0
     })
@@ -193,7 +193,7 @@ const scrapeAllGamesAtom = atom(null, async (get, set, settings: ScrapeAllGamesS
   for(const [index, game] of gamesList.entries()) {
     await set(scrapeGameAtom, {
       gameId: game.id,
-      extraText: `\n(${index + 1} / ${gamesList.length})`
+      extraText: ` (${index + 1} / ${gamesList.length})`
     })
   }
 })
