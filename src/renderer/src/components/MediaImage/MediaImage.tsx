@@ -1,4 +1,4 @@
-import { MediaTypes } from "@renderer/atoms/games"
+import { MediaTypes } from "@common/types"
 import { PropsWithChildren, useEffect, useState } from "react";
 
 interface Props {

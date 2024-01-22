@@ -2,41 +2,8 @@ import { Atom, atom } from "jotai";
 import { atomFamily, loadable } from "jotai/utils";
 import { arrayConfigAtoms } from "./util/arrayConfigAtom";
 import deepEqual from "fast-deep-equal";
-import games, { Game, MediaTypes } from "./games"
-
-export type SystemStore = {
-  id: string
-  name: string
-} & ({
-  type: "html"
-  url: string
-  selector: string
-} | ({
-  type: "emudeck"
-}))
-
-export interface StoreEntry {
-  href: string,
-  name: string,
-  description?: string,
-  genre?: string,
-  media?: Record<keyof MediaTypes, {
-    url: string,
-    format: string
-  }>
-}
-
-export interface System {
-  id: string,
-  ssId?: string,
-  name: string,
-  logo: string,
-  emulators?: string[],
-  fileExtensions: string[]
-  stores?: SystemStore[]
-}
-
-export type SystemWithGames = System & { games: Game[], hero?: string }
+import games from "./games"
+import { System, SystemWithGames, SystemStore } from "@common/types";
 
 export const mainAtoms = arrayConfigAtoms<System>({ storageKey: 'systems' });
 
@@ -67,7 +34,6 @@ const loadStoreAtom = atomFamily(
   (props: LoadStoreProps) => loadable(
     atom(async (_) => {
       const contents = await window.loadSystemStore(props.storeData, props.systemId)
-      console.log(contents)
       return contents;
     })
   ),

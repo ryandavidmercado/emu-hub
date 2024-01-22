@@ -1,4 +1,4 @@
-import { Game, MediaTypes } from "@renderer/atoms/games";
+import { Game, MediaTypes } from "@common/types";
 import { SOFTNAME } from "@renderer/const/const";
 import fetchRetry from "fetch-retry";
 

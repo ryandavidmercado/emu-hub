@@ -1,4 +1,5 @@
-import games, { Game } from "@renderer/atoms/games"
+import games from "@renderer/atoms/games"
+import { Game } from "@common/types"
 import Modal from "../Modal/Modal"
 import { Dispatch, useMemo } from "react"
 import { SetStateAction, useAtom } from "jotai"

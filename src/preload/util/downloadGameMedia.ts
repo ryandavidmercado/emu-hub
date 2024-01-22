@@ -1,5 +1,5 @@
 import path from "path";
-import { Game } from "../types/Game";
+import { Game } from "@common/types";
 import { ASSETS_PATH } from "./const";
 import { mkdir, writeFile } from "fs/promises";
 

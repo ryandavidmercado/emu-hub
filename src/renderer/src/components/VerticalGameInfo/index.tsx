@@ -1,4 +1,4 @@
-import { Game } from "@renderer/atoms/games";
+import { Game } from "@common/types";
 import css from "./VerticalGameInfo.module.scss";
 import classNames from "classnames";
 import Marquee from "../Marquee";

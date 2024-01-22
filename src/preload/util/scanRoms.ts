@@ -1,8 +1,7 @@
 import configStorage from "./configStorage"
 import { readdirSync, statSync } from "fs";
 import { ROM_PATH } from "./const";
-import { Game } from "../types/Game";
-import { System } from "../types/System";
+import { Game, System } from "@common/types";
 import path from "path";
 import { isEqual } from "lodash"
 import ShortUniqueId from "short-unique-id";

@@ -1,18 +1,6 @@
 import path from "path";
-import { SystemStore } from "../types/System";
-import { MediaTypes } from "../types/Game";
+import { SystemStore, StoreEntry } from "@common/types";
 import { capitalCase } from "change-case"
-
-export interface StoreEntry {
-  href: string,
-  name: string,
-  description?: string,
-  genre?: string,
-  media?: Record<keyof MediaTypes, {
-    url: string,
-    format: string
-  }>
-}
 
 const loadSystemStore = (systemStore: SystemStore, systemId: string): Promise<StoreEntry[]> => {
   switch(systemStore.type) {

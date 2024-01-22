@@ -9,7 +9,7 @@ import { useShrinkToFit } from "@renderer/hooks/useShrinkToFit";
 const baseAlphabet = [
   {
     text: "0 - 9",
-    matcher: (name: string) => /^\d/.test(name)
+    matcher: (name: string) => /^[^a-zA-Z]/.test(name)
   },
   ...[...'abcdefghijklmnopqrstuvwxyz'].map(letter => ({
     text: letter.toUpperCase(),
@@ -38,7 +38,8 @@ const AlphabetSelector = ({ entries, activeIndex, setActiveIndex, isActive, inpu
   }, [entries]);
 
   const activeLookupIndex = useMemo(() => {
-    return lookupMap.findLastIndex(entry => activeIndex >= entry.index);
+    const index = lookupMap.findLastIndex(entry => activeIndex >= entry.index);
+    return index === -1 ? 0 : index;
   }, [lookupMap, activeIndex])
 
   useOnInput((input) => {

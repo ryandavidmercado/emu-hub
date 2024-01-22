@@ -1,7 +1,8 @@
 import { atomFamily } from "jotai/utils";
 import { arrayConfigAtoms } from "./util/arrayConfigAtom";
 import { atom } from "jotai";
-import games, { Game } from "./games";
+import games from "./games";
+import { Game } from "@common/types"
 
 interface Collection {
   id: string;

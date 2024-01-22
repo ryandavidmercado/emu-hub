@@ -1,6 +1,7 @@
 import { useAtom } from "jotai";
 import { useState, useMemo } from "react"
-import systems, { StoreEntry } from "@renderer/atoms/systems";
+import systems from "@renderer/atoms/systems";
+import { StoreEntry } from "@common/types";
 import ControllerForm, { ControllerFormEntry } from "@renderer/components/ControllerForm/ControllerForm";
 import Loading from "react-loading";
 import games from "@renderer/atoms/games";
@@ -180,6 +181,28 @@ const Store = ({ system, store, isActive, onBack, onExit, inputPriority }: Store
     <div className={css.storeWrapper}>
       {storeData.type === "emudeck" && (
         <div className={css.emudeckWrapper}>
+          <div style={{ height: "100%", position: "relative" }}>
+            <ControllerForm
+              entries={entries}
+              isActive={isActive && !alphabetOpen}
+              controlledActiveIndex={activeIndex}
+              controlledSetActiveIndex={setActiveIndex}
+              inputPriority={inputPriority}
+              scrollType="center"
+            />
+            <AlphabetSelector
+              entries={entries}
+              activeIndex={activeIndex}
+              setActiveIndex={setActiveIndex}
+              isActive={alphabetOpen}
+              inputPriority={inputPriority}
+            />
+          </div>
+          <GamePreview entry={storeContents.data[activeIndex]} />
+        </div>
+      )}
+      {storeData.type === "html" && (
+        <>
           <ControllerForm
             entries={entries}
             isActive={isActive && !alphabetOpen}
@@ -188,26 +211,15 @@ const Store = ({ system, store, isActive, onBack, onExit, inputPriority }: Store
             inputPriority={inputPriority}
             scrollType="center"
           />
-          <GamePreview entry={storeContents.data[activeIndex]} />
-        </div>
+          <AlphabetSelector
+            entries={entries}
+            activeIndex={activeIndex}
+            setActiveIndex={setActiveIndex}
+            isActive={alphabetOpen}
+            inputPriority={inputPriority}
+          />
+        </>
       )}
-      {storeData.type === "html" && (
-        <ControllerForm
-          entries={entries}
-          isActive={isActive && !alphabetOpen}
-          controlledActiveIndex={activeIndex}
-          controlledSetActiveIndex={setActiveIndex}
-          inputPriority={inputPriority}
-          scrollType="center"
-        />
-      )}
-      <AlphabetSelector
-        entries={entries}
-        activeIndex={activeIndex}
-        setActiveIndex={setActiveIndex}
-        isActive={alphabetOpen}
-        inputPriority={inputPriority}
-      />
     </div>
   )
 }
@@ -217,9 +229,9 @@ const GamePreview = ({ entry }: { entry: StoreEntry }) => {
     <AnimatePresence mode="popLayout">
       <motion.div
         key={entry.name}
-        initial={{opacity: 0}}
-        animate={{opacity: 1, transition: { duration: .1 }}}
-        exit={{opacity: 0, transition: { duration: .1 }}}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { duration: .1 } }}
+        exit={{ opacity: 0, transition: { duration: .1 } }}
         className={css.gamePreview}
       >
         <img src={entry.media?.["screenshot"]?.url} />
@@ -228,7 +240,7 @@ const GamePreview = ({ entry }: { entry: StoreEntry }) => {
           !entry.description && css.centered
         )}>
           {entry.description}
-           <Pill
+          <Pill
             className={css.pill}
             Icon={MdOutlineCategory}
             label={entry.genre ?? ""}

@@ -1,7 +1,7 @@
 import classNames from "classnames"
 import css from "./GameTile.module.scss";
 import GameLogo from "../GameLogo";
-import { CSSProperties, useState } from "react";
+import { CSSProperties } from "react";
 import MediaImage from "../MediaImage/MediaImage";
 
 interface Props {

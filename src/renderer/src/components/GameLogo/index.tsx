@@ -1,4 +1,4 @@
-import { Game } from "@renderer/atoms/games";
+import { Game } from "@common/types";
 import classNames from "classnames";
 import css from "./GameLogo.module.scss"
 import MediaImage from "../MediaImage/MediaImage";

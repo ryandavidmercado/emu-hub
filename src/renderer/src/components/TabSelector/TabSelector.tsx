@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import css from "./TabSelector.module.scss";
 import { useOnInput } from "@renderer/hooks";
 import { Input } from "@renderer/enums";
-import { Game } from "@renderer/atoms/games";
+import { Game } from "@common/types/Game";
 
 export interface TabContentProps {
   className?: string;

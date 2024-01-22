@@ -1,4 +1,4 @@
-import { System } from "@renderer/atoms/systems";
+import { System } from "@common/types";
 import { Pill } from "@renderer/components/Showcase";
 import { useMemo } from "react";
 

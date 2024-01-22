@@ -12,14 +12,20 @@ export default defineConfig({
       "buffer-to-data-url",
       "unzipper",
       "change-case"
-    ]})]
+    ]})],
+    resolve: {
+      alias: {
+        '@common': resolve('src/common')
+      }
+    }
   },
   renderer: {
     resolve: {
       alias: {
-        '@renderer': resolve('src/renderer/src')
+        '@renderer': resolve('src/renderer/src'),
+        '@common': resolve('src/common')
       }
     },
     plugins: [react()]
-  }
+  },
 })

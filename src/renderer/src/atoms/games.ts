@@ -1,5 +1,6 @@
 import { atom } from "jotai";
-import { StoreEntry, mainAtoms as systemMainAtoms } from "./systems";
+import { mainAtoms as systemMainAtoms } from "./systems";
+import { Game, MediaTypes, StoreEntry } from "@common/types";
 import emulators from "./emulators";
 import { arrayConfigAtoms } from "./util/arrayConfigAtom";
 import { atomFamily } from "jotai/utils";
@@ -10,31 +11,6 @@ import deepEqual from "fast-deep-equal"
 import ShortUniqueId from "short-unique-id";
 
 const uid = new ShortUniqueId();
-
-export interface MediaTypes {
-  poster?: string,
-  hero?: string,
-  logo?: string,
-  screenshot?: string
-}
-
-export type Game = {
-  id: string
-  romname: string
-  system: string
-  rompath?: string[]
-  players?: string
-  description?: string
-  lastPlayed?: string
-  timesPlayed?: number
-  developer?: string
-  publisher?: string
-  genre?: string
-  name?: string
-  added?: string
-  crc?: string
-  romsize?: string
-} & MediaTypes
 
 const mainAtoms = arrayConfigAtoms<Game>({ storageKey: 'games' });
 

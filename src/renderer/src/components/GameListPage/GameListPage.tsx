@@ -1,4 +1,4 @@
-import { Game } from "@renderer/atoms/games"
+import { Game } from "@common/types"
 import GridScroller from "@renderer/components/GridScroller/GridScroller"
 import css from "./GameListPage.module.scss"
 import VerticalGameInfo from "@renderer/components/VerticalGameInfo"

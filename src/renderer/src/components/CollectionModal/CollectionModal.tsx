@@ -6,7 +6,7 @@ import ControllerForm, { ControllerFormEntry } from "../ControllerForm/Controlle
 import { useOnInput } from "@renderer/hooks";
 import { Input } from "@renderer/enums/Input";
 import { FaPlus } from "react-icons/fa6"
-import { Game } from "@renderer/atoms/games";
+import { Game } from "@common/types";
 import collections from "@renderer/atoms/collections";
 import notifications from "@renderer/atoms/notifications";
 

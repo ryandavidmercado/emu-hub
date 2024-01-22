@@ -1,4 +1,4 @@
-import { MediaTypes } from "../types/Game";
+import { MediaTypes } from "@common/types";
 import { readFile } from "fs/promises";
 import mime from "mime"
 import bufferToDataUrl from "buffer-to-data-url";

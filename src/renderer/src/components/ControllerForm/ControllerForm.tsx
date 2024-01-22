@@ -22,7 +22,7 @@ export type ControllerFormEntry = {
 } | {
   type: "toggle"
   enabled: boolean,
-  setEnabled: (enabled: boolean) => void
+  setEnabled: Dispatch<SetStateAction<boolean>>
 })
 
 interface ItemData {

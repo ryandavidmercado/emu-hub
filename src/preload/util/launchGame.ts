@@ -1,10 +1,9 @@
 import path from "path";
-import { Emulator } from "../types/Emulator";
+import { Game, Emulator } from "@common/types";
 import RA_PATHS from "./RA_PATHS";
 import { ROM_PATH } from "./const";
 import { exec as execCb } from "child_process";
 import { promisify } from "util";
-import { Game } from "../types/Game";
 
 const exec = promisify(execCb);
 

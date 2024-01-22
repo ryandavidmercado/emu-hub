@@ -1,8 +1,9 @@
 import download from "download";
-import { System } from "../types/System";
+
+import { Game, System } from "@common/types";
+
 import { ROM_PATH } from "./const";
 import path from "path";
-import { Game } from "../types/Game";
 import ShortUniqueId from "short-unique-id";
 import { createReadStream } from "fs";
 import { readdir, rm, rmdir, rename } from "fs/promises"

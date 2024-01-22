@@ -1,4 +1,4 @@
-import { Game } from "@renderer/atoms/games";
+import { Game } from "@common/types";
 import systems from "@renderer/atoms/systems";
 import { Pill } from "@renderer/components/Showcase";
 import { formatDistanceToNowStrict } from "date-fns";

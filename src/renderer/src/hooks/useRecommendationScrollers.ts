@@ -1,4 +1,5 @@
-import games, { Game } from "@renderer/atoms/games"
+import games from "@renderer/atoms/games"
+import { Game } from "@common/types"
 import { ScrollerConfig } from "@renderer/components/Scrollers/Scrollers"
 import { useAtom } from "jotai"
 import { useMemo } from "react"
@@ -30,7 +31,7 @@ export const useRecommendationScrollers = (game: Game | undefined, onSelectGame?
     return [
       {
         id: "recs-genre",
-        label: `More ${game.genre} Games`,
+        label: `More In Genre - ${game.genre}`,
         elems: genreElems,
         onSelect: onSelectGame
       },

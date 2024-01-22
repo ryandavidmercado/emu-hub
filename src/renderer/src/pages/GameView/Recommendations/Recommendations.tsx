@@ -2,7 +2,7 @@ import Scrollers from "@renderer/components/Scrollers/Scrollers"
 import { TabContentProps } from "@renderer/components/TabSelector/TabSelector";
 import { useRecommendationScrollers } from "@renderer/hooks";
 import { useNavigate } from "react-router-dom";
-import { Game } from "@renderer/atoms/games";
+import { Game } from "@common/types";
 
 const Recommendations = ({ game, className, onExitUp, isDisabled }: TabContentProps) => {
   const navigate = useNavigate();

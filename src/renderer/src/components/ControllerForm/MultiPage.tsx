@@ -1,13 +1,16 @@
-import { useCallback, useMemo, useState } from "react";
+import { Dispatch, useCallback, useMemo, useState } from "react";
 import ControllerForm, { ControllerFormEntry } from "./ControllerForm";
 import { useOnInput } from "@renderer/hooks";
 import { Input } from "@renderer/enums/Input";
 import { FaAngleRight } from "react-icons/fa";
 import { Align } from "react-window";
+import { SetStateAction } from "jotai";
 
-type Entry = Omit<ControllerFormEntry, "onSelect" | "type"> & {
-  onSelect?: (id: string, goBack: () => void) => void
-} & ({ type: "action" } | { type: "navigate", navigateTo?: string })
+type Entry = Omit<ControllerFormEntry, "onSelect" | "type"> & (
+  { type: "action", onSelect?: (id: string, goBack: () => void) => void }
+    | { type: "toggle", enabled: boolean, setEnabled: Dispatch<SetStateAction<boolean>> }
+    | { type: "navigate", navigateTo?: string }
+)
 
 export interface MultiFormPage {
   id: string;
@@ -40,17 +43,17 @@ const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, inputP
   }), {}));
 
   const goBack = useCallback(() => {
-    if(pageStack.length === 1) return onExitBack?.();
+    if (pageStack.length === 1) return onExitBack?.();
     setPageStack(pageStack.slice(0, -1))
   }, [onExitBack, pageStack])
 
   useOnInput((input) => {
-    switch(input) {
+    switch (input) {
       case Input.LEFT:
-        if(!currentPage) break;
+        if (!currentPage) break;
 
         const { canExitLeft = true } = currentPage;
-        if(canExitLeft) onExitLeft?.();
+        if (canExitLeft) onExitLeft?.();
 
         break;
       case Input.B:
@@ -62,33 +65,33 @@ const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, inputP
   });
 
   const entries = useMemo(() => {
-    if(!currentPage) return [];
+    if (!currentPage) return [];
     const baseEntries = Array.isArray(currentPage.entries)
       ? currentPage.entries
       : currentPage.entries(pageSelections)
 
-    // inject baseEntries handlers with form selections setter & routing
-    return baseEntries.map(entry => ({
-      ...entry,
-      type: "action" as const,
-      onSelect: (selectedEntryId: string) => {
-        if(entry.type === "navigate") {
-          setPageSelections(pageData => ({
-            ...pageData,
-            [currentPage.id]: selectedEntryId
-          }));
-          setPageStack(stack => [...stack, entry.navigateTo ?? defaultNavigateTo])
-        }
-
-        entry.onSelect?.(selectedEntryId, goBack);
-      },
-      Icon: (() => {
-        if(entry.Icon) return entry.Icon;
-
-        if(entry.type === "navigate") return FaAngleRight;
-        return entry.Icon;
-      })()
-    }))
+    // inject navigate entries with form selections setter & routing
+    return baseEntries.map(entry => {
+      switch (entry.type) {
+        case "toggle":
+          return entry as ControllerFormEntry;
+        case "action":
+          return entry as ControllerFormEntry;
+        case "navigate":
+          return {
+            ...entry,
+            type: "action",
+            onSelect: (selectedEntryId: string) => {
+              setPageSelections(pageData => ({
+                ...pageData,
+                [currentPage.id]: selectedEntryId
+              }));
+              setPageStack(stack => [...stack, entry.navigateTo ?? defaultNavigateTo])
+            },
+            Icon: FaAngleRight
+          } as ControllerFormEntry
+      }
+    })
   }, [currentPage, pageSelections, goBack])
 
   return <ControllerForm

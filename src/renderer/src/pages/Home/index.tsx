@@ -2,8 +2,9 @@ import { useCallback, useMemo, useState } from "react";
 import { Showcase, ShowcaseContent } from "../../components/Showcase"
 import css from "./Home.module.scss"
 import { useAtom } from "jotai";
-import games, { Game } from "@renderer/atoms/games";
-import systems, { System } from "@renderer/atoms/systems";
+import games from "@renderer/atoms/games";
+import { Game, System } from "@common/types";
+import systems from "@renderer/atoms/systems";
 import Scrollers, { ScrollerConfig } from "@renderer/components/Scrollers/Scrollers";
 import useGamePills from "@renderer/components/Pill/hooks/useGamePills";
 import { useNavigate } from "react-router-dom";

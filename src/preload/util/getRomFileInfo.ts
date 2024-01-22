@@ -1,5 +1,5 @@
 import path from "path";
-import { Game } from "../types/Game";
+import { Game } from "@common/types";
 import { ROM_PATH } from "./const";
 import crc32 from "crc/crc32";
 import { stat } from "fs/promises";
