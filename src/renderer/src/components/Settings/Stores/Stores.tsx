@@ -24,6 +24,13 @@ const Stores = ({ isActive, onExit, inputPriority }: SectionProps) => {
   const [activeStore, setActiveStore] = useState<string>();
 
   const currentPage = pageStack[pageStack.length - 1];
+  const onBack = () => {
+    if (pageStack.length === 1) {
+      return onExit();
+    }
+
+    setPageStack(stack => stack.slice(0, -1));
+  }
 
   useOnInput((input) => {
     switch (input) {
@@ -31,8 +38,7 @@ const Stores = ({ isActive, onExit, inputPriority }: SectionProps) => {
         if (currentPage !== "store") onExit();
         break;
       case Input.B:
-        if (pageStack.length === 1) return onExit();
-        setPageStack(stack => stack.slice(0, -1));
+        onBack();
     }
   }, {
     disabled: !isActive,
@@ -67,6 +73,7 @@ const Stores = ({ isActive, onExit, inputPriority }: SectionProps) => {
       isActive={isActive}
       system={activeSystem}
       store={activeStore}
+      onBack={onBack}
       onExit={onExit}
       inputPriority={inputPriority ? inputPriority + 1 : undefined}
     />
@@ -119,11 +126,12 @@ interface StoreProps {
   system?: string;
   store?: string;
   isActive: boolean;
+  onBack: () => void;
   onExit: () => void;
   inputPriority?: number;
 }
 
-const Store = ({ system, store, isActive, onExit, inputPriority }: StoreProps) => {
+const Store = ({ system, store, isActive, onBack, onExit, inputPriority }: StoreProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [alphabetOpen, setAlphabetOpen] = useState(false);
 
@@ -142,7 +150,7 @@ const Store = ({ system, store, isActive, onExit, inputPriority }: StoreProps) =
         setAlphabetOpen(true);
         break;
       case Input.B:
-        if (!alphabetOpen) return onExit();
+        if (!alphabetOpen) return onBack();
         setAlphabetOpen(false);
         break;
     }
