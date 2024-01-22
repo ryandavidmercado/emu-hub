@@ -10,7 +10,8 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin({ exclude: [
       "mime",
       "buffer-to-data-url",
-      "unzipper"
+      "unzipper",
+      "change-case"
     ]})]
   },
   renderer: {
