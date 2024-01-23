@@ -13,8 +13,10 @@ const uid = new ShortUniqueId();
 
 const downloadGame = async (system: System, url: string) => {
   const systemPath = path.join(ROM_PATH, system.id)
-  const romname = path.basename(decodeURI(url))
+
+  const romname = decodeURIComponent(path.basename(url));
   const name = path.basename(romname, path.extname(romname))
+
   const id = uid.rnd();
 
   await download(url, systemPath, { filename: romname });
