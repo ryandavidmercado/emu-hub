@@ -26,6 +26,8 @@ export type FormTypes = ({
   inputLabel?: string;
   isPassword?: boolean;
   onInput: (input: string) => void
+  hideFormWhileActive?: boolean
+  inputStyle?: CSSProperties;
 })
 
 export type ControllerFormEntry = {
@@ -70,6 +72,8 @@ const ControllerForm = ({
   const setActiveIndex = controlledSetActiveIndex ?? localSetActiveIndex;
 
   const activeEntry = entries[activeIndex];
+
+  const [hiddenForInput, setHiddenForInput] = useState(false);
   const getInput = useInputModal();
 
   const onSelect = async () => {
@@ -81,12 +85,16 @@ const ControllerForm = ({
         activeEntry.setEnabled(e => !e)
         break;
       case "input":
+        if(activeEntry.hideFormWhileActive) setHiddenForInput(true);
+
         const newValue = await getInput({
           label: activeEntry.inputLabel ?? activeEntry.label,
           defaultValue: activeEntry.defaultValue,
-          isPassword: activeEntry.isPassword
+          isPassword: activeEntry.isPassword,
+          style: activeEntry.inputStyle
         })
 
+        setHiddenForInput(false);
         if(!newValue) return;
         activeEntry.onInput(newValue);
     }
@@ -113,6 +121,7 @@ const ControllerForm = ({
     entries, activeIndex
   }), [entries, activeIndex])
 
+  if(hiddenForInput) return null;
   return (
     <div
       className={css.controllerForm}

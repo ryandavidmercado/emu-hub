@@ -1,5 +1,5 @@
 import { SetStateAction, useAtom } from "jotai"
-import { Dispatch, useState } from "react"
+import { Dispatch } from "react"
 import Modal from "../Modal/Modal"
 import css from "./CollectionModal.module.scss";
 import ControllerForm, { ControllerFormEntry } from "../ControllerForm/ControllerForm";
@@ -17,8 +17,8 @@ interface Props {
 }
 
 const CollectionModal = ({ open, setOpen, game }: Props) => {
-  const [activeSection, setActiveSection] = useState<"selection" | "new">("selection");
   const [collectionsList] = useAtom(collections.lists.all);
+  const [,addCollection] = useAtom(collections.add);
   const [,addGameToCollection] = useAtom(collections.addGame);
   const [,addNotification] = useAtom(notifications.add);
 
@@ -30,7 +30,7 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
         setOpen(false);
     }
   }, {
-    disabled: !open || (activeSection !== "selection"),
+    disabled: !open,
     priority: INPUT_PRIOIRTY
   })
 
@@ -39,10 +39,20 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
     {
       id: "new-collection",
       label: "New Collection",
-      type: "action",
+      type: "input",
       Icon: FaPlus,
-      onSelect: () => { setActiveSection("new") },
-      colorScheme: "confirm"
+      colorScheme: "confirm",
+      onInput: (input) => {
+        setOpen(false);
+        addCollection({ name: input, games: game ? [game.id] : [] });
+        addNotification({
+          text: `Created "${input}" collection!`,
+          type: "success",
+          timeout: 2
+        })
+      },
+      hideFormWhileActive: true,
+      inputStyle: { width: "30vw" }
     },
     ...collectionsList
       .filter(collection => !collection.games.includes(game?.id))
@@ -65,85 +75,21 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
   return (
     <Modal open={open} id="collection">
       <div className={css.container}>
-        {activeSection == "selection" &&
           <div
             style={{
-              height: Math.min(entries.length * 100, window.innerHeight * .8)
+              maxHeight: "70vh"
             }}
           >
             <ControllerForm
               entries={entries}
               isActive={true}
               inputPriority={INPUT_PRIOIRTY}
+              autoHeight
             />
           </div>
-        }
-        {activeSection == "new" &&
-          <NewCollection
-            onCancel={() => { setActiveSection("selection" )}}
-            onComplete={() => {
-              setActiveSection("selection");
-              setOpen(false);
-            }}
-            game={game}
-            notify={true}
-            inputPriority={INPUT_PRIOIRTY}
-          />
-        }
       </div>
     </Modal>
   )
-}
-
-interface NewCollectionProps {
-  onCancel: () => void;
-  onComplete: () => void;
-  game?: Game
-  inputPriority?: number;
-  notify?: boolean;
-}
-
-export const NewCollection = ({ onCancel, game, onComplete, inputPriority, notify }: NewCollectionProps) => {
-  const [input, setInput] = useState("");
-  const [, addCollection] = useAtom(collections.add);
-  const [, addNotification] = useAtom(notifications.add);
-
-  const onSubmit = () => {
-    addCollection({ name: input, games: game ? [game.id] : [] });
-
-    if(notify) {
-      addNotification({
-        text: `Created "${input}" collection!`,
-        type: "success",
-        timeout: 2
-      })
-    }
-
-    onComplete();
-  }
-
-  useOnInput((input) => {
-    switch(input) {
-      case Input.B:
-        return onCancel?.();
-      case Input.A:
-        return onSubmit();
-    }
-  }, {
-    priority: inputPriority
-  })
-
-  return (
-    <div className={css.newCollection}>
-      <div>Collection Name</div>
-      <input
-        ref={(elem) => { elem?.focus(); }}
-        value={input}
-        onChange={(e) => { setInput(e.target.value )}}
-        onSubmit={onSubmit}
-      />
-    </div>
-  );
 }
 
 export default CollectionModal;

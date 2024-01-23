@@ -2,18 +2,15 @@ import collections from "@renderer/atoms/collections"
 import MultiPageControllerForm, { MultiFormPage } from "@renderer/components/ControllerForm/MultiPage"
 import { useAtom } from "jotai"
 import { SectionProps } from "..";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { FaMinus } from "react-icons/fa";
 import { IoTrash } from "react-icons/io5";
-import Modal from "@renderer/components/Modal/Modal";
-import { NewCollection } from "@renderer/components/CollectionModal/CollectionModal";
 import { HiPlus } from "react-icons/hi";
 
 const Collections = ({ isActive, onExit, inputPriority }: SectionProps) => {
-  const [modalOpen, setModalOpen] = useState(false);
-
   const [collectionsList] = useAtom(collections.lists.all)
   const [getCollection] = useAtom(collections.single.curriedWithGames);
+  const [, addCollection] = useAtom(collections.add);
 
   const [, removeGameFromCollection] = useAtom(collections.removeGame);
   const [, deleteCollection] = useAtom(collections.remove)
@@ -25,10 +22,16 @@ const Collections = ({ isActive, onExit, inputPriority }: SectionProps) => {
         {
           id: 'new-collection',
           label: "New Collection",
-          type: "action",
+          type: "input",
           colorScheme: "confirm",
           Icon: HiPlus,
-          onSelect: () => { setModalOpen(true) }
+          onInput: (input) => {
+            addCollection({
+              name: input,
+              games: []
+            })
+          },
+          inputStyle: { width: "30vw" }
         },
         ...collectionsList.map(collection => ({
           id: collection.id,
@@ -75,18 +78,11 @@ const Collections = ({ isActive, onExit, inputPriority }: SectionProps) => {
     <>
       <MultiPageControllerForm
         pages={pages}
-        active={isActive && !modalOpen}
+        active={isActive}
         onExitBack={onExit}
         onExitLeft={onExit}
         inputPriority={inputPriority}
       />
-      <Modal id="new-collection-modal" open={modalOpen}>
-        <NewCollection
-          onCancel={() => { setModalOpen(false) }}
-          onComplete={() => { setModalOpen(false) }}
-          inputPriority={20}
-        />
-      </Modal>
     </>
   )
 }

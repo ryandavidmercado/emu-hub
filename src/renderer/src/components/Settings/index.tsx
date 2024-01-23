@@ -8,11 +8,12 @@ import classNames from "classnames";
 import Stores from "./Stores/Stores";
 
 import { IconType } from "react-icons";
-import { IoGameController, IoGameControllerOutline } from "react-icons/io5";
+import { IoGameController, IoGameControllerOutline, IoPower, IoPowerOutline } from "react-icons/io5";
 import { AiOutlineAppstore, AiFillAppstore } from "react-icons/ai";
 import { BsCollection, BsCollectionFill } from "react-icons/bs";
 import Modal from "../Modal/Modal";
 import Collections from "./Collections/Collections";
+import Power from "./Power/Power";
 
 const sections: Section[] = [
   {
@@ -35,6 +36,13 @@ const sections: Section[] = [
     Icon: AiOutlineAppstore,
     IconActive: AiFillAppstore,
     component: Stores
+  },
+  {
+    id: 'power',
+    label: 'Power',
+    Icon: IoPowerOutline,
+    IconActive: IoPower,
+    component: Power
   }
 ]
 

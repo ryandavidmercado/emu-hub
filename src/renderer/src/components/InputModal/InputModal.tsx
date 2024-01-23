@@ -4,17 +4,20 @@ import Modal from "../Modal/Modal";
 import css from "./InputModal.module.scss";
 import { atom, useAtom } from "jotai";
 import { Unsubscribe, createNanoEvents } from "nanoevents";
+import { CSSProperties } from "react";
 
 const labelAtom = atom("");
 const eventHandler = createNanoEvents();
 const modalOpenAtom = atom(false);
 const inputAtom = atom("");
 const isPasswordAtom = atom(false);
+const styleAtom = atom<CSSProperties>({});
 
 interface UseInputModalProps {
   label: string;
   defaultValue?: string;
   isPassword?: boolean;
+  style?: CSSProperties;
 }
 
 export const useInputModal = () => {
@@ -22,12 +25,14 @@ export const useInputModal = () => {
   const [, setLabel] = useAtom(labelAtom);
   const [, setInput] = useAtom(inputAtom);
   const [, setIsPassword] = useAtom(isPasswordAtom);
+  const [, setStyle] = useAtom(styleAtom);
 
-  return async ({ label, defaultValue, isPassword }: UseInputModalProps) => {
+  return async ({ label, defaultValue, isPassword, style }: UseInputModalProps) => {
     setLabel(label);
     setInput(defaultValue ?? "");
     setOpen(true);
     setIsPassword(isPassword ?? false);
+    setStyle(style ?? {});
 
     let unbindCancelListener: Unsubscribe;
     let unbindSubmitHandler: Unsubscribe;
@@ -55,6 +60,7 @@ export const InputModal = () => {
   const [open] = useAtom(modalOpenAtom);
   const [label] = useAtom(labelAtom);
   const [isPassword] = useAtom(isPasswordAtom);
+  const [style] = useAtom(styleAtom);
 
   useOnInput((input) => {
     switch(input) {
@@ -75,7 +81,7 @@ export const InputModal = () => {
       open={open}
       id="input-modal"
     >
-      <div className={css.inputModal}>
+      <div className={css.inputModal} style={style}>
         <div>{label}</div>
         <input
           ref={(elem) => { elem?.focus(); }}
