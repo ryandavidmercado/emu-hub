@@ -24,6 +24,15 @@ const scanRoms = (cleanupMissingGames = false) => {
     }
   }
 
+  // remove leading periods, make lowercase
+  const normalizeExtname = (extname: string) => {
+    const leadingPeriodRemoved = extname.startsWith(".")
+      ? extname.slice(1)
+      : extname;
+
+    return leadingPeriodRemoved.toLowerCase();
+  }
+
   const scanFolder = (systemConfig: System, pathTokens: string[] = []) => {
     const dir = path.join(ROM_PATH, systemConfig.id, ...pathTokens);
     const contents = readdirSync(dir);
@@ -38,7 +47,11 @@ const scanRoms = (cleanupMissingGames = false) => {
         continue;
       }
 
-      if (!systemConfig.fileExtensions.includes(entryExt)) continue;
+      if (!systemConfig
+        .fileExtensions
+        .map(normalizeExtname)
+        .includes(normalizeExtname(entryExt))
+      ) continue;
 
       const gameConfigEntry = gamesConfig.find(game => (
         game.romname === entry
