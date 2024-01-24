@@ -10,15 +10,4 @@
   justify-content: center;
   align-items: center;
   backdrop-filter: blur(2px);
-
-  > div {
-    background-color: hsl(200, 15%, 20%);
-    border-radius: 20px;
-    background-clip: padding-box;
-    overflow: hidden;
-
-    font-family: Figtree;
-    font-size: 1.3em;
-    color: white;
-  }
 }

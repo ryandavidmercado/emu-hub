@@ -50,19 +50,19 @@ export const Home = () => {
   const scrollers = useMemo(() => {
     return [
       {
-        id: "recent-games",
-        elems: recentlyViewedGamesList,
-        label: "Recently Viewed",
-        onHighlight: onGameHighlight,
-        onSelect: onGameSelect,
-      } as ScrollerConfig<Game>,
-      {
         id: "continue-games",
         elems: continuePlayingGamesList,
         label: "Continue Playing",
         onHighlight: onGameHighlight,
         onSelect: onGameSelect,
       },
+      {
+        id: "recent-games",
+        elems: recentlyViewedGamesList,
+        label: "Recently Viewed",
+        onHighlight: onGameHighlight,
+        onSelect: onGameSelect,
+      } as ScrollerConfig<Game>,
       {
         id: "systems",
         elems: systemsList,
@@ -93,7 +93,7 @@ export const Home = () => {
         aspectRatio: "square" as const
       }))
     ]
-  }, [collectionsList, recentlyViewedGamesList, setCurrentContent, systemsList]);
+  }, [continuePlayingGamesList, recentlyViewedGamesList, systemsList, newGamesList]);
 
   return (
     <div

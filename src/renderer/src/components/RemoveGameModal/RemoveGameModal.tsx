@@ -67,7 +67,6 @@ const RemoveGameModal = ({ game, open, setOpen }: Props) => {
       open={open}
     >
       <div className={css.container}>
-        <div className={css.label}>Remove Game: {(game.name ?? game.romname)}</div>
         <ControllerForm
           entries={entries}
           isActive={true}

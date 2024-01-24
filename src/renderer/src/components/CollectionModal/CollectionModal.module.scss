@@ -1,5 +1,10 @@
 @import "@renderer/scss/colors";
 
+.container {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
 .container, .newCollection {
   width: 30vw;
   background-color: $background;
