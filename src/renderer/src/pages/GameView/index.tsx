@@ -17,7 +17,7 @@ import { FaAngleDown, FaAngleUp } from "react-icons/fa"
 
 import { FaPlus } from "react-icons/fa6"
 import { useNavigate, useParams } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import classNames from "classnames";
 import TabSelector from "@renderer/components/TabSelector/TabSelector";
 import { motion } from "framer-motion";
@@ -32,9 +32,15 @@ import MediaImage from "@renderer/components/MediaImage/MediaImage";
 const uid = new ShortUniqueId();
 
 const GameView = ({ gameId }: { gameId?: string }) => {
-  const [game] = useAtom(games.single(gameId ?? ""));
+  const [game, updateGame] = useAtom(games.single(gameId ?? ""));
   const [, launchGame] = useAtom(games.launch);
   const [, scrapeGame] = useAtom(games.scrape);
+
+  useEffect(() => {
+    updateGame({
+      lastViewed: new Date().toUTCString()
+    })
+  }, [])
 
   const [notificationsList] = useAtom(notifications.list);
   const [, addNotification] = useAtom(notifications.add);

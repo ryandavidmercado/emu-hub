@@ -65,21 +65,6 @@ export const arrayConfigAtoms = <T extends { id: string }>(options: ArrayConfigO
     }
   )
 
-  const update = atom(null,
-    (_, set, update: Partial<T> & { id: string }) => {
-      console.log('running')
-      set(immerized, (games) => {
-        const gameIndex = games.findIndex(game => game.id === update.id);
-        if(gameIndex === -1) return;
-
-        games[gameIndex] = {
-          ...games[gameIndex],
-          ...update
-        }
-      })
-    }
-  )
-
   return {
     lists: {
       all,
@@ -88,7 +73,6 @@ export const arrayConfigAtoms = <T extends { id: string }>(options: ArrayConfigO
     single,
     curriedSingle,
     add,
-    remove,
-    update
+    remove
   }
 }

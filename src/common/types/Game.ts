@@ -13,6 +13,7 @@ export type Game = {
   players?: string
   description?: string
   lastPlayed?: string
+  lastViewed?: string
   timesPlayed?: number
   developer?: string
   publisher?: string

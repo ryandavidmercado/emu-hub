@@ -15,7 +15,8 @@ import { getSystemShowcaseConfig } from "@renderer/components/Showcase/presets/s
 export const Home = () => {
   const [systemsList] = useAtom(systems.lists.onlyWithGames);
 
-  const [recentGamesList] = useAtom(games.lists.recents);
+  const [recentlyViewedGamesList] = useAtom(games.lists.recents);
+  const [continuePlayingGamesList] = useAtom(games.lists.recentlyPlayed);
   const [newGamesList] = useAtom(games.lists.new);
 
   const [collectionsList] = useAtom(collections.lists.withGames);
@@ -50,15 +51,15 @@ export const Home = () => {
     return [
       {
         id: "recent-games",
-        elems: recentGamesList,
-        label: "Continue Playing",
+        elems: recentlyViewedGamesList,
+        label: "Recently Viewed",
         onHighlight: onGameHighlight,
         onSelect: onGameSelect,
       } as ScrollerConfig<Game>,
       {
-        id: "new-games",
-        elems: newGamesList,
-        label: "Recently Added",
+        id: "continue-games",
+        elems: continuePlayingGamesList,
+        label: "Continue Playing",
         onHighlight: onGameHighlight,
         onSelect: onGameSelect,
       },
@@ -76,15 +77,23 @@ export const Home = () => {
         onSelect: (system) => { navigate(`/system/${system.id}`) },
         contentType: "system"
       } as ScrollerConfig<SystemWithGames>,
+      {
+        id: "new-games",
+        elems: newGamesList,
+        label: "Recently Added",
+        onHighlight: onGameHighlight,
+        onSelect: onGameSelect,
+      },
       ...collectionsList.map(collection => ({
         id: `collection-${collection.id}`,
         elems: collection.games,
         label: collection.name,
         onHighlight: onGameHighlight,
         onSelect: onGameSelect,
+        aspectRatio: "square" as const
       }))
     ]
-  }, [collectionsList, recentGamesList, setCurrentContent, systemsList]);
+  }, [collectionsList, recentlyViewedGamesList, setCurrentContent, systemsList]);
 
   return (
     <div

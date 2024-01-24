@@ -35,9 +35,12 @@ const GameCell = ({ columnIndex, rowIndex, style, data }) => {
         active={isActive}
         swapTransform
         className={css.tile}
-        media={{
-          background: gameData.poster
-        }}
+        media={gameData.poster
+          ? {
+            background: gameData.poster
+          }
+          : { background: gameData.screenshot, foreground: gameData.logo, foregroundText: gameData.name ?? gameData.romname }
+        }
       />
     </div>
   )

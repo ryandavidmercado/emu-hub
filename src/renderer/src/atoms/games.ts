@@ -21,6 +21,16 @@ const scanGamesAtom = atom(null,
 const recentsAtom = atom((get) => {
   const games = get(mainAtoms.lists.all);
   return games
+    .filter(game => game.lastViewed)
+    .sort((a, b) =>
+      new Date(b.lastViewed!).valueOf() - new Date(a.lastViewed!).valueOf()
+    )
+    .slice(0, 8)
+});
+
+const recentlyPlayedAtom = atom((get) => {
+  const games = get(mainAtoms.lists.all);
+  return games
     .filter(game => game.lastPlayed)
     .sort((a, b) =>
       new Date(b.lastPlayed!).valueOf() - new Date(a.lastPlayed!).valueOf()
@@ -165,8 +175,7 @@ const scrapeGameAtom = atom(null,
       });
     } catch(e) {
       const err = e as { crc: string, size: string }
-      set(mainAtoms.update, {
-        id: gameId,
+      set(mainAtoms.single(gameId), {
         crc: err.crc,
         romsize: err.size
       })
@@ -232,6 +241,7 @@ export default {
   lists: {
     ...mainAtoms.lists,
     recents: recentsAtom,
+    recentlyPlayed: recentlyPlayedAtom,
     new: newGamesAtom,
     system: forSystemAtom,
     byAttribute: byAttributeAtom
