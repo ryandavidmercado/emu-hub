@@ -64,7 +64,7 @@ export const Showcase = ({ content, className }: Props) => {
         return  (
           <div key="pills" className={classNames(css.pills, entry.className)}>
             {entry.pills.map(pill => (
-              <Pill label={pill.text} Icon={pill.Icon} className={classNames(css.pill, content?.classNames?.pill)} key={pill.id} />
+              <Pill label={pill.text} Icon={pill.Icon} className={content?.classNames?.pill} key={pill.id} />
             ))}
           </div>
         )
