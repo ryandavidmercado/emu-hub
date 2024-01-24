@@ -42,7 +42,7 @@ const MediaTile = ({
       {media.background &&
         <MediaImage
           media={media.background}
-          className={css.background}
+          className={classNames(css.background, media.foreground && css.withForeground)}
         />
       }
       {media.foreground &&
