@@ -18,7 +18,7 @@ const scanGamesAtom = atom(null,
   }
 )
 
-const recentsAtom = atom((get) => {
+const recentlyViewedAtom = atom((get) => {
   const games = get(mainAtoms.lists.all);
   return games
     .filter(game => {
@@ -47,7 +47,7 @@ const recentlyPlayedAtom = atom((get) => {
     .slice(0, 8)
 });
 
-const newGamesAtom = atom((get) => {
+const recentlyAddedAtom = atom((get) => {
   const games = get(mainAtoms.lists.all);
   return games
     .filter(game => game.added && !game.lastPlayed)
@@ -249,9 +249,9 @@ export default {
   ...mainAtoms,
   lists: {
     ...mainAtoms.lists,
-    recents: recentsAtom,
+    recentlyViewed: recentlyViewedAtom,
     recentlyPlayed: recentlyPlayedAtom,
-    new: newGamesAtom,
+    recentlyAdded: recentlyAddedAtom,
     system: forSystemAtom,
     byAttribute: byAttributeAtom
   },

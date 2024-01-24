@@ -15,9 +15,9 @@ import { getSystemShowcaseConfig } from "@renderer/components/Showcase/presets/s
 export const Home = () => {
   const [systemsList] = useAtom(systems.lists.onlyWithGames);
 
-  const [recentlyViewedGamesList] = useAtom(games.lists.recents);
-  const [continuePlayingGamesList] = useAtom(games.lists.recentlyPlayed);
-  const [newGamesList] = useAtom(games.lists.new);
+  const [recentlyViewedGamesList] = useAtom(games.lists.recentlyViewed);
+  const [recentlyPlayedGamesList] = useAtom(games.lists.recentlyPlayed);
+  const [recentlyAddedGamesList] = useAtom(games.lists.recentlyAdded);
 
   const [collectionsList] = useAtom(collections.lists.withGames);
 
@@ -50,14 +50,14 @@ export const Home = () => {
   const scrollers = useMemo(() => {
     return [
       {
-        id: "continue-games",
-        elems: continuePlayingGamesList,
+        id: "continue-playing",
+        elems: recentlyAddedGamesList,
         label: "Continue Playing",
         onHighlight: onGameHighlight,
         onSelect: onGameSelect,
       },
       {
-        id: "recent-games",
+        id: "recently-viewed",
         elems: recentlyViewedGamesList,
         label: "Recently Viewed",
         onHighlight: onGameHighlight,
@@ -78,8 +78,8 @@ export const Home = () => {
         contentType: "system"
       } as ScrollerConfig<SystemWithGames>,
       {
-        id: "new-games",
-        elems: newGamesList,
+        id: "recently-added",
+        elems: recentlyAddedGamesList,
         label: "Recently Added",
         onHighlight: onGameHighlight,
         onSelect: onGameSelect,
@@ -90,10 +90,12 @@ export const Home = () => {
         label: collection.name,
         onHighlight: onGameHighlight,
         onSelect: onGameSelect,
-        aspectRatio: "square" as const
+        aspectRatio: collection.games.length < 5
+          ? "landscape" as const
+          : "square" as const
       }))
     ]
-  }, [continuePlayingGamesList, recentlyViewedGamesList, systemsList, newGamesList]);
+  }, [recentlyPlayedGamesList, recentlyViewedGamesList, recentlyAddedGamesList, systemsList, collectionsList]);
 
   return (
     <div
