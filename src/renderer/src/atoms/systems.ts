@@ -53,7 +53,7 @@ const systemsWithGamesAtom = atom((get) => {
 
     return {
       ...system,
-      hero: randomScreenshot,
+      screenshot: randomScreenshot,
       games: gamesList
     }
   })

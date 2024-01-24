@@ -19,7 +19,6 @@ const GameInfo = ({ className, game }: TabContentProps) => {
           key={pill.id}
           Icon={pill.Icon}
           label={pill.text}
-          className={css.pill}
         />)}
       </div>
     </div>

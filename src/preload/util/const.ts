@@ -8,8 +8,10 @@ const HOME_PATH = os.homedir();
 
 const EMUHUB_PATH = path.join(HOME_PATH, "Documents", "EmuHub");
 const CONFIG_PATH = path.join(EMUHUB_PATH, "config");
+
 const ASSETS_PATH = path.join(EMUHUB_PATH, "assets");
 const GAME_ASSETS_PATH = path.join(ASSETS_PATH, "games");
+const SYSTEM_ASSETS_PATH = path.join(ASSETS_PATH, "systems");
 
 const pathsConfig = loadConfig("paths", defaultPathConfig);
 const ROM_PATH = pathsConfig.ROMs || path.join(EMUHUB_PATH, "roms");
@@ -20,6 +22,7 @@ for(const path of [
   ROM_PATH,
   ASSETS_PATH,
   GAME_ASSETS_PATH,
+  SYSTEM_ASSETS_PATH
 ]) {
   if(!existsSync(path)) {
     mkdirSync(path);
@@ -30,5 +33,7 @@ export {
   EMUHUB_PATH,
   CONFIG_PATH,
   ROM_PATH,
-  ASSETS_PATH
+  ASSETS_PATH,
+  GAME_ASSETS_PATH,
+  SYSTEM_ASSETS_PATH
 }

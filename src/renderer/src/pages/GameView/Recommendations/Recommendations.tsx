@@ -10,13 +10,17 @@ const Recommendations = ({ game, className, onExitUp, isDisabled }: TabContentPr
   const scrollers = useRecommendationScrollers(game, onSelectGame);
 
   if(!game) return null;
-  return <Scrollers
-    className={className}
-    key={`${game.id}-${scrollers.length}`}
-    isDisabled={isDisabled}
-    onExitUp={onExitUp}
-    scrollers={scrollers}
-  />
+  return (
+    <div>
+      <Scrollers
+        className={className}
+        key={`${game.id}-${scrollers.length}`}
+        isDisabled={isDisabled}
+        onExitUp={onExitUp}
+        scrollers={scrollers}
+      />
+    </div>
+  )
 }
 
 export default Recommendations;

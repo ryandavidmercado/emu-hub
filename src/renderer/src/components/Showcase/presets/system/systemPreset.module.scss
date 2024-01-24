@@ -1,0 +1,22 @@
+@import "@renderer/scss/colors";
+
+.systemShowcasePill {
+  font-size: 1rem;
+  padding: none;
+  gap: .5rem;
+  background-color: transparent;
+  color: $primary;
+}
+
+.systemShowcaseLogo {
+  height: 80%;
+  width: 80%;
+}
+
+.systemShowcaseName {
+  font-size: 1.8rem;
+}
+
+.systemShowcaseRight {
+  gap: 1.5rem;
+}

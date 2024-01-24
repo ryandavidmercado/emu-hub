@@ -9,6 +9,7 @@ import ShortUniqueId from "short-unique-id";
 const uid = new ShortUniqueId();
 
 const scanRoms = (cleanupMissingGames = false) => {
+  const addedDate = new Date().toUTCString();
   const gamesConfig = configStorage.getItem<Game[]>("games", []);
 
   const systemsConfig = configStorage.getItem<System[]>("systems", []);
@@ -70,7 +71,7 @@ const scanRoms = (cleanupMissingGames = false) => {
         romname: entry,
         system: systemConfig.id,
         name: path.basename(entry, entryExt),
-        added: new Date().toUTCString()
+        added: addedDate
       })
     }
   }

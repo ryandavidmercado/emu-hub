@@ -13,11 +13,10 @@ import {
   IoTrash,
   IoTrashOutline,
 } from "react-icons/io5"
-import { FaAngleDown } from "react-icons/fa"
+import { FaAngleDown, FaAngleUp } from "react-icons/fa"
 
 import { FaPlus } from "react-icons/fa6"
 import { useNavigate, useParams } from "react-router-dom";
-import MediaImage from "@renderer/components/MediaImage/MediaImage";
 import { useRef, useState } from "react";
 import classNames from "classnames";
 import TabSelector from "@renderer/components/TabSelector/TabSelector";
@@ -28,6 +27,7 @@ import CollectionModal from "@renderer/components/CollectionModal/CollectionModa
 import notifications from "@renderer/atoms/notifications";
 import ShortUniqueId from "short-unique-id";
 import RemoveGameModal from "@renderer/components/RemoveGameModal/RemoveGameModal";
+import MediaImage from "@renderer/components/MediaImage/MediaImage";
 
 const uid = new ShortUniqueId();
 
@@ -85,7 +85,7 @@ const GameView = ({ gameId }: { gameId?: string }) => {
   return (
     <motion.div
       animate={{
-        translateY: activeSection === "tabs" ? "-98vh" : 0,
+        translateY: activeSection === "tabs" ? "-101vh" : 0,
         transition: {
           type: "spring",
           mass: .4,
@@ -96,14 +96,12 @@ const GameView = ({ gameId }: { gameId?: string }) => {
     >
       <div className={css.upperContainer}>
         <MediaImage
-          mediaContent={game}
-          mediaType={"screenshot"}
+          media={game.screenshot}
           className={css.bg}
         />
         <div className={css.buttonsAndLogo}>
           <MediaImage
-            mediaContent={game}
-            mediaType="logo"
+            media={game.logo}
             className={css.logo}
           >
             <div className={css.name}>
@@ -172,7 +170,7 @@ const GameView = ({ gameId }: { gameId?: string }) => {
         </div>
         {game.description &&
           <FaAngleDown className={classNames(
-            css.indicator,
+            css.indicatorDown,
             activeSection !== "game" && css.hidden,
             !windowFocused && css.noAnimate
           )} />
@@ -180,6 +178,12 @@ const GameView = ({ gameId }: { gameId?: string }) => {
       </div>
       {game.description &&
         <div className={classNames(css.tabsContainer, activeSection !== "tabs" && css.inactive)}>
+          <div className={css.indicatorUpWrapper}>
+            <FaAngleUp className={classNames(
+              css.indicatorUp,
+              !windowFocused && css.noAnimate
+            )} />
+          </div>
           <TabSelector
             tabsClassName={css.tabs}
             disabled={activeSection !== "tabs"}

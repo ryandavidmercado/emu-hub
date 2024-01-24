@@ -17,98 +17,76 @@
 }
 
 .outerContent {
-  flex: 3;
   background: rgba(0, 0, 0, .2);
+  width: 100%;
+  height: 100%;
 }
 
 .innerContent {
   height: 100%;
   width: 100%;
+  position: relative;
 
-  padding: 2rem;
   display: flex;
   overflow: hidden;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 1.2rem;
 }
 
-.description, .pills {
+.left {
+  flex: 6.5;
+  height: 100%;
+  background-color: $background-dark;
+}
+
+.right {
+  flex: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  height: 100%;
+}
+
+.text, .pills {
   font-family: 'Figtree', sans-serif;
-  font-size: 1.1em;
   font-weight: 400;
   color: white;
 }
 
-.description {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 10px;
-  margin: 0;
-  width: 100%;
-  overflow: hidden;
-}
-
-.hero {
-  position: relative;
-  flex: 5;
-  background-color: rgba(0, 0, 0, .5);
-}
-
-
-.logo {
-  max-width: 60%;
-  max-height: 50%;
-
-  object-fit: contain;
-
-  font-family: Figree, sans-serif;
-  font-size: 4em;
-  color: hsl(200, 15%, 90%);
-  display: flex;
+.text {
+  font-size: 1.5rem;
 }
 
 .pills {
+  font-size: 1.1em;
   width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: .8rem;
+  padding: 0 4rem;
 }
 
-.image {
-  height: 100%;
+.pill {
+  font-size: 1rem;
+  padding: none;
+  gap: .5rem;
+  background-color: transparent;
+  color: $primary;
+}
+
+.imgLeft {
   width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
-.logoText {
-  color: white;
-  font-family: 'Figtree', sans-serif;
-  font-size: 1.5em;
-  font-weight: 400;
-}
-
-.heroOverlay {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 100%;
-  background-image: linear-gradient(to right, rgba(0, 0, 0, .8), transparent 60%);
-}
-
-.logoOverlay {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  padding-left: 1.5rem;
-  transform: translateY(-50%);
-  width: 30%;
-  height: 100%;
+.imgRight {
+  max-width: 60%;
+  max-height: 50%;
   object-fit: contain;
 }
 
@@ -116,4 +94,13 @@
   font-family: Figtree;
   color: white;
   font-size: 1.5rem;
+}
+
+.background {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  filter: blur(2px) brightness(50%);
+  z-index: -1;
 }

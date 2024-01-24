@@ -1,0 +1,13 @@
+@import "@renderer/scss/colors";
+
+.pill {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: max-content;
+
+  font-size: 1rem;
+  font-family: Figtree;
+  gap: .5rem;
+  color: $primary;
+}

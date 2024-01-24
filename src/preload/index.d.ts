@@ -8,7 +8,7 @@ import downloadGame from "./util/downloadGame"
 import downloadGameMedia from "./util/downloadGameMedia"
 import getRomFileInfo from "./util/getRomFileInfo"
 import loadSystemStore from "./util/loadSystemStore";
-import loadGameMedia from "./util/loadGameMedia";
+import loadMedia from "./util/loadMedia";
 import removeGameFiles from "./util/removeGameFiles";
 
 declare global {
@@ -19,7 +19,7 @@ declare global {
     launchGame: typeof launchGame
     path: PlatformPath
     scanRoms: typeof scanRoms
-    loadGameMedia: typeof loadGameMedia
+    loadMedia: typeof loadMedia
     loadSystemStore: typeof loadSystemStore
     downloadGame: typeof downloadGame
     downloadGameMedia: typeof downloadGameMedia

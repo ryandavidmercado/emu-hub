@@ -24,12 +24,13 @@ export interface StoreEntry {
 
 export interface System {
   id: string,
-  ssId?: string,
   name: string,
-  logo: string,
-  emulators?: string[]
   fileExtensions: string[]
+  ssId?: string,
+  emulators?: string[]
   stores?: SystemStore[]
+  releaseYear?: string;
+  company?: string;
 }
 
-export type SystemWithGames = System & { games: Game[], hero?: string }
+export type SystemWithGames = System & { games: Game[], screenshot?: string }

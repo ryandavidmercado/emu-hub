@@ -8,7 +8,7 @@ import loadSystemStore from './util/loadSystemStore';
 import downloadGame from './util/downloadGame';
 import getRomFileInfo from './util/getRomFileInfo';
 import downloadGameMedia from './util/downloadGameMedia';
-import loadGameMedia from './util/loadGameMedia';
+import loadMedia from './util/loadMedia';
 import removeGameFiles from './util/removeGameFiles';
 
 // Use `contextBridge` APIs to expose Electron APIs to
@@ -24,7 +24,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('downloadGame', downloadGame)
     contextBridge.exposeInMainWorld('downloadGameMedia', downloadGameMedia)
     contextBridge.exposeInMainWorld('getRomFileInfo', getRomFileInfo)
-    contextBridge.exposeInMainWorld('loadGameMedia', loadGameMedia)
+    contextBridge.exposeInMainWorld('loadMedia', loadMedia)
     contextBridge.exposeInMainWorld('removeGameFiles', removeGameFiles)
   } catch (error) {
     console.error(error)

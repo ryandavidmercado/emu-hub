@@ -2,10 +2,10 @@ import { Game } from "@common/types";
 import css from "./VerticalGameInfo.module.scss";
 import classNames from "classnames";
 import Marquee from "../Marquee";
-import MediaImage from "../MediaImage/MediaImage";
 import useGamePills from "../Pill/hooks/useGamePills";
 import { useMemo } from "react";
 import Pill from "../Pill";
+import MediaImage from "../MediaImage/MediaImage";
 
 interface Props {
   className?: string;
@@ -13,6 +13,8 @@ interface Props {
 }
 
 const VerticalGameInfo = ({ className, game }: Props) => {
+  const getDecodedHTMLString = (text: string) => new DOMParser().parseFromString(text, "text/html").body.innerText;
+
   const pills = useGamePills(game);
   const pillElements = useMemo(() => (
     pills.map(pill => (
@@ -28,13 +30,13 @@ const VerticalGameInfo = ({ className, game }: Props) => {
   return (
     <div className={classNames(css.container, className)}>
       <div className={css.bgAndLogo}>
-        <MediaImage className={css.hero} mediaContent={game} mediaType={["screenshot", "hero"]} />
-        <MediaImage className={css.logo} mediaContent={game} mediaType="logo" />
+        <MediaImage className={css.hero} media={game.screenshot} />
+        <MediaImage className={css.logo} media={game.logo} />
       </div>
       <Marquee
         className={css.description}
       >
-        {game.description}
+        {getDecodedHTMLString(game.description || "")}
       </Marquee>
       {Boolean(pillElements.length) && Boolean(game.description) &&
         <div className={css.pills}>

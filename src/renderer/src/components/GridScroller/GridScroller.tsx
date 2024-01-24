@@ -1,6 +1,5 @@
-import { ScrollElement } from "@renderer/types";
 import { ScrollerProps } from "../Scroller";
-import GameTile from "../GameTile/GameTile";
+import MediaTile from "../MediaTile/MediaTile";
 import { useId, useMemo } from "react";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeGrid as Grid } from "react-window"
@@ -11,6 +10,8 @@ import { atomFamily } from "jotai/utils";
 import uiConfigAtom from "@renderer/atoms/ui";
 import Label from "../Label/Label";
 import css from "./GridScroller.module.scss"
+import { Game } from "@common/types/Game";
+import { System } from "@common/types/System";
 
 const activeCellAtom = atomFamily((_id: string) => atom({
   row: 0,
@@ -24,18 +25,25 @@ const GameCell = ({ columnIndex, rowIndex, style, data }) => {
   const isActive = activeCell.row === rowIndex && activeCell.column === columnIndex;
 
   const index = (rowIndex * columnCount) + columnIndex;
-  const gameData = data.elems[index];
+  const gameData = data.elems[index] as Game;
 
   if(!gameData) return null;
 
   return (
     <div className={css.tileWrapper} style={style} >
-      <GameTile {...gameData} active={isActive} swapTransform={true} className={css.tile} />
+      <MediaTile
+        active={isActive}
+        swapTransform
+        className={css.tile}
+        media={{
+          background: gameData.poster
+        }}
+      />
     </div>
   )
 }
 
-const GridScroller = <T extends ScrollElement>({
+const GridScroller = <T extends Game | System>({
   isActive = true,
   elems,
   label,

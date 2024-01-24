@@ -3,12 +3,14 @@ import { Showcase, ShowcaseContent } from "../../components/Showcase"
 import css from "./Home.module.scss"
 import { useAtom } from "jotai";
 import games from "@renderer/atoms/games";
-import { Game, System } from "@common/types";
+import { Game, SystemWithGames } from "@common/types";
 import systems from "@renderer/atoms/systems";
 import Scrollers, { ScrollerConfig } from "@renderer/components/Scrollers/Scrollers";
 import useGamePills from "@renderer/components/Pill/hooks/useGamePills";
 import { useNavigate } from "react-router-dom";
 import collections from "@renderer/atoms/collections";
+import { getGameShowcaseConfig } from "@renderer/components/Showcase/presets/game";
+import { getSystemShowcaseConfig } from "@renderer/components/Showcase/presets/system";
 
 export const Home = () => {
   const [systemsList] = useAtom(systems.lists.onlyWithGames);
@@ -18,10 +20,8 @@ export const Home = () => {
 
   const [collectionsList] = useAtom(collections.lists.withGames);
 
-  const [currentContent, setCurrentContent] = useState<ShowcaseContent | null>(null);
-  const [currentContentType, setCurrentContentType] = useState("game");
-
-  const pills = useGamePills(currentContentType === "game" ? (currentContent as Game) : null);
+  const [currentContent, setCurrentContent] = useState<{ type: "game", data: Game } | { type: "system", data: SystemWithGames }>();
+  const gamePills = useGamePills(currentContent?.type === "game" ? currentContent.data : null);
 
   const navigate = useNavigate();
 
@@ -30,9 +30,21 @@ export const Home = () => {
   }, [])
 
   const onGameHighlight = useCallback((game: Game) => {
-    setCurrentContent(game);
-    setCurrentContentType("game")
+    setCurrentContent({
+      type: "game",
+      data: game
+    });
   }, []);
+
+  const showcaseContent: ShowcaseContent = (() => {
+    if(!currentContent) return {};
+    switch(currentContent.type) {
+      case "game":
+        return getGameShowcaseConfig(currentContent.data, gamePills)
+      case "system":
+        return getSystemShowcaseConfig(currentContent.data)
+    }
+  })()
 
   const scrollers = useMemo(() => {
     return [
@@ -55,18 +67,21 @@ export const Home = () => {
         elems: systemsList,
         label: "Systems",
         aspectRatio: "square",
-        onHighlight: (content) => {
-          setCurrentContent(content);
-          setCurrentContentType("system")
+        onHighlight: (system) => {
+          setCurrentContent({
+            type: "system",
+            data: system
+          });
         },
-        onSelect: (system) => { navigate(`/system/${system.id}`) }
-      } as ScrollerConfig<System>,
+        onSelect: (system) => { navigate(`/system/${system.id}`) },
+        contentType: "system"
+      } as ScrollerConfig<SystemWithGames>,
       ...collectionsList.map(collection => ({
         id: `collection-${collection.id}`,
         elems: collection.games,
         label: collection.name,
         onHighlight: onGameHighlight,
-        onSelect: onGameSelect
+        onSelect: onGameSelect,
       }))
     ]
   }, [collectionsList, recentGamesList, setCurrentContent, systemsList]);
@@ -75,7 +90,7 @@ export const Home = () => {
     <div
       className={css.landing}
     >
-      <Showcase content={currentContent} pills={pills} />
+      <Showcase content={showcaseContent} />
       <Scrollers scrollers={scrollers} className={css.scrollers} key={scrollers.length} />
     </div>
   )

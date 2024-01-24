@@ -1,13 +1,14 @@
 import { useMemo, useRef, useState } from "react";
 import { Scroller, ScrollerProps } from "../Scroller"
-import { ScrollElement } from "@renderer/types";
 import { useKeepVisible } from "@renderer/hooks";
 import { ScrollType } from "@renderer/enums";
+import { System, SystemWithGames } from "@common/types/System";
+import { Game } from "@common/types/Game";
 
-export type ScrollerConfig<T extends ScrollElement> = Omit<ScrollerProps<T>, "isActive" | "onPrevScroller" | "onNextScroller"> & { id: string }
+export type ScrollerConfig<T extends Game | System> = Omit<ScrollerProps<T>, "isActive" | "onPrevScroller" | "onNextScroller"> & { id: string }
 interface Props {
   className?: string;
-  scrollers: ScrollerConfig<any>[];
+  scrollers: Array<ScrollerConfig<Game> | ScrollerConfig<System> | ScrollerConfig<SystemWithGames>>;
   isDisabled?: boolean;
   onExitUp?: () => void;
   onExitDown?: () => void;
@@ -31,7 +32,7 @@ const Scrollers = ({ className, scrollers, isDisabled, onExitUp, onExitDown }: P
 
     return filteredScrollers.map((scroller, i) => (
       <Scroller
-        {...scroller}
+        {...scroller as ScrollerConfig<Game | System>}
         key={`${scroller.id}-${scroller.elems.length}`}
         isActive={activeIndex === i && !isDisabled}
         onPrevScroller={onPrevScroller}

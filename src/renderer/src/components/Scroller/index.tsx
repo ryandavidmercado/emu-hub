@@ -1,13 +1,14 @@
 import classNames from "classnames";
 import { CSSProperties, Ref, useEffect, useRef, useState } from "react";
-import { ScrollElement } from "../../types";
 import css from "./Scroller.module.scss"
 import { useKeepVisible, useOnInput } from "../../hooks"
 import { Input, ScrollType } from "../../enums";
-import GameTile from "../GameTile/GameTile";
+import MediaTile, { TileMedia } from "../MediaTile/MediaTile";
 import Label from "../Label/Label";
+import { System } from "@common/types/System";
+import { Game } from "@common/types";
 
-export interface ScrollerProps<T extends ScrollElement> {
+export interface ScrollerProps<T extends Game | System> {
   aspectRatio?: "landscape" | "square"
   style?: CSSProperties;
   elems: T[],
@@ -20,9 +21,10 @@ export interface ScrollerProps<T extends ScrollElement> {
   onActiveChange?: (active: boolean) => void;
   forwardedRef?: Ref<HTMLDivElement>
   disableInput?: boolean;
+  contentType?: "game" | "system"
 }
 
-export const Scroller = <T extends ScrollElement>({
+export const Scroller = <T extends Game | System>({
   aspectRatio = "landscape",
   style,
   elems,
@@ -35,8 +37,12 @@ export const Scroller = <T extends ScrollElement>({
   onNextScroller,
   onActiveChange,
   disableInput,
+  contentType
 }: ScrollerProps<T>) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const getIsSystem = (_elem: Game | System): _elem is System => {
+    return contentType === "system";
+  }
 
   useEffect(() => {
     onActiveChange?.(isActive)
@@ -51,10 +57,24 @@ export const Scroller = <T extends ScrollElement>({
 
   const displayElems = elems.map((elem, i) => {
     const elemIsActive = i === activeIndex
+    const isSystem = getIsSystem(elem);
+
+    const tileMedia: TileMedia = (() => {
+      if(isSystem) return {
+        foreground: {
+          resourceType: "logo",
+          resourceCollection: "systems",
+          resourceId: elem.id,
+        }
+      }
+
+      if(elem.poster && aspectRatio === "landscape") return { background: elem.poster }
+      return { background: elem.screenshot, foreground: elem.logo, foregroundText: elem.name ?? elem.romname }
+    })()
 
     return (
-      <GameTile
-        {...elem}
+      <MediaTile
+        media={tileMedia}
         key={elem.id}
         activeRef={activeRef}
         active={elemIsActive && isActive}

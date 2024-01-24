@@ -1,0 +1,88 @@
+@import "@renderer/scss/colors";
+@import url('https://fonts.googleapis.com/css2?family=Lora&family=Ubuntu:wght@700&family=Young+Serif&display=swap');
+
+.elem {
+  height: clamp(120px, 12vh, 300px);
+  filter: brightness(85%);
+  transition: all .15s ease;
+  border-radius: 3px;
+  border: 3px solid transparent;
+  box-shadow: 1px 4px 3px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+  box-sizing: border-box;
+  background-color: hsla(200, 10%, 40%, 100%);
+  background-clip: content-box;
+
+  &.swapTransform {
+    transform: scale(.96);
+  }
+
+  &.square {
+    aspect-ratio: 1 / 1;
+    height: clamp(150px, 15vh, 300px);
+  }
+
+  &.landscape {
+    aspect-ratio: 92 / 43;
+  }
+
+  &.active {
+    filter: brightness(100%);
+    border: 3px solid $primary;
+    transform: scale(1.04);
+
+    &.swapTransform {
+      transform: unset;
+    }
+  }
+}
+
+.foregroundTextWrapper {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.foregroundText {
+  font-family: Figree, sans-serif;
+  font-size: 1.5em;
+  color: hsl(200, 15%, 90%);
+
+  display: flex;
+  align-items: center;
+
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; // max nb lines to show
+  -webkit-box-orient: vertical;
+}
+
+.background {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+
+  &.withForeground {
+    filter: brightness(70%) blur(.5px);
+  }
+}
+
+.foreground {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  object-fit: contain;
+  padding: 1rem;
+}

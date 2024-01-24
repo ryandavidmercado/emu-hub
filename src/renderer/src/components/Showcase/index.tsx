@@ -2,20 +2,10 @@ import Pill from "../Pill";
 import css from "./Showcase.module.scss"
 import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
-import { PropsWithChildren, useState } from "react";
-import MediaImage from "../MediaImage/MediaImage";
+import { PropsWithChildren } from "react";
 import { IconType } from "react-icons";
-
-export interface ShowcaseContent {
-  id: string
-  logo?: string,
-  description?: string
-  players?: string
-  name?: string;
-  romname?: string;
-  hero?: string
-  screenshot?: string;
-}
+import MediaImage from "../MediaImage/MediaImage";
+import { MediaImageData } from "@common/types/InternalMediaType";
 
 export interface Pill {
   Icon: IconType,
@@ -23,87 +13,96 @@ export interface Pill {
   id: string
 }
 
+type ShowcaseEntry = {
+  type: "media", media: MediaImageData, className?: string
+} | {
+  type: "text", text: string, className?: string
+} | {
+  type: "pills", pills: Pill[], className?: string
+}
+
 type Props = PropsWithChildren<{
-  content?: ShowcaseContent | null
   className?: string
-  pills?: Pill[]
   hideEmptyHero?: boolean;
   logoClassName?: string;
+  content?: {
+    left?: ShowcaseEntry[],
+    right?: ShowcaseEntry[],
+    background?: MediaImageData,
+    classNames?: {
+      pill?: string;
+      left?: string;
+      right?: string;
+      background?: string;
+    }
+  },
 }>
 
-export const Showcase = ({ content, className, children, pills, hideEmptyHero }: Props) => {
-  if (!content) return <div className={css.main} />
+export type ShowcaseContent = Props["content"]
+
+export const Showcase = ({ content, className }: Props) => {
+  const entryToElem = (entry: ShowcaseEntry, side: "left" | "right") => {
+    switch(entry.type) {
+      case "media":
+        return (
+          <MediaImage
+            className={classNames(side === "left" ? css.imgLeft : css.imgRight, entry.className)}
+            media={entry.media}
+            key={JSON.stringify(entry.media)}
+          />
+        )
+      case "text":
+        return (
+          <div
+            className={classNames(css.text, entry.className)}
+            key={entry.text}
+          >
+              {entry.text}
+          </div>
+        )
+      case "pills":
+        return  (
+          <div key="pills" className={classNames(css.pills, entry.className)}>
+            {entry.pills.map(pill => (
+              <Pill label={pill.text} Icon={pill.Icon} className={classNames(css.pill, content?.classNames?.pill)} key={pill.id} />
+            ))}
+          </div>
+        )
+    }
+  }
 
   return (
     <div
       className={classNames(css.main, className)}
     >
-      <AnimatePresence mode="popLayout" initial={false}>
-      {
-        (content.hero || content.screenshot || !hideEmptyHero) && (
+      <div className={css.outerContent}>
+        <AnimatePresence mode="popLayout">
           <motion.div
-            key={`${content.hero}-${content.screenshot}`}
+            className={css.innerContent}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1, transition: { duration: .1 } }}
-            exit={{ opacity: 0, transition: { duration: .1 } }}
-            className={css.hero}
+            animate={{ opacity: 1, transition: { duration: .1 }}}
+            exit={{ opacity: 0, transition: { duration: .1 }}}
+            key={JSON.stringify(content)}
           >
-            <MediaImage
-              mediaContent={content}
-              mediaType={["screenshot", "hero"]}
-              className={css.image}
-            />
-          </motion.div>
-        )
-      }
-      </AnimatePresence>
-      <ShowcaseContent
-        key={`content-${content.id}`}
-        content={content}
-        pills={pills}
-        children={children}
-      />
-    </div>
-  );
-}
-
-type ContentProps = PropsWithChildren<{
-  content: ShowcaseContent
-  pills?: Pill[]
-}>
-
-const ShowcaseContent = ({ content, pills, children }: ContentProps) => {
-  const [opacity, setOpacity] = useState(0);
-  return (
-    <div
-      className={css.outerContent}
-    >
-      <div
-        className={css.innerContent}
-        style={{ opacity: (!pills || !pills.length) ? 1 : opacity }}
-      >
-        {!(pills && pills.length) && content.description && (
-          <div className={css.description}>
-            {content.description}
-          </div>
-        )}
-        {Boolean(pills?.length) &&
-          <>
-            <MediaImage
-              mediaContent={content}
-              mediaType="logo"
-              className={css.logo}
-              onLoaded={() => { setOpacity(1) }}
-            >
-              <div className={css.name}>{content.name || content.romname}</div>
-            </MediaImage>
-            <div className={css.pills}>
-              {pills!.map(pill => <Pill key={pill.id} Icon={pill.Icon} label={pill.text} />)}
-            </div>
-          </>
-        }
-        {children}
+            {content?.background && (
+              <MediaImage
+                media={content.background}
+                className={classNames(css.background, content.classNames?.background)}
+              />
+            )}
+            {content?.left && (
+              <div className={classNames(css.left, content.classNames?.left)}>
+                {content.left.map((c) => entryToElem(c, "left"))}
+              </div>
+            )}
+            {content?.right && (
+              <div className={classNames(css.right, content.classNames?.right)}>
+                {content.right.map((c) => entryToElem(c, "right"))}
+              </div>
+          )}
+         </motion.div>
+        </AnimatePresence>
       </div>
     </div>
-  )
+  );
 }
