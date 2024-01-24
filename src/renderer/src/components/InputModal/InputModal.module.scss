@@ -6,13 +6,13 @@
 }
 
 .inputModal {
-  width: 800px;
+  width: min(1088px, 85vw);
 
   .inputWrapper {
     width: 100%;
     height: 75px;
     padding: 20px;
-    background-color: $background;
+    background-color: $background-light;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     display: flex;
@@ -32,5 +32,5 @@
 }
 
 .activeBtn {
-  background-color: $background !important;
+  background-color: $background-dark !important;
 }

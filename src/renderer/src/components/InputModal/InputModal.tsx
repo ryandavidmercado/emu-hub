@@ -116,7 +116,7 @@ export const InputModal = () => {
       <div className={css.inputModal} style={style}>
         {/* <div>{label}</div> */}
         <div className={css.inputWrapper}>
-          <div className={css.input}>{modalInput}</div>
+          <div className={css.input}>{modalInput.replaceAll(" ", "\u00A0")}</div>
           <div className={css.inputCaret}>|</div>
         </div>
         <Keyboard
@@ -124,7 +124,6 @@ export const InputModal = () => {
           onModulesLoaded={(keyboard) => { setKeyboardHandler(keyboard) }}
           useMouseEvents={true}
           enableKeyNavigation={true}
-          onChange={setInput}
           onKeyPress={(button) => {
             switch(button) {
               case "{enter}":
@@ -138,10 +137,20 @@ export const InputModal = () => {
                 setIsShift(isShift => !isShift)
                 if(isCaps) setIsCaps(false);
                 break;
+              case "{space}":
+                setInput(i => i + " ");
+                console.log(modalInput)
+              case "{tab}":
+                setInput(i => i + " ");
+                break;
+              case "{bksp}":
+                setInput(i => i.slice(0, -1));
+                break;
               default:
                 if(isShift) {
                   setIsShift(false)
                 }
+                setInput(i => i + button)
                 break;
             }
           }}
@@ -166,6 +175,14 @@ export const InputModal = () => {
             isCaps && { class: css.activeBtn, buttons: "{lock}" },
             isShift && { class: css.activeBtn, buttons: "{shift}" }
           ].filter(Boolean) as KeyboardButtonTheme[]}
+          display={{
+            "{bksp}": "Backspace",
+            "{enter}": "&nbsp;".repeat(5) + "Enter" + "&nbsp;".repeat(5),
+            "{shift}": "&nbsp;".repeat(8) + "Shift" + "&nbsp;".repeat(8),
+            "{lock}": "Caps Lock",
+            "{tab}": "Tab"
+          }}
+          mergeDisplay={true}
         />
       </div>
     </Modal>

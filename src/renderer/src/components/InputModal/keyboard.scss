@@ -1,20 +1,42 @@
 @import "@renderer/scss/colors";
 
 .hg-theme-default {
-  background-color: $background-dark;
+  background-color: $background;
   color: $primary;
+  height: min(50vh, 400px);
 
   font-family: Figtree;
   padding: 1rem;
+  border-radius: 0;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
 
-  .hg-button {
-    background-color: $background-light;
-    border-bottom: unset;
+  .hg-rows {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    height: 100%;
 
-    &.hg-keyMarker {
-      box-shadow: 0 0 0 2px $primary !important;
+    .hg-row {
+      margin-bottom: 0;
+      flex-basis: 100%;
+      gap: .5rem;
+
+      .hg-button {
+        background-color: $background-light;
+        border-bottom: unset;
+        height: 100%;
+        margin: 0;
+        font-size: 1.4rem;
+
+        &.hg-keyMarker {
+          box-shadow: 0 0 0 2px $primary !important;
+        }
+
+        &.hg-button-space {
+          margin: 0 10%;
+        }
+      }
     }
   }
 }
