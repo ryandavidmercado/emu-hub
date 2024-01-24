@@ -170,6 +170,7 @@ const GameView = ({ gameId }: { gameId?: string }) => {
                 disabled: isInGame || !canScrape
               }
             ]}
+            className={css.buttons}
             isActive={activeSection === "game" && !collectionModalOpen}
             onExitDown={onTabsSection}
           />

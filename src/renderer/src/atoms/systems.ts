@@ -4,6 +4,7 @@ import { arrayConfigAtoms } from "./util/arrayConfigAtom";
 import deepEqual from "fast-deep-equal";
 import games from "./games"
 import { System, SystemWithGames, SystemStore } from "@common/types";
+import { sort } from "fast-sort";
 
 export const mainAtoms = arrayConfigAtoms<System>({ storageKey: 'systems' });
 
@@ -47,7 +48,7 @@ const systemsWithStoresAtom = atom((get) => {
 
 const systemsWithGamesAtom = atom((get) => {
   const systems = get(mainAtoms.lists.all);
-  return systems.map<SystemWithGames>(system => {
+  return sort(systems.map<SystemWithGames>(system => {
     const gamesList = get(games.lists.system(system.id))
     const randomScreenshot = gamesList.filter(game => game.screenshot).toSorted(() => Math.random() - .5)[0]?.screenshot
 
@@ -56,7 +57,11 @@ const systemsWithGamesAtom = atom((get) => {
       screenshot: randomScreenshot,
       games: gamesList
     }
-  })
+  })).asc([
+    sys => sys.company,
+    sys => sys.handheld ? 1 : 0,
+    sys => sys.releaseYear
+  ])
 }) as Atom<SystemWithGames[]>
 
 const onlySystemsWithGamesAtom = atom((get) => {

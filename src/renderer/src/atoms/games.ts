@@ -49,7 +49,7 @@ const newGamesAtom = atom((get) => {
     .sort((a, b) =>
       new Date(b.added!).valueOf() - new Date(a.added!).valueOf()
     )
-    .slice(0, 10)
+    .slice(0, 8)
 })
 
 const launchGameAtom = atom(null, async (get, set, gameId: string) => {

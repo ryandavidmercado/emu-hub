@@ -26,11 +26,12 @@ export interface System {
   id: string,
   name: string,
   fileExtensions: string[]
+  releaseYear: string;
+  company: string;
+  handheld?: boolean;
   ssId?: string,
   emulators?: string[]
   stores?: SystemStore[]
-  releaseYear?: string;
-  company?: string;
 }
 
 export type SystemWithGames = System & { games: Game[], screenshot?: string }
