@@ -1,6 +1,6 @@
 import { Input } from "@renderer/enums/Input";
 import { useOnInput } from "@renderer/hooks";
-import Modal from "../Modal/Modal";
+import Modal from "../Modal/Modal"
 import css from "./InputModal.module.scss";
 import { atom, useAtom } from "jotai";
 import { Unsubscribe, createNanoEvents } from "nanoevents";
@@ -44,7 +44,7 @@ export const useInputModal = () => {
     setIsPassword(isPassword ?? false);
     setStyle(style ?? {});
     setIsCaps(false);
-    setIsShift(false);
+    setIsShift(true);
 
     let unbindCancelListener: Unsubscribe;
     let unbindSubmitHandler: Unsubscribe;
@@ -71,7 +71,7 @@ export const InputModal = () => {
   const [modalInput, setInput] = useAtom(inputAtom);
   const [open] = useAtom(modalOpenAtom);
   // const [label] = useAtom(labelAtom);
-  // const [isPassword] = useAtom(isPasswordAtom);
+  const [isPassword] = useAtom(isPasswordAtom);
   const [style] = useAtom(styleAtom);
 
   const [isCaps, setIsCaps] = useAtom(isCapsAtom);
@@ -116,7 +116,11 @@ export const InputModal = () => {
       <div className={css.inputModal} style={style}>
         {/* <div>{label}</div> */}
         <div className={css.inputWrapper}>
-          <div className={css.input}>{modalInput.replaceAll(" ", "\u00A0")}</div>
+          <div className={css.input}>{
+            isPassword
+              ? modalInput.split("").map(() => "*")
+              : modalInput.replaceAll(" ", "\u00A0")}
+          </div>
           <div className={css.inputCaret}>|</div>
         </div>
         <Keyboard
@@ -125,13 +129,14 @@ export const InputModal = () => {
           useMouseEvents={true}
           enableKeyNavigation={true}
           onKeyPress={(button) => {
+            if(!["{backspace}", "{shift}"].includes(button) && isShift) setIsShift(false);
+
             switch(button) {
               case "{enter}":
                 eventHandler.emit("input-modal-submit", modalInput)
                 break;
               case "{lock}":
                 setIsCaps(isCaps => !isCaps)
-                if(isShift) setIsShift(false);
                 break;
               case "{shift}":
                 setIsShift(isShift => !isShift)
@@ -139,7 +144,8 @@ export const InputModal = () => {
                 break;
               case "{space}":
                 setInput(i => i + " ");
-                console.log(modalInput)
+                setIsShift(true);
+                break;
               case "{tab}":
                 setInput(i => i + " ");
                 break;
@@ -147,9 +153,6 @@ export const InputModal = () => {
                 setInput(i => i.slice(0, -1));
                 break;
               default:
-                if(isShift) {
-                  setIsShift(false)
-                }
                 setInput(i => i + button)
                 break;
             }
@@ -173,7 +176,7 @@ export const InputModal = () => {
           layoutName={isShift || isCaps ? "shift" : "default"}
           buttonTheme={[
             isCaps && { class: css.activeBtn, buttons: "{lock}" },
-            isShift && { class: css.activeBtn, buttons: "{shift}" }
+            isShift && { class: 'hg-button-shift-active', buttons: "{shift}" }
           ].filter(Boolean) as KeyboardButtonTheme[]}
           display={{
             "{bksp}": "Backspace",

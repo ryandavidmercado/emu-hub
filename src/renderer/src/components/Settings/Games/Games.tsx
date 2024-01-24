@@ -91,7 +91,7 @@ const General = ({ isActive, onExit, inputPriority }: SectionProps) => {
           type: 'input',
           label: "ScreenScraper Password",
           sublabel: ssCredentials.password
-            ? `Current: ${ssCredentials.password.split("").map(() => "\x81").join("")}`
+            ? `Current: ${ssCredentials.password.split("").map(() => "*").join("")}`
             : undefined,
           defaultValue: ssCredentials.password,
           isPassword: true,

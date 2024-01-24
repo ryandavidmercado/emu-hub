@@ -36,6 +36,10 @@
         &.hg-button-space {
           margin: 0 10%;
         }
+
+        &.hg-button-shift-active:nth-child(1) {
+          background-color: $background-dark !important;
+        }
       }
     }
   }
