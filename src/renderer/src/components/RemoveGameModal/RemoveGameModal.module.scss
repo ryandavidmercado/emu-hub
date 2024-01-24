@@ -1,5 +1,12 @@
+@import "@renderer/scss/colors";
+
 .container {
   width: 600px;
+  background-color: $background;
+  border-radius: 20px;
+  font-family: Figtree;
+  color: white;
+  overflow: hidden;
 }
 
 .label {

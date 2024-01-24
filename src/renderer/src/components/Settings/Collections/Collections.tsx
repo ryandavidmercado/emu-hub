@@ -31,7 +31,6 @@ const Collections = ({ isActive, onExit, inputPriority }: SectionProps) => {
               games: []
             })
           },
-          inputStyle: { width: "30vw" }
         },
         ...collectionsList.map(collection => ({
           id: collection.id,
@@ -75,15 +74,13 @@ const Collections = ({ isActive, onExit, inputPriority }: SectionProps) => {
   ], [collectionsList])
 
   return (
-    <>
-      <MultiPageControllerForm
-        pages={pages}
-        active={isActive}
-        onExitBack={onExit}
-        onExitLeft={onExit}
-        inputPriority={inputPriority}
-      />
-    </>
+    <MultiPageControllerForm
+      pages={pages}
+      active={isActive}
+      onExitBack={onExit}
+      onExitLeft={onExit}
+      inputPriority={inputPriority}
+    />
   )
 }
 

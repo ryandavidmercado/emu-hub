@@ -52,7 +52,6 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
         })
       },
       hideFormWhileActive: true,
-      inputStyle: { width: "30vw" }
     },
     ...collectionsList
       .filter(collection => !collection.games.includes(game?.id))
@@ -75,18 +74,18 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
   return (
     <Modal open={open} id="collection">
       <div className={css.container}>
-          <div
-            style={{
-              maxHeight: "70vh"
-            }}
-          >
-            <ControllerForm
-              entries={entries}
-              isActive={true}
-              inputPriority={INPUT_PRIOIRTY}
-              autoHeight
-            />
-          </div>
+        <div
+          style={{
+            maxHeight: "70vh"
+          }}
+        >
+          <ControllerForm
+            entries={entries}
+            isActive={true}
+            inputPriority={INPUT_PRIOIRTY}
+            autoHeight
+          />
+        </div>
       </div>
     </Modal>
   )
