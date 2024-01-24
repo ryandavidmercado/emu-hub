@@ -6,7 +6,7 @@ import { Pill, ShowcaseContent } from "../..";
 
 export const getSystemShowcaseConfig = (system: SystemWithGames): ShowcaseContent => {
   return {
-    classNames: { pill: css.systemShowcasePill, right: css.systemShowcaseRight },
+    classNames: { right: css.systemShowcaseRight },
     left: [
       {
         type: "media",
