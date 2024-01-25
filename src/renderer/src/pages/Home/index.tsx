@@ -38,8 +38,8 @@ export const Home = () => {
   }, []);
 
   const showcaseContent: ShowcaseContent = (() => {
-    if(!currentContent) return {};
-    switch(currentContent.type) {
+    if (!currentContent) return {};
+    switch (currentContent.type) {
       case "game":
         return getGameShowcaseConfig(currentContent.data, gamePills)
       case "system":
@@ -47,55 +47,53 @@ export const Home = () => {
     }
   })()
 
-  const scrollers = useMemo(() => {
-    return [
-      {
-        id: "continue-playing",
-        elems: recentlyAddedGamesList,
-        label: "Continue Playing",
-        onHighlight: onGameHighlight,
-        onSelect: onGameSelect,
+  const scrollers = [
+    {
+      id: "continue-playing",
+      elems: recentlyPlayedGamesList,
+      label: "Continue Playing",
+      onHighlight: onGameHighlight,
+      onSelect: onGameSelect,
+    } as ScrollerConfig<Game>,
+    {
+      id: "recently-viewed",
+      elems: recentlyViewedGamesList,
+      label: "Recently Viewed",
+      onHighlight: onGameHighlight,
+      onSelect: onGameSelect,
+    } as ScrollerConfig<Game>,
+    {
+      id: "systems",
+      elems: systemsList,
+      label: "Systems",
+      aspectRatio: "square",
+      onHighlight: (system) => {
+        setCurrentContent({
+          type: "system",
+          data: system
+        });
       },
-      {
-        id: "recently-viewed",
-        elems: recentlyViewedGamesList,
-        label: "Recently Viewed",
-        onHighlight: onGameHighlight,
-        onSelect: onGameSelect,
-      } as ScrollerConfig<Game>,
-      {
-        id: "systems",
-        elems: systemsList,
-        label: "Systems",
-        aspectRatio: "square",
-        onHighlight: (system) => {
-          setCurrentContent({
-            type: "system",
-            data: system
-          });
-        },
-        onSelect: (system) => { navigate(`/system/${system.id}`) },
-        contentType: "system"
-      } as ScrollerConfig<SystemWithGames>,
-      {
-        id: "recently-added",
-        elems: recentlyAddedGamesList,
-        label: "Recently Added",
-        onHighlight: onGameHighlight,
-        onSelect: onGameSelect,
-      },
-      ...collectionsList.map(collection => ({
-        id: `collection-${collection.id}`,
-        elems: collection.games,
-        label: collection.name,
-        onHighlight: onGameHighlight,
-        onSelect: onGameSelect,
-        aspectRatio: collection.games.length < 5
-          ? "landscape" as const
-          : "square" as const
-      }))
-    ]
-  }, [recentlyPlayedGamesList, recentlyViewedGamesList, recentlyAddedGamesList, systemsList, collectionsList]);
+      onSelect: (system) => { navigate(`/system/${system.id}`) },
+      contentType: "system"
+    } as ScrollerConfig<SystemWithGames>,
+    {
+      id: "recently-added",
+      elems: recentlyAddedGamesList,
+      label: "Recently Added",
+      onHighlight: onGameHighlight,
+      onSelect: onGameSelect,
+    } as ScrollerConfig<Game>,
+    ...collectionsList.map(collection => ({
+      id: `collection-${collection.id}`,
+      elems: collection.games,
+      label: collection.name,
+      onHighlight: onGameHighlight,
+      onSelect: onGameSelect,
+      aspectRatio: collection.games.length < 5
+        ? "landscape" as const
+        : "square" as const
+    })) as ScrollerConfig<Game>[]
+  ]
 
   return (
     <div
