@@ -94,19 +94,45 @@ export const InputModal = () => {
       case Input.UP:
         keyboardHandler?.modules.keyNavigation.up();
         break;
-      case Input.LEFT:
-        keyboardHandler?.modules.keyNavigation.left();
+      case Input.LEFT: {
+        const module = keyboardHandler?.modules.keyNavigation;
+        if(!module) break;
+
+        const markerPosition = module.markerPosition;
+        let { row, button } = markerPosition;
+        if(button === 0) {
+          while(module.getButtonAt(row, button)) {
+            button += 1;
+          }
+
+          module.setMarker(row, button - 1);
+          break;
+        }
+
+        module.left();
         break;
-      case Input.RIGHT:
-        keyboardHandler?.modules.keyNavigation.right();
+      }
+      case Input.RIGHT: {
+        const module = keyboardHandler?.modules.keyNavigation;
+        if(!module) break;
+
+        const { row, button } = module.markerPosition;
+        if(!module.getButtonAt(row, button + 1)) {
+          module.setMarker(row, 0);
+          break;
+        }
+
+        module.right();
         break;
+      }
       case Input.START:
         eventHandler.emit("input-modal-submit", modalInput)
         break;
     }
   }, {
     disabled: !open,
-    priority: 99
+    priority: 99,
+    // disableForDevice: "keyboard"
   })
   return (
     <Modal
