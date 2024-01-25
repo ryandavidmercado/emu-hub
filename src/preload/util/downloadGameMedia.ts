@@ -10,7 +10,7 @@ interface GameMedia {
 }
 
 const downloadGameMedia = async (game: Game, medias: GameMedia[]) => {
-  const gameAssetsPath = path.join(ASSETS_PATH, 'games', `${game.id} - ${game.name}`);
+  const gameAssetsPath = path.join(ASSETS_PATH, 'games', game.system, ...(game.rompath || []), `${game.romname}`);
 
   try {
     await mkdir(gameAssetsPath, { recursive: true })
