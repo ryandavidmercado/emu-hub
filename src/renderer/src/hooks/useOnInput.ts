@@ -24,17 +24,19 @@ interface Subscriber {
   bypass: boolean;
   cb: Callback;
   enforcePriority: boolean
+  disableForDevice?: "keyboard" | "gamepad"
 }
 
 let subscribers: Subscriber[] = [];
 
-const passInputToSubscribers = (input: Input) => {
+const passInputToSubscribers = (input: Input, source: "keyboard" | "gamepad") => {
   const maxPriority = subscribers.reduce((acc, sub) => {
     return Math.max(sub.enforcePriority ? sub.priority : 0, acc)
   }, 0)
 
   for (const subscriber of subscribers) {
     if ((subscriber.priority < maxPriority) && !subscriber.bypass) continue;
+    if(source === subscriber.disableForDevice) continue;
     subscriber.cb(input)
   }
 }
@@ -45,7 +47,7 @@ document.addEventListener("keydown", (e) => {
   const input = kbKeyMap[e.key];
   if(!input) return;
 
-  passInputToSubscribers(input)
+  passInputToSubscribers(input, "keyboard");
 })
 
 
@@ -54,6 +56,7 @@ interface PrioritySettings {
   bypass?: boolean;
   disabled?: boolean;
   enforcePriority?: boolean;
+  disableForDevice?: "keyboard" | "gamepad"
 }
 
 export const useOnInput = (cb: Callback, prioritySettings?: PrioritySettings) => {
@@ -61,7 +64,8 @@ export const useOnInput = (cb: Callback, prioritySettings?: PrioritySettings) =>
     priority = 0,
     disabled = false,
     bypass = false,
-    enforcePriority = true
+    enforcePriority = true,
+    disableForDevice
   } = prioritySettings ?? {};
   const id = useId();
 
@@ -78,7 +82,8 @@ export const useOnInput = (cb: Callback, prioritySettings?: PrioritySettings) =>
         cb,
         id,
         bypass,
-        enforcePriority
+        enforcePriority,
+        disableForDevice
       })
     } else {
       currentSubscriber.priority = priority;

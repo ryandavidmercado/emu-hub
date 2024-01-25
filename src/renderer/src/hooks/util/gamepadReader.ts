@@ -1,6 +1,6 @@
 import { Input } from "../../enums"
 
-type Cb = (input: Input) => void;
+type Cb = (input: Input, source: "gamepad" | "keyboard") => void;
 
 type DIRECTION_BUTTON = Input.LEFT | Input.RIGHT | Input.DOWN | Input.UP;
 const DIRECTION_BUTTONS = new Set([Input.LEFT, Input.DOWN, Input.RIGHT, Input.UP]);
@@ -25,7 +25,7 @@ const gamepadReader = (cb: Cb) => {
 
     const fireDirection = () => {
       if (!pressedButtons[controllerId].has(input)) return;
-      cb(input);
+      cb(input, "gamepad");
       setTimeout(fireDirection, 100);
     }
 
@@ -40,7 +40,7 @@ const gamepadReader = (cb: Cb) => {
 
     if (pressedButtons[controllerId].has(input)) return;
 
-    cb(input);
+    cb(input, "gamepad");
     pressedButtons[controllerId].add(input);
 
     if(DIRECTION_BUTTONS.has(input)) directionRepeatHandler(input, controllerId);
