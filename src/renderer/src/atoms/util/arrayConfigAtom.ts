@@ -19,15 +19,23 @@ export const arrayConfigAtoms = <T extends { id: string }>(options: ArrayConfigO
     { getOnInit: true }
   )
 
+  const lookup = atom((get) => {
+    const entries = get(all);
+    return entries.reduce<Record<string, T>>((acc, entry) => ({
+      ...acc,
+      [entry.id]: {
+        ...entry
+      }
+    }), {});
+  })
+
   const immerized = withImmer(all);
 
   const single = atomFamily((id: string) =>
     atom(
       (get) => {
-        const entries = get(all);
-        const entry = entries.find(entry => entry.id == id);
-
-        return entry;
+        const lookupData = get(lookup);
+        return lookupData[id];
       },
       (_, set, update: Partial<Omit<T, "id">>) => {
         set(immerized, (draft) => {
@@ -68,6 +76,7 @@ export const arrayConfigAtoms = <T extends { id: string }>(options: ArrayConfigO
   return {
     lists: {
       all,
+      lookup,
       immerized
     },
     single,
