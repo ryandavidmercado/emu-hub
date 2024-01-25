@@ -79,7 +79,7 @@ export default {
     ...mainAtoms.lists,
     withStores: systemsWithStoresAtom,
     withGames: systemsWithGamesAtom,
-    onlyWithGames: onlySystemsWithGamesAtom
+    onlyWithGames: onlySystemsWithGamesAtom,
   },
   store: {
     get: getStoreAtom,

@@ -16,6 +16,8 @@ import Pill from "@renderer/components/Pill";
 import { MdOutlineCategory } from "react-icons/md";
 import { AnimatePresence, motion } from "framer-motion";
 import classNames from "classnames";
+import { sort } from "fast-sort";
+import MediaImage from "@renderer/components/MediaImage/MediaImage";
 
 type Page = "main" | "system" | "store"
 
@@ -91,13 +93,13 @@ interface MainProps {
 const Main = ({ isActive, onSelect, inputPriority }: MainProps) => {
   const [systemsList] = useAtom(systems.lists.withStores);
 
-  const entries: ControllerFormEntry[] = systemsList.map(system => ({
+  const entries: ControllerFormEntry[] = sort(systemsList.map(system => ({
     id: system.id,
-    type: "action",
+    type: "action" as const,
     label: system.name,
     onSelect,
     Icon: FaAngleRight
-  }))
+  }))).asc(s => s.label)
 
   return <ControllerForm entries={entries} isActive={isActive} inputPriority={inputPriority} />
 }
@@ -226,28 +228,30 @@ const Store = ({ system, store, isActive, onBack, onExit, inputPriority }: Store
 
 const GamePreview = ({ entry }: { entry: StoreEntry }) => {
   return (
-    <AnimatePresence mode="popLayout">
-      <motion.div
-        key={entry.name}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, transition: { duration: .1 } }}
-        exit={{ opacity: 0, transition: { duration: .1 } }}
-        className={css.gamePreview}
-      >
-        <img src={entry.media?.["screenshot"]?.url} />
-        <div className={classNames(
-          css.description,
-          !entry.description && css.centered
-        )}>
-          {entry.description}
-          <Pill
-            className={css.pill}
-            Icon={MdOutlineCategory}
-            label={entry.genre ?? ""}
-          />
-        </div>
-      </motion.div>
-    </AnimatePresence>
+    <div className={css.gamePreviewOuter}>
+      <AnimatePresence mode="popLayout">
+        <motion.div
+          key={entry.name}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, transition: { duration: .1 } }}
+          exit={{ opacity: 0, transition: { duration: .1 } }}
+          className={css.gamePreview}
+        >
+          <MediaImage media={entry.media?.["screenshot"]?.url || ""} className={css.img} fallbackClassName={css.imgFallback} />
+          <div className={classNames(
+            css.description,
+            !entry.description && css.centered
+          )}>
+            {entry.description}
+            <Pill
+              className={css.pill}
+              Icon={MdOutlineCategory}
+              label={entry.genre ?? ""}
+            />
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    </div>
   )
 }
 

@@ -20,17 +20,27 @@
   height: 100%;
 }
 
-.gamePreview {
+.gamePreviewOuter {
   background-color: $background-dark;
+  padding: 1.5rem 2rem;
+}
+
+.gamePreview {
+  height: 100%;
+  width: 100%;
   display: flex;
   justify-content: space-between;
-  padding: 1.5rem 2rem;
   gap: 2rem;
 
-  img {
+  .img {
     height: 250px;
     border-radius: 1rem;
     aspect-ratio: 4 / 3;
+  }
+
+  .imgFallback {
+    height: 250px;
+    width: 0;
   }
 
   .description {
