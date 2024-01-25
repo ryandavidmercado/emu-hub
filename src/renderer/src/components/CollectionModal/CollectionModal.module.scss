@@ -5,24 +5,9 @@
   overflow: hidden;
 }
 
-.container, .newCollection {
+.container {
   width: 30vw;
   background-color: $background;
   display: flex;
   flex-direction: column;
-}
-
-.newCollection {
-  > div, input {
-    padding: 30px;
-  }
-
-  > input {
-    all: unset;
-    padding: 30px;
-    width: 100%;
-    font-size: 1.2rem;
-    background-color: $primary;
-    color: $background-dark;
-  }
 }

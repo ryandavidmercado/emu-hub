@@ -50,9 +50,10 @@ interface Props {
   controlledActiveIndex?: number;
   controlledSetActiveIndex?: Dispatch<SetStateAction<number>>;
   inputPriority?: number;
-  autoHeight?: boolean;
+  maxHeight?: string;
   defaultSelection?: string;
   scrollType?: Align
+  hasParentContainer?: boolean
 }
 
 const ControllerForm = ({
@@ -61,9 +62,10 @@ const ControllerForm = ({
   controlledActiveIndex,
   controlledSetActiveIndex,
   inputPriority,
-  autoHeight,
+  maxHeight,
   defaultSelection,
-  scrollType
+  scrollType,
+  hasParentContainer = true
 }: Props) => {
   const defaultIndex = entries.findIndex(e => e.id === defaultSelection);
   const [localActiveIndex, localSetActiveIndex] = useState(defaultIndex > -1 ? defaultIndex : 0);
@@ -125,14 +127,19 @@ const ControllerForm = ({
   return (
     <div
       className={css.controllerForm}
-      style={{ height: autoHeight ? entries.length * 100 : "100%" }}
+      style={{ height: (() => {
+        const entriesHeight = entries.length * 100;
+        if(maxHeight) return `min(${entriesHeight}px, ${maxHeight})`
+        if(hasParentContainer) return `min(${entriesHeight}px, 100%)`;
+        return entriesHeight;
+      })()}}
     >
       <AutoSizer>
       {({ height, width }) => (
         <List
           className={css.transparentScrollBar}
           itemData={itemData}
-          height={Math.min(entries.length * 100, height)}
+          height={height}
           width={width}
           itemCount={entries.length}
           itemSize={100}

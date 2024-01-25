@@ -22,11 +22,10 @@ interface Props {
   onExitBack?: () => void;
   active: boolean;
   inputPriority?: number
-  autoHeight?: boolean;
   scrollType?: Align
 }
 
-const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, inputPriority, autoHeight, scrollType }: Props) => {
+const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, inputPriority, scrollType }: Props) => {
   const [pageStack, setPageStack] = useState([pages[0].id]);
   const activePageId = pageStack.at(-1)
   const currentPageIndex = pages.findIndex(page => page.id === activePageId);
@@ -101,7 +100,6 @@ const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, inputP
     entries={entries}
     isActive={active}
     inputPriority={inputPriority}
-    autoHeight={autoHeight}
     defaultSelection={currentPage.defaultSelection}
     scrollType={scrollType}
   />

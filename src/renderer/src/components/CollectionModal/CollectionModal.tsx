@@ -74,18 +74,12 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
   return (
     <Modal open={open} id="collection">
       <div className={css.container}>
-        <div
-          style={{
-            maxHeight: "70vh"
-          }}
-        >
-          <ControllerForm
-            entries={entries}
-            isActive={true}
-            inputPriority={INPUT_PRIOIRTY}
-            autoHeight
-          />
-        </div>
+        <ControllerForm
+          entries={entries}
+          isActive={true}
+          inputPriority={INPUT_PRIOIRTY}
+          maxHeight="70vh"
+        />
       </div>
     </Modal>
   )

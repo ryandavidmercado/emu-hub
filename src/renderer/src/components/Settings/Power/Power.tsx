@@ -23,7 +23,6 @@ const Power = ({ onExit, inputPriority, isActive }: SectionProps) => {
       pages={pages}
       inputPriority={inputPriority}
       active={isActive}
-      autoHeight
       onExitBack={onExit}
       onExitLeft={onExit}
     />

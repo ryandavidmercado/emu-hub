@@ -71,8 +71,8 @@ const RemoveGameModal = ({ game, open, setOpen }: Props) => {
           entries={entries}
           isActive={true}
           inputPriority={20}
-          autoHeight
           defaultSelection="cancel"
+          hasParentContainer={false}
         />
       </div>
     </Modal>
