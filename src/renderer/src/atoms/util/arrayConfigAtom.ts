@@ -21,10 +21,11 @@ export const arrayConfigAtoms = <T extends { id: string }>(options: ArrayConfigO
 
   const lookup = atom((get) => {
     const entries = get(all);
-    return entries.reduce<Record<string, T>>((acc, entry) => ({
+    return entries.reduce<Record<string, T & { index: number }>>((acc, entry, i) => ({
       ...acc,
       [entry.id]: {
-        ...entry
+        ...entry,
+        index: i
       }
     }), {});
   })
@@ -37,13 +38,13 @@ export const arrayConfigAtoms = <T extends { id: string }>(options: ArrayConfigO
         const lookupData = get(lookup);
         return lookupData[id];
       },
-      (_, set, update: Partial<Omit<T, "id">>) => {
-        set(immerized, (draft) => {
-          const entryIndex = draft.findIndex(emulator => emulator.id === id);
-          if(entryIndex === -1) {
-            throw `Tried to update invalid ${options.storageKey} ID!`
-          }
+      (get, set, update: Partial<Omit<T, "id">>) => {
+        const entryIndex = get(lookup)[id]?.index
+        if(typeof entryIndex !== "number") {
+          throw `Tried to update invalid ${options.storageKey} ID!`
+        }
 
+        set(immerized, (draft) => {
           draft[entryIndex] = {
             ...draft[entryIndex],
             ...update
