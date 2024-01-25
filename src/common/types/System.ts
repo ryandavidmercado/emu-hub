@@ -32,6 +32,7 @@ export interface System {
   ssId?: string,
   emulators?: string[]
   stores?: SystemStore[]
+  logo?: string;
 }
 
 export type SystemWithGames = System & { games: Game[], screenshot?: string }

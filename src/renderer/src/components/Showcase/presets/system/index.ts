@@ -16,7 +16,7 @@ export const getSystemShowcaseConfig = (system: SystemWithGames): ShowcaseConten
     right: [
       {
         type: "media",
-        media: window.loadMedia({
+        media: system.logo || window.loadMedia({
           resourceId: system.id,
           resourceType: "logoAlt",
           resourceCollection: "systems"
