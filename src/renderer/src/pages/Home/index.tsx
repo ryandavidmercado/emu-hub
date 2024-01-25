@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { Showcase, ShowcaseContent } from "../../components/Showcase"
 import css from "./Home.module.scss"
 import { useAtom } from "jotai";
@@ -56,9 +56,9 @@ export const Home = () => {
       onSelect: onGameSelect,
     } as ScrollerConfig<Game>,
     {
-      id: "recently-viewed",
-      elems: recentlyViewedGamesList,
-      label: "Recently Viewed",
+      id: "recently-added",
+      elems: recentlyAddedGamesList,
+      label: "Recently Added",
       onHighlight: onGameHighlight,
       onSelect: onGameSelect,
     } as ScrollerConfig<Game>,
@@ -77,9 +77,9 @@ export const Home = () => {
       contentType: "system"
     } as ScrollerConfig<SystemWithGames>,
     {
-      id: "recently-added",
-      elems: recentlyAddedGamesList,
-      label: "Recently Added",
+      id: "recently-viewed",
+      elems: recentlyViewedGamesList,
+      label: "Recently Viewed",
       onHighlight: onGameHighlight,
       onSelect: onGameSelect,
     } as ScrollerConfig<Game>,
