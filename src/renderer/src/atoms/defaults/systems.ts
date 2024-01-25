@@ -303,7 +303,7 @@ const defaultSystems = [
       ".wua"
     ],
     "emulators": [
-      "cmeu"
+      "cemu"
     ]
   }
 ]
