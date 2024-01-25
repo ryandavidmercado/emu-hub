@@ -99,7 +99,7 @@ export const Home = () => {
     <div
       className={css.landing}
     >
-      <Showcase content={showcaseContent} />
+      <Showcase className={css.showcase} content={showcaseContent} />
       <Scrollers scrollers={scrollers} className={css.scrollers} key={scrollers.length} />
     </div>
   )
