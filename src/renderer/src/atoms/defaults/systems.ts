@@ -314,7 +314,7 @@ const parsedSystems: System[] = defaultSystems.map(system => {
 
   return {
     ...system,
-    ...emulators
+    emulators
   }
 }).filter(Boolean) as System[]
 
