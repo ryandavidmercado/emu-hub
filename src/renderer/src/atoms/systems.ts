@@ -5,8 +5,9 @@ import deepEqual from "fast-deep-equal";
 import games from "./games"
 import { System, SystemWithGames, SystemStore } from "@common/types";
 import { sort } from "fast-sort";
+import defaultSystems from "./defaults/systems"
 
-export const mainAtoms = arrayConfigAtoms<System>({ storageKey: 'systems' });
+export const mainAtoms = arrayConfigAtoms<System>({ storageKey: 'systems', default: defaultSystems });
 
 interface GetStoreParms {
   systemId: string,

@@ -15,6 +15,7 @@ const SYSTEM_ASSETS_PATH = path.join(ASSETS_PATH, "systems");
 
 const pathsConfig = loadConfig("paths", defaultPathConfig);
 const ROM_PATH = pathsConfig.ROMs || path.join(EMUHUB_PATH, "roms");
+const FLATPAK_PATH = path.join(os.homedir(), ".local", "share", "flatpak", "exports", "bin");
 
 for(const path of [
   EMUHUB_PATH,
@@ -33,6 +34,7 @@ export {
   EMUHUB_PATH,
   CONFIG_PATH,
   ROM_PATH,
+  FLATPAK_PATH,
   ASSETS_PATH,
   GAME_ASSETS_PATH,
   SYSTEM_ASSETS_PATH

@@ -10,6 +10,7 @@ import getRomFileInfo from './util/getRomFileInfo';
 import downloadGameMedia from './util/downloadGameMedia';
 import loadMedia from './util/loadMedia';
 import removeGameFiles from './util/removeGameFiles';
+import os from "os"
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
@@ -26,6 +27,8 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('getRomFileInfo', getRomFileInfo)
     contextBridge.exposeInMainWorld('loadMedia', loadMedia)
     contextBridge.exposeInMainWorld('removeGameFiles', removeGameFiles)
+    contextBridge.exposeInMainWorld('platform', os.platform())
+    contextBridge.exposeInMainWorld('homedir', os.homedir())
   } catch (error) {
     console.error(error)
   }

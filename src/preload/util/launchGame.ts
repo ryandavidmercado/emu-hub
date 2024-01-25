@@ -1,10 +1,9 @@
 import path from "path";
 import { Game, Emulator } from "@common/types";
 import RA_PATHS from "./RA_PATHS";
-import { ROM_PATH } from "./const";
+import { FLATPAK_PATH, ROM_PATH } from "./const";
 import { exec as execCb } from "child_process";
 import { promisify } from "util";
-import os from "os";
 
 const exec = promisify(execCb);
 
@@ -21,11 +20,12 @@ const launchGame = (game: Game, emulator: Emulator) => {
       `-L "${path.join(RA_PATHS.cores, emulator.core)}.${RA_PATHS.coreExtension}"`,
       `"${romLocation}"`
     ]
+  } else if("flatpak" in emulator) {
+    bin = path.join(FLATPAK_PATH, emulator.flatpak);
+    args = [emulator.arg, `"${romLocation}"`].filter(Boolean) as string[];
   } else {
-    bin = typeof emulator.bin === "string"
-      ? emulator.bin
-      : emulator.bin[os.platform()]
-    args = [`"${romLocation}"`]
+    bin = emulator.bin;
+    args = [emulator.arg, `"${romLocation}"`].filter(Boolean) as string[];
   }
 
   const execString = `${bin} ${args.join(" ")}`

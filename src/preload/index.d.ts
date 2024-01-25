@@ -25,5 +25,7 @@ declare global {
     downloadGameMedia: typeof downloadGameMedia
     getRomFileInfo: typeof getRomFileInfo
     removeGameFiles: typeof removeGameFiles
+    platform: "darwin" | "linux" | "win32"
+    homedir: string
   }
 }
