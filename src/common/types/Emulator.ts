@@ -4,5 +4,9 @@ export type Emulator = {
 } & ({
   core: string
 } | {
-  bin: string
+  bin: string | {
+    win32: string
+    linux: string
+    darwin: string
+  }
 })
