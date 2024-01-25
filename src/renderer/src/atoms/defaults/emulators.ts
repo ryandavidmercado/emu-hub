@@ -92,7 +92,7 @@ const defaultEmulators = [
     "arg": "-g",
     "platform": {
       "linux": {
-        "bin": "%HOMEDIR/Applications/yuzu.AppImage"
+        "bin": "%HOMEDIR%/Applications/yuzu.AppImage"
       },
     }
   },
