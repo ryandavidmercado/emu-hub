@@ -12,6 +12,8 @@ hub | *noun*:
 > the effective center of an activity
 
 ## Initial Setup
+1. (Steam Deck only)
+    * If you're planning on running EmuHub from Game Mode, make sure to set the launch arguments in Steam to --no-sandbox, otherwise games will fail to launch.
 1. Verify you've installed necessary emulators
     * EmuHub currently only supports one emulator per system; the needed dependencies are listed below under Supported Systems.
     * If you're running on a Steam Deck with EmuDeck installed, this has already been taken care of for you. (DISCLAIMER: EmuHub is not affiliated with EmuDeck!)
