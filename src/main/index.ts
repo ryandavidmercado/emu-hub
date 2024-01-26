@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -14,8 +14,16 @@ function createWindow(): void {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     },
-    fullscreen: true
+    fullscreen: true,
+    backgroundColor: "hsl(200, 15%, 20%)"
   })
+
+  ipcMain.handle('restart', () => {
+    app.relaunch();
+    app.quit();
+  })
+
+  ipcMain.handle('quit', () => { app.quit() });
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.maximize()
@@ -51,6 +59,7 @@ function createWindow(): void {
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+    console.log(process.env['ELECTRON_RENDERER_URL'])
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))

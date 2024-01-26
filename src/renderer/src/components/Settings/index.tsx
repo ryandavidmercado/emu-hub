@@ -1,6 +1,6 @@
 import { Input } from "@renderer/enums";
 import { useOnInput } from "@renderer/hooks";
-import { ReactNode, useEffect, useMemo, useState } from "react"
+import { ReactNode, useEffect, useMemo } from "react"
 import css from "./Settings.module.scss";
 import SectionSelector from "./SectionSelector";
 import Games from "./Games/Games";
@@ -14,6 +14,8 @@ import { BsCollection, BsCollectionFill } from "react-icons/bs";
 import Modal from "../Modal/Modal";
 import Collections from "./Collections/Collections";
 import Power from "./Power/Power";
+import { atom, useAtom } from "jotai";
+import { eventHandler } from "@renderer/eventHandler";
 
 const sections: Section[] = [
   {
@@ -61,20 +63,29 @@ export interface Section {
   IconActive: IconType;
 }
 
+const activeSideAtom = atom<"left" | "right">("left");
+const activeSectionAtom = atom(0);
+const openAtom = atom(false);
+
+export const settingsModalHandle = { activeSideAtom, activeSectionAtom, openAtom }
+
 const Settings = () => {
-  const [open, setOpen] = useState(false);
-  const [activeSide, setActiveSide] = useState<"left" | "right">("left");
-  const [activeSection, setActiveSection] = useState(0);
+  const [open, setOpen] = useAtom(openAtom);
+  const [activeSide, setActiveSide] = useAtom(activeSideAtom);
+  const [activeSection, setActiveSection] = useAtom(activeSectionAtom);
 
   useEffect(() => {
-    setActiveSide("left");
-    setActiveSection(0);
+    if(!open) {
+      setActiveSide("left");
+      setActiveSection(0);
+    }
   }, [open])
 
   useOnInput(
     (input) => {
       switch(input) {
         case Input.START: {
+          if(open) eventHandler.emit('settings-close');
           return setOpen(open => !open);
         }
       }
@@ -90,13 +101,16 @@ const Settings = () => {
       switch(input) {
         case Input.RIGHT: {
           return setActiveSide("right");
-        }
+        };
         case Input.A: {
           if(activeSide === "left") setActiveSide("right");
           break;
         }
         case Input.B: {
-          if(activeSide === "left") setOpen(false)
+          if(activeSide === "left") {
+            eventHandler.emit('settings-close');
+            setOpen(false)
+          }
           break;
         }
       }

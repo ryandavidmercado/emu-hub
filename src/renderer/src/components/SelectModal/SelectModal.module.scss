@@ -25,21 +25,14 @@
       border: 1px solid white;
 
       transition: color .1s ease, background-color .1s ease;
-    }
 
-    .confirm {
       &.active {
         background-color: $confirm;
         color: $background-dark;
         border: 1px solid transparent;
-      }
-    }
 
-    .cancel {
-      &.active {
-        background-color: $primary;
-        color: $background-dark;
-        border: 1px solid transparent;
+        &.default { background-color: $primary; }
+        &.confirm { background-color: $confirm; }
       }
     }
   }

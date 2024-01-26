@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Notifications from './components/Notifications/Notifications';
 import { InputModal } from './components/InputModal/InputModal';
 import ConfirmationModal from './components/ConfirmationModal/ConfirmationModal';
+import Init from './pages/Init/Init';
 
 function App() {
   const { parentRef, waveHeight } = useWaveHeight(.3);
@@ -41,6 +42,10 @@ function App() {
 const appRoutes = [
   {
     path: "/",
+    element: <Init />
+  },
+  {
+    path: "/home",
     element: <Home />
   },
   {

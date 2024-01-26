@@ -1,5 +1,6 @@
 import { atom } from "jotai";
 import { mainAtoms as systemMainAtoms } from "./systems";
+import pathsAtom from "./paths";
 import { Game, MediaTypes, StoreEntry } from "@common/types";
 import emulators from "./emulators";
 import { arrayConfigAtoms } from "./util/arrayConfigAtom";
@@ -12,9 +13,16 @@ import deepEqual from "fast-deep-equal"
 const mainAtoms = arrayConfigAtoms<Game>({ storageKey: 'games' });
 
 const scanGamesAtom = atom(null,
-  (_, set) => {
-    const newGames = window.scanRoms(true);
-    set(mainAtoms.lists.all, newGames)
+  async (get, set) => {
+    const newGames = await window.scanRoms(
+      true,
+      get(pathsAtom),
+      get(systemMainAtoms.lists.all),
+      get(mainAtoms.lists.all)
+    );
+    set(mainAtoms.lists.all, newGames);
+
+    return newGames.length;
   }
 )
 
@@ -115,7 +123,7 @@ const downloadGameAtom = atom(null,
     });
 
     try {
-      let downloadedGame = await window.downloadGame(system, href);
+      let downloadedGame = await window.downloadGame(system, href, get(pathsAtom));
       downloadedGame = {
         ...downloadedGame,
         name: name ?? downloadedGame.name,

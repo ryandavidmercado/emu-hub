@@ -1,8 +1,6 @@
 import { existsSync, mkdirSync } from "fs";
 import os from "os";
 import path from "path";
-import defaultPathConfig from "../defaults/pathConfig";
-import { loadConfig } from "./configStorage";
 
 const HOME_PATH = os.homedir();
 
@@ -12,15 +10,11 @@ const CONFIG_PATH = path.join(EMUHUB_PATH, "config");
 const ASSETS_PATH = path.join(EMUHUB_PATH, "assets");
 const GAME_ASSETS_PATH = path.join(ASSETS_PATH, "games");
 const SYSTEM_ASSETS_PATH = path.join(ASSETS_PATH, "systems");
-
-const pathsConfig = loadConfig("paths", defaultPathConfig);
-const ROM_PATH = pathsConfig.ROMs || path.join(EMUHUB_PATH, "roms");
 const FLATPAK_PATH = path.join(os.homedir(), ".local", "share", "flatpak", "exports", "bin");
 
 for(const path of [
   EMUHUB_PATH,
   CONFIG_PATH,
-  ROM_PATH,
   ASSETS_PATH,
   GAME_ASSETS_PATH,
   SYSTEM_ASSETS_PATH
@@ -33,7 +27,6 @@ for(const path of [
 export {
   EMUHUB_PATH,
   CONFIG_PATH,
-  ROM_PATH,
   FLATPAK_PATH,
   ASSETS_PATH,
   GAME_ASSETS_PATH,
