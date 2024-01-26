@@ -48,3 +48,8 @@ hub | *noun*:
 * Sony PlayStation
 * Sony PlayStation 2
 * Sony PlayStation Portable
+
+## Supported Platforms
+* Linux
+* MacOS
+* Windows (WIP)
