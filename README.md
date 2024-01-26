@@ -12,6 +12,9 @@ hub | *noun*:
 > the effective center of an activity
 
 ## Initial Setup
+1. Verify you've installed necessary emulators
+    * EmuHub currently only supports one emulator per system; the needed dependencies are listed below under Supported Systems.
+    * If you're running on a Steam Deck with EmuDeck installed, this has already been taken care of for you.
 1. Launch EmuHub
     * This will generate config, asset, and rom folders under Documents/EmuHub
 1. Change ROMs Directory (optional)
@@ -34,23 +37,23 @@ hub | *noun*:
     * Hit Play on the Game View to launch
 
 ## Supported Systems
-* Nintendo Entertainment System
-* Super Nintendo Entertainment System
-* Nintendo 64
-* Nintendo GameCube
-* Nintendo Wii
-* Nintendo Wii U (wua only)
-* Nintendo Switch
-* Game Boy
-* Game Boy Color
-* Game Boy Advance
-* Nintendo DS
-* Sega Genesis
-* Sega Saturn
-* Dreamcast
-* Sony PlayStation
-* Sony PlayStation 2
-* Sony PlayStation Portable
+* Nintendo Entertainment System (RetroArch - Mesen)
+* Super Nintendo Entertainment System (RetroArch - bsnes)
+* Nintendo 64 (RetroArch - Mupen64Plus-Next)
+* Nintendo GameCube (Dolphin)
+* Nintendo Wii (Dolphin)
+* Nintendo Wii U *(wua only)* (Cemu)
+* Nintendo Switch (yuzu)
+* Game Boy (RetroArch - Sameboy)
+* Game Boy Color (RetroArch - Sameboy)
+* Game Boy Advance (RetroArch - mGBA)
+* Nintendo DS (RetroArch - melonDS)
+* Sega Genesis (RetroArch - Genesis Plus GX)
+* Sega Saturn (RetroArch - Beetle Saturn)
+* Dreamcast (RetroArch - Flycast)
+* Sony PlayStation (DuckStation)
+* Sony PlayStation 2 (PCSX2)
+* Sony PlayStation Portable (PPSSPP)
 
 ## Supported Platforms
 * Linux
