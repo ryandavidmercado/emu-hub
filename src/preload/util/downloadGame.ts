@@ -48,7 +48,8 @@ const downloadGame = async (system: System, url: string) => {
   const unzippedDir = await readdir(outputPath);
   const gameFile = unzippedDir.find(file => {
     const extname = path.extname(file);
-    return system.fileExtensions.includes(extname);
+    return system.fileExtensions.includes(extname)
+      && !file.match(/\((Track|Disc) [^1]\)/) // handle multi-part games by filtering out other tracks/discs
   })
 
   if(!gameFile) throw "No valid ROM found in downloaded zip file!";

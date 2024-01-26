@@ -49,27 +49,39 @@ const defaultEmulators = [
   {
     "id": "duckstation",
     "name": "DuckStation",
+    "arg": "-fullscreen --",
     "platform": {
       "linux": {
         "flatpak": "org.duckstation.DuckStation"
+      },
+      "darwin": {
+        "bin": "/Applications/DuckStation.app/Contents/MacOS/DuckStation"
       }
     }
   },
   {
     "id": "ppsspp",
     "name": "PPSSPP",
+    "arg": "--fullscreen",
     "platform": {
       "linux": {
         "flatpak": "org.ppsspp.PPSSPP"
+      },
+      "darwin": {
+        "bin": "/Applications/PPSSPPSDL.app/Contents/MacOS/PPSSPPSDL"
       }
     }
   },
   {
     "id": "pcsx2",
     "name": "PCSX2",
+    "arg": "-fullscreen --",
     "platform": {
       "linux": {
         "bin": "%HOMEDIR%/Applications/pcsx2-Qt.AppImage"
+      },
+      "darwin": {
+        "bin": "/Applications/PCSX2-v1.7.5516.app/Contents/MacOS/PCSX2"
       }
     }
   },

@@ -36,7 +36,10 @@ const scanRoms = (cleanupMissingGames = false) => {
 
   const scanFolder = (systemConfig: System, pathTokens: string[] = []) => {
     const dir = path.join(ROM_PATH, systemConfig.id, ...pathTokens);
-    const contents = readdirSync(dir);
+    let contents = readdirSync(dir);
+
+    // handle multi-part games by filtering out other tracks/discs
+    contents = contents.filter(entry => !entry.match(/\((Track|Disc) [^1]\)/));
 
     for (const entry of contents) {
       const entryPath = path.join(dir, entry);

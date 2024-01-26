@@ -52,7 +52,7 @@ const GameSettingsModal = ({ game, open, setOpen }: Props) => {
           Icon: IoTrash,
           colorScheme: "warning",
           confirmation: {
-            text: `Are you sure you want to delete ${game.name}? This will delete the ROM file.`,
+            text: `Are you sure you want to delete ${game.name}? This will delete any associated ROM files and media assets.`,
             defaultToConfirmed: false
           }
         }

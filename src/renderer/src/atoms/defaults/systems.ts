@@ -216,9 +216,9 @@ const defaultSystems = [
       ".elf",
       ".ciso",
       ".cso",
-      ".bin",
       ".mdf",
-      ".nrg"
+      ".nrg",
+      ".bin"
     ],
     "emulators": [
       "pcsx2"
