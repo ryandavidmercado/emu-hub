@@ -10,6 +10,7 @@ import getRomFileInfo from "./util/getRomFileInfo"
 import loadSystemStore from "./util/loadSystemStore";
 import loadMedia from "./util/loadMedia";
 import removeGameFiles from "./util/removeGameFiles";
+import initRomDir from "./util/initRomDir";
 
 declare global {
   interface Window {
@@ -27,5 +28,8 @@ declare global {
     removeGameFiles: typeof removeGameFiles
     platform: "darwin" | "linux" | "win32"
     homedir: string
+    initRomDir: typeof initRomDir
+    restart: () => void
+    quit: () => void
   }
 }

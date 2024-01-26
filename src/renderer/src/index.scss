@@ -1,6 +1,7 @@
-@font-face {
-  font-family: "Figtree";
-  src: url("./assets/fonts/Figtree-VariableFont_wght.ttf");
+@import "@renderer/scss/colors";
+
+:root {
+  background-color: $background;
 }
 
 html {

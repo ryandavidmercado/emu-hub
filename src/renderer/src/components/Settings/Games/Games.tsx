@@ -23,8 +23,8 @@ const General = ({ isActive, onExit, inputPriority }: SectionProps) => {
         {
           id: 'scan-roms',
           label: "Rescan ROMs",
-          onSelect: () => {
-            scanRoms();
+          onSelect: async () => {
+            await scanRoms();
             addNotification({
               type: 'success',
               text: "Done scanning ROMs!",

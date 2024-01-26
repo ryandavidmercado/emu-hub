@@ -12,12 +12,13 @@ const isConfirmAtom = atom(false);
 
 const eventHandler = createNanoEvents();
 
+export interface Options { text?: string, defaultToConfirmed?: boolean }
+
 export const useConfirmation = () => {
   const [, setOpen] = useAtom(openAtom);
   const [, setText] = useAtom(textAtom);
   const [, setIsConfirm] = useAtom(isConfirmAtom);
 
-  interface Options { text?: string, defaultToConfirmed?: boolean }
   return async ({ text, defaultToConfirmed = true }: Options): Promise<boolean> => {
     setIsConfirm(defaultToConfirmed)
     setText(text);

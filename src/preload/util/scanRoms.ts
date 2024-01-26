@@ -1,21 +1,23 @@
-import configStorage from "./configStorage"
-import { readdirSync, statSync } from "fs";
-import { ROM_PATH } from "./const";
 import { Game, System } from "@common/types";
 import path from "path";
 import { isEqual } from "lodash"
 import ShortUniqueId from "short-unique-id";
+import { MainPaths } from "@common/types/Paths";
+import { readdir, stat } from "fs/promises";
 
 const uid = new ShortUniqueId();
 
-const scanRoms = (cleanupMissingGames = false) => {
+const scanRoms = async (
+  cleanupMissingGames = false,
+  paths: MainPaths,
+  currentSystems: System[],
+  currentGames: Game[]
+) => {
+  const { ROMs: ROM_PATH } = paths;
+
   const addedDate = new Date().toUTCString();
-  const gamesConfig = configStorage.getItem<Game[]>("games", []);
-
-  const systemsConfig = configStorage.getItem<System[]>("systems", []);
   const newGames: Game[] = [];
-
-  const romsDir = readdirSync(ROM_PATH);
+  const romsDir = await readdir(ROM_PATH);
 
   const compareRomPaths = (fromGame: string[] | undefined, fromScan: string[]) => {
     if (!fromGame || !fromGame?.length) {
@@ -34,9 +36,9 @@ const scanRoms = (cleanupMissingGames = false) => {
     return leadingPeriodRemoved.toLowerCase();
   }
 
-  const scanFolder = (systemConfig: System, pathTokens: string[] = []) => {
+  const scanFolder = async (systemConfig: System, pathTokens: string[] = []) => {
     const dir = path.join(ROM_PATH, systemConfig.id, ...pathTokens);
-    let contents = readdirSync(dir);
+    let contents = await readdir(dir);
 
     // handle multi-part games by filtering out other tracks/discs
     contents = contents.filter(entry => !entry.match(/\((Track|Disc) [^1]\)/));
@@ -44,9 +46,9 @@ const scanRoms = (cleanupMissingGames = false) => {
     for (const entry of contents) {
       const entryPath = path.join(dir, entry);
       const entryExt = path.extname(entry);
-      const stat = statSync(entryPath);
+      const entryStat = await stat(entryPath);
 
-      if (stat.isDirectory()) {
+      if (entryStat.isDirectory()) {
         scanFolder(systemConfig, [...pathTokens, entry]);
         continue;
       }
@@ -57,7 +59,7 @@ const scanRoms = (cleanupMissingGames = false) => {
         .includes(normalizeExtname(entryExt))
       ) continue;
 
-      const gameConfigEntry = gamesConfig.find(game => (
+      const gameConfigEntry = currentGames.find(game => (
         game.romname === entry
         && game.system === systemConfig.id
         && compareRomPaths(game.rompath, pathTokens)
@@ -80,13 +82,13 @@ const scanRoms = (cleanupMissingGames = false) => {
   }
 
   for (const system of romsDir) {
-    const systemConfig = systemsConfig.find(config => config.id === system);
+    const systemConfig = currentSystems.find(config => config.id === system);
     if (!systemConfig) continue;
 
-    scanFolder(systemConfig)
+    await scanFolder(systemConfig)
   }
 
-  return [...(cleanupMissingGames ? [] : gamesConfig), ...newGames];
+  return [...(cleanupMissingGames ? [] : currentGames), ...newGames];
 }
 
 export default scanRoms;

@@ -1,4 +1,4 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import configStorage from './util/configStorage'
 import path from 'path';
@@ -11,6 +11,7 @@ import downloadGameMedia from './util/downloadGameMedia';
 import loadMedia from './util/loadMedia';
 import removeGameFiles from './util/removeGameFiles';
 import os from "os"
+import initRomDir from './util/initRomDir';
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
@@ -29,6 +30,9 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('removeGameFiles', removeGameFiles)
     contextBridge.exposeInMainWorld('platform', os.platform())
     contextBridge.exposeInMainWorld('homedir', os.homedir())
+    contextBridge.exposeInMainWorld('initRomDir', initRomDir)
+    contextBridge.exposeInMainWorld('restart', () => { ipcRenderer.invoke('restart') })
+    contextBridge.exposeInMainWorld('quit', () => { ipcRenderer.invoke('quit') })
   } catch (error) {
     console.error(error)
   }
