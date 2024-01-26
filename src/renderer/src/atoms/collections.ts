@@ -2,7 +2,7 @@ import { atomFamily } from "jotai/utils";
 import { arrayConfigAtoms } from "./util/arrayConfigAtom";
 import { atom } from "jotai";
 import games from "./games";
-import { Game } from "@common/types"
+import { Game } from "@common/types";
 
 interface Collection {
   id: string;
@@ -15,7 +15,7 @@ const allWithGames = atom((get) => {
   const collections = get(mainAtoms.lists.all);
   return collections.map(collection => ({
     ...collection,
-    games: collection.games.map(game => get(games.single(game))).filter<Game>((game): game is Game => Boolean(game))
+    games: collection.games.map(game => get(games.single(game))).filter(Boolean) as Game[]
   }))
 })
 
