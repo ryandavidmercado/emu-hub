@@ -8,9 +8,9 @@ import { useNavigate } from "react-router-dom"
 import SelectModal, { useSelect } from "@renderer/components/SelectModal/SelectModal";
 import { PropagateLoader } from "react-spinners"
 import css from "./Init.module.scss"
-import { settingsModalHandle } from "@renderer/components/Settings"
 import { eventHandler } from "@renderer/eventHandler"
 import { useOnInput } from "@renderer/hooks"
+import { settingsOpenAtom } from "@renderer/components/Settings"
 
 let isInitializing = false;
 
@@ -18,19 +18,10 @@ const Init = () => {
   const [paths] = useAtom(pathAtom)
   const [systems] = useAtom(systemsAtoms.lists.all)
 
+  const [settingsOpen] = useAtom(settingsOpenAtom);
+
   const [, scanRoms] = useAtom(games.scan)
   const { getSelection, modalProps } = useSelect();
-
-  // SETTINGS handle
-  const {
-    activeSectionAtom,
-    activeSideAtom,
-    openAtom
-  } = settingsModalHandle;
-
-  const [settingsOpen, setSettingsOpen] = useAtom(openAtom);
-  const [, setSettingsActiveSide] = useAtom(activeSideAtom);
-  const [, setSettingsActiveSection] = useAtom(activeSectionAtom);
 
   const navigate = useNavigate();
 
@@ -74,9 +65,7 @@ const Init = () => {
         window.quit();
         break;
       default: "store"
-        setSettingsActiveSide("right");
-        setSettingsActiveSection(2);
-        setSettingsOpen(true)
+        eventHandler.emit("settings-jump-to-section", 2)
         break;
     }
 

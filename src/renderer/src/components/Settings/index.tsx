@@ -1,6 +1,6 @@
 import { Input } from "@renderer/enums";
 import { useOnInput } from "@renderer/hooks";
-import { ReactNode, useEffect, useMemo } from "react"
+import { ReactNode, useEffect, useMemo, useState } from "react"
 import css from "./Settings.module.scss";
 import SectionSelector from "./SectionSelector";
 import Games from "./Games/Games";
@@ -14,8 +14,8 @@ import { BsCollection, BsCollectionFill } from "react-icons/bs";
 import Modal from "../Modal/Modal";
 import Collections from "./Collections/Collections";
 import Power from "./Power/Power";
-import { atom, useAtom } from "jotai";
 import { eventHandler } from "@renderer/eventHandler";
+import { atom, useAtom } from "jotai";
 
 const sections: Section[] = [
   {
@@ -63,16 +63,13 @@ export interface Section {
   IconActive: IconType;
 }
 
-const activeSideAtom = atom<"left" | "right">("left");
-const activeSectionAtom = atom(0);
 const openAtom = atom(false);
-
-export const settingsModalHandle = { activeSideAtom, activeSectionAtom, openAtom }
+export const settingsOpenAtom = atom((get) => get(openAtom)) // export readonly
 
 const Settings = () => {
   const [open, setOpen] = useAtom(openAtom);
-  const [activeSide, setActiveSide] = useAtom(activeSideAtom);
-  const [activeSection, setActiveSection] = useAtom(activeSectionAtom);
+  const [activeSide, setActiveSide] = useState<"left" | "right">("left");
+  const [activeSection, setActiveSection] = useState(0);
 
   useEffect(() => {
     if(!open) {
@@ -80,6 +77,16 @@ const Settings = () => {
       setActiveSection(0);
     }
   }, [open])
+
+  useEffect(() => {
+    const unbind = eventHandler.on('settings-jump-to-section', (section: number) => {
+      setActiveSide("right")
+      setActiveSection(section)
+      setOpen(true);
+    })
+
+    return () => { unbind(); }
+  }, [])
 
   useOnInput(
     (input) => {
