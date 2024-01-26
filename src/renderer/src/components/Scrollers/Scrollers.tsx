@@ -1,9 +1,10 @@
-import { useMemo, useRef, useState } from "react";
+import { Dispatch, useMemo, useRef, useState } from "react";
 import { Scroller, ScrollerProps } from "../Scroller"
 import { useKeepVisible } from "@renderer/hooks";
 import { ScrollType } from "@renderer/enums";
 import { System, SystemWithGames } from "@common/types/System";
 import { Game } from "@common/types/Game";
+import { SetStateAction } from "jotai";
 
 export type ScrollerConfig<T extends Game | System> = Omit<ScrollerProps<T>, "isActive" | "onPrevScroller" | "onNextScroller"> & { id: string }
 interface Props {
@@ -12,10 +13,25 @@ interface Props {
   isDisabled?: boolean;
   onExitUp?: () => void;
   onExitDown?: () => void;
+  controlledIndex?: {
+    index: number,
+    setIndex: Dispatch<SetStateAction<number>>
+  }
 }
 
-const Scrollers = ({ className, scrollers, isDisabled, onExitUp, onExitDown }: Props) => {
-  const [activeIndex, setActiveIndex] = useState(0);
+const Scrollers = ({
+  className,
+  scrollers,
+  isDisabled,
+  onExitUp,
+  onExitDown,
+  controlledIndex
+}: Props) => {
+  const [localActiveIndex, localSetActiveIndex] = useState(0);
+
+  const activeIndex = controlledIndex?.index ?? localActiveIndex;
+  const setActiveIndex = controlledIndex?.setIndex ?? localSetActiveIndex
+
   const activeRef = useRef<HTMLDivElement>(null);
 
   const content = useMemo(() => {

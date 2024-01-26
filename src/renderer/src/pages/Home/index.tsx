@@ -11,14 +11,15 @@ import { useNavigate } from "react-router-dom";
 import collections from "@renderer/atoms/collections";
 import { getGameShowcaseConfig } from "@renderer/components/Showcase/presets/game";
 import { getSystemShowcaseConfig } from "@renderer/components/Showcase/presets/system";
+import classNames from "classnames";
 
 export const Home = () => {
-  const [systemsList] = useAtom(systems.lists.onlyWithGames);
+  const [scrollerIndex, setScrollerIndex] = useState(0);
 
+  const [systemsList] = useAtom(systems.lists.onlyWithGames);
   const [recentlyViewedGamesList] = useAtom(games.lists.recentlyViewed);
   const [recentlyPlayedGamesList] = useAtom(games.lists.recentlyPlayed);
   const [recentlyAddedGamesList] = useAtom(games.lists.recentlyAdded);
-
   const [collectionsList] = useAtom(collections.lists.withGames);
 
   const [currentContent, setCurrentContent] = useState<{ type: "game", data: Game } | { type: "system", data: SystemWithGames }>();
@@ -99,8 +100,16 @@ export const Home = () => {
     <div
       className={css.landing}
     >
-      <Showcase className={css.showcase} content={showcaseContent} />
-      <Scrollers scrollers={scrollers} className={css.scrollers} key={scrollers.length} />
+      <Showcase
+        className={classNames(css.showcase, scrollerIndex !== 0 && css.shadowLong)}
+        content={showcaseContent}
+      />
+      <Scrollers
+        scrollers={scrollers}
+        className={css.scrollers}
+        key={scrollers.length}
+        controlledIndex={{ index: scrollerIndex, setIndex : setScrollerIndex }}
+      />
     </div>
   )
 }

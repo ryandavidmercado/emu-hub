@@ -51,7 +51,6 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
           timeout: 2
         })
       },
-      hideFormWhileActive: true,
     },
     ...collectionsList
       .filter(collection => !collection.games.includes(game?.id))
