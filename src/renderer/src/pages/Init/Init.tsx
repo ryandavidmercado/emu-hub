@@ -55,7 +55,7 @@ const Init = () => {
           <ul>
             <li>Load up some ROMs in this directory and restart EmuHub.</li>
             <li>Change your ROMs directory by modifying...
-              <div className={css.dir}>{window.homedir}/Documents/EmuHub/paths.yml</div>
+              <div className={css.dir}>{window.homedir}/Documents/EmuHub/config/paths.yml</div>
               ...and restarting EmuHub.
             </li>
             <li>Head to the system stores to download some homebrew!</li>
