@@ -39,6 +39,7 @@ hub | *noun*:
   
 ## Troubleshooting
 > My games are failing to launch!
+
 If you've already followed step 1 and verified that you've installed the necessary RetroArch cores and standalone emulators, you might need to edit the config paths.
 * Non-RetroArch systems (PS2, etc)
     * Edit Documents/EmuHub/config/emulators.yml
