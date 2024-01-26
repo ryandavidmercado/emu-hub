@@ -22,4 +22,7 @@ export type Game = {
   added?: string
   crc?: string
   romsize?: string
+  showcaseDisplayType?: "screenshot" | "fanart",
+  gamePageDisplayType?: "screenshot" | "fanart",
+  gameTileDisplayType?: "screenshot" | "poster"
 } & MediaTypes

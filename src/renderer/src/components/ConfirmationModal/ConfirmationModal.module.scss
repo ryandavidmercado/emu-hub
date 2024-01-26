@@ -1,0 +1,46 @@
+@import "@renderer/scss/colors";
+
+.container {
+  width: 650px;
+  background-color: $background;
+  border-radius: 20px;
+  font-family: Figtree;
+  font-size: 1.5rem;
+  color: white;
+  overflow: hidden;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  .options {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+
+    > div {
+      padding: 1rem 1.5rem;
+      border-radius: 20px;
+      border: 1px solid white;
+
+      transition: color .1s ease, background-color .1s ease;
+    }
+
+    .confirm {
+      &.active {
+        background-color: $confirm;
+        color: $background-dark;
+        border: 1px solid transparent;
+      }
+    }
+
+    .cancel {
+      &.active {
+        background-color: $primary;
+        color: $background-dark;
+        border: 1px solid transparent;
+      }
+    }
+  }
+}

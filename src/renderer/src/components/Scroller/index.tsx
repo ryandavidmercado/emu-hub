@@ -68,7 +68,11 @@ export const Scroller = <T extends Game | System>({
         }
       }
 
-      if(elem.poster && aspectRatio === "landscape") return { background: elem.poster }
+      if(elem.poster
+        && (!elem.gameTileDisplayType || elem.gameTileDisplayType === "poster")
+        && aspectRatio === "landscape"
+      ) return { background: elem.poster }
+
       return { background: elem.screenshot, foreground: elem.logo, foregroundText: elem.name ?? elem.romname }
     })()
 

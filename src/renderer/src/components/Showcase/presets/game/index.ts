@@ -6,7 +6,12 @@ export const getGameShowcaseConfig = (game: Game, pills: Pill[]): ShowcaseConten
   const gameLogo = window.loadMedia(game.logo || "");
 
   return {
-    left: [{ type: "media", media: game.screenshot || "" }],
+    left: [{
+      type: "media",
+      media: (
+        game.showcaseDisplayType === "fanart" ? game.hero : game.screenshot
+      ) ?? ''
+    }],
     right: [
       gameLogo
         ? { type: "media", media: gameLogo }

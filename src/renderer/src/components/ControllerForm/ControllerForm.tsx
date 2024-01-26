@@ -10,16 +10,22 @@ import type { SetStateAction } from "react";
 import { motion } from "framer-motion";
 import { useInputModal } from "../InputModal/InputModal";
 import { FaRegKeyboard } from "react-icons/fa";
+import { useConfirmation } from "../ConfirmationModal/ConfirmationModal";
 
 export type ColorScheme = "default" | "caution" | "warning" | "confirm"
 
 export type FormTypes = ({
   type: "action",
-  onSelect: (id: string) => void
+  onSelect: (id: string) => void,
+  confirmation?: {
+    text: string,
+    defaultToConfirmed?: boolean
+  }
 } | {
-  type: "toggle"
+  type: "toggle",
   enabled: boolean,
-  setEnabled: Dispatch<SetStateAction<boolean>>
+  setEnabled: Dispatch<SetStateAction<boolean>>,
+  useDisableStyling?: boolean
 } | {
   type: "input",
   defaultValue?: string;
@@ -36,7 +42,7 @@ export type ControllerFormEntry = {
   sublabel?: string
   Icon?: IconType
   IconActive?: IconType
-  colorScheme?: ColorScheme
+  colorScheme?: ColorScheme,
 } & FormTypes
 
 interface ItemData {
@@ -65,7 +71,7 @@ const ControllerForm = ({
   maxHeight,
   defaultSelection,
   scrollType,
-  hasParentContainer = true
+  hasParentContainer = true,
 }: Props) => {
   const defaultIndex = entries.findIndex(e => e.id === defaultSelection);
   const [localActiveIndex, localSetActiveIndex] = useState(defaultIndex > -1 ? defaultIndex : 0);
@@ -76,11 +82,18 @@ const ControllerForm = ({
   const activeEntry = entries[activeIndex];
 
   const [hiddenForInput, setHiddenForInput] = useState(false);
+
   const getInput = useInputModal();
+  const getConfirmation = useConfirmation();
 
   const onSelect = async () => {
     switch (activeEntry.type) {
       case "action":
+        if(activeEntry.confirmation) {
+          const confirmed = await getConfirmation(activeEntry.confirmation);
+          if(!confirmed) return;
+        }
+
         activeEntry.onSelect(activeEntry.id);
         break;
       case "toggle":
@@ -154,7 +167,6 @@ const ControllerForm = ({
         </List>
       )}
       </AutoSizer>
-
     </div>
   )
 }
@@ -189,6 +201,7 @@ const ListEntry = ({ index, style, data }: ListEntryProps) => {
         <Toggle
           active={isActive}
           enabled={entry.enabled}
+          useDisableStyling={entry.useDisableStyling}
         />
       }
       {
@@ -197,9 +210,11 @@ const ListEntry = ({ index, style, data }: ListEntryProps) => {
             "input": FaRegKeyboard
           }
 
-          const IconElem = (isActive
-            ? entry.IconActive ?? entry.Icon
-            : entry.Icon) ?? defaultIcons[entry.type]
+          const IconElem = (
+            isActive
+              ? (entry.IconActive ?? entry.Icon)
+              : entry.Icon
+          ) ?? defaultIcons[entry.type]
 
           return IconElem ? <IconElem /> : null;
         })()
@@ -208,7 +223,7 @@ const ListEntry = ({ index, style, data }: ListEntryProps) => {
   )
 }
 
-const Toggle = ({ active, enabled }: { active: boolean, enabled: boolean }) => {
+const Toggle = ({ active, enabled, useDisableStyling = true }: { active: boolean, enabled: boolean, useDisableStyling }) => {
   return (
     <motion.div
       className={classNames(
@@ -227,7 +242,7 @@ const Toggle = ({ active, enabled }: { active: boolean, enabled: boolean }) => {
         }}
         className={classNames(
           css.toggleInner,
-          enabled && css.enabled
+          (enabled || !useDisableStyling) && css.enabled
         )}
       />
     </motion.div>

@@ -9,7 +9,7 @@
   transition: filter .3s ease;
 
   &.inActive {
-    filter: brightness(70%) opacity(70%);
+    filter: brightness(70%) opacity(50%);
     /* opacity: .7; */
   }
 }

@@ -9,6 +9,7 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Notifications from './components/Notifications/Notifications';
 import { InputModal } from './components/InputModal/InputModal';
+import ConfirmationModal from './components/ConfirmationModal/ConfirmationModal';
 
 function App() {
   const { parentRef, waveHeight } = useWaveHeight(.3);
@@ -31,6 +32,7 @@ function App() {
       />}
       <Settings />
       <InputModal />
+      <ConfirmationModal />
       <Notifications />
     </div>
   )

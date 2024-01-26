@@ -52,18 +52,17 @@ const Collections = ({ isActive, onExit, inputPriority }: SectionProps) => {
             type: 'navigate',
             navigateTo: -1,
             Icon: IoTrash,
-            colorScheme: 'warning',
+            colorScheme: 'caution',
             onSelect: () => {
               deleteCollection(collection);
             }
-          } as const ,
+          } as const,
           ...collectionData.games.map(game => ({
             id: game.id,
             label: game.name ?? game.romname,
             sublabel: `Remove ${game.name ?? game.romname} from "${collectionData.name}"`,
             type: 'action',
             Icon: FaMinus,
-            colorScheme: "caution",
             onSelect: (gameId: string) => {
               removeGameFromCollection(collection, gameId)
             }

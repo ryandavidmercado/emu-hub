@@ -237,7 +237,7 @@ const byAttributeAtom = atomFamily((config: ByAttributeProp) => atom(get => {
   return shuffled.slice(0, config.limit);
 }), deepEqual);
 
-const removeWithROMFilesAtom = atom(null, (get, set, id: string) => {
+const removeAtom = atom(null, (get, set, id: string) => {
   const game = get(mainAtoms.single(id));
   if (!game) return;
 
@@ -260,5 +260,5 @@ export default {
   download: downloadGameAtom,
   scrape: scrapeGameAtom,
   scrapeAll: scrapeAllGamesAtom,
-  removeWithROMFiles: removeWithROMFilesAtom,
+  remove: removeAtom
 }

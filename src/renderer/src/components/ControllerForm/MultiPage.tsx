@@ -23,9 +23,10 @@ interface Props {
   active: boolean;
   inputPriority?: number
   scrollType?: Align
+  hasParentContainer?: boolean
 }
 
-const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, inputPriority, scrollType }: Props) => {
+const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, inputPriority, scrollType, hasParentContainer }: Props) => {
   const [pageStack, setPageStack] = useState([pages[0].id]);
   const activePageId = pageStack.at(-1)
   const currentPageIndex = pages.findIndex(page => page.id === activePageId);
@@ -87,7 +88,8 @@ const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, inputP
                 goBack();
               }
             },
-            Icon: FaAngleRight
+            Icon: entry.Icon ?? FaAngleRight,
+            IconActive: entry.IconActive ?? entry.Icon ?? FaAngleRight
           } as ControllerFormEntry
         default:
           return entry as ControllerFormEntry;
@@ -95,14 +97,17 @@ const MultiPageControllerForm = ({ pages, onExitLeft, onExitBack, active, inputP
     })
   }, [currentPage, pageSelections, goBack])
 
-  return <ControllerForm
-    key={`${currentPage.id}-${entries.length}`}
-    entries={entries}
-    isActive={active}
-    inputPriority={inputPriority}
-    defaultSelection={currentPage.defaultSelection}
-    scrollType={scrollType}
-  />
+  return (
+    <ControllerForm
+      key={`${currentPage.id}-${entries.length}`}
+      entries={entries}
+      isActive={active}
+      inputPriority={inputPriority}
+      defaultSelection={currentPage.defaultSelection}
+      scrollType={scrollType}
+      hasParentContainer={hasParentContainer}
+    />
+  )
 }
 
 export default MultiPageControllerForm;

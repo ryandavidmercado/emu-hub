@@ -10,8 +10,8 @@ import {
   IoCloudDownloadOutline,
   IoPlay,
   IoPlayOutline,
-  IoTrash,
-  IoTrashOutline,
+  IoSettings,
+  IoSettingsOutline,
 } from "react-icons/io5"
 import { FaAngleDown, FaAngleUp } from "react-icons/fa"
 
@@ -26,7 +26,7 @@ import Recommendations from "./Recommendations/Recommendations";
 import CollectionModal from "@renderer/components/CollectionModal/CollectionModal";
 import notifications from "@renderer/atoms/notifications";
 import ShortUniqueId from "short-unique-id";
-import RemoveGameModal from "@renderer/components/RemoveGameModal/RemoveGameModal";
+import GameSettingsModal from "@renderer/components/GameSettingsModal/GameSettingsModal";
 import MediaImage from "@renderer/components/MediaImage/MediaImage";
 
 const uid = new ShortUniqueId();
@@ -53,7 +53,7 @@ const GameView = ({ gameId }: { gameId?: string }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [collectionModalOpen, setCollectionModalOpen] = useState(false);
-  const [removeGameModalOpen, setRemoveGameModalOpen] = useState(false);
+  const [gameSettingsModalOpen, setGameSettingsModalOpen] = useState(false);
 
   const canScrape = !notificationsList.some(notif =>
     notif.id.startsWith(`scrape-${game?.id}`)
@@ -102,7 +102,7 @@ const GameView = ({ gameId }: { gameId?: string }) => {
     >
       <div className={css.upperContainer}>
         <MediaImage
-          media={game.screenshot}
+          media={game.gamePageDisplayType === "fanart" ? game.hero : game.screenshot}
           className={css.bg}
         />
         <div className={css.buttonsAndLogo}>
@@ -151,14 +151,13 @@ const GameView = ({ gameId }: { gameId?: string }) => {
                 colorScheme: "confirm"
               },
               {
-                id: 'remove',
-                Icon: IoTrashOutline,
-                IconActive: IoTrash,
-                label: "Remove",
+                id: 'settings',
+                Icon: IoSettingsOutline,
+                IconActive: IoSettings,
+                label: "Settings",
                 onSelect: () => {
-                  setRemoveGameModalOpen(true);
+                  setGameSettingsModalOpen(true);
                 },
-                colorScheme: "caution",
                 disabled: isInGame
               },
               {
@@ -221,9 +220,9 @@ const GameView = ({ gameId }: { gameId?: string }) => {
         setOpen={setCollectionModalOpen}
         game={game}
       />
-      <RemoveGameModal
-        open={removeGameModalOpen}
-        setOpen={setRemoveGameModalOpen}
+      <GameSettingsModal
+        open={gameSettingsModalOpen}
+        setOpen={setGameSettingsModalOpen}
         game={game}
       />
     </motion.div>

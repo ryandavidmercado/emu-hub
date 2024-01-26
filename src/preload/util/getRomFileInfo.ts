@@ -5,14 +5,17 @@ import crc32 from "crc/crc32";
 import { stat } from "fs/promises";
 import { createReadStream } from "fs";
 
-/* We read romfile in 10MB chunks while calculating CRC to minimize RAM usage */
-const CHUNK_SIZE = 10000000; // 10MB
+// we won't calculate crc32 if file size is greater than this; takes too long and slows down UI
+const MAX_CRC_SIZE = 25000000; // 25MB
 
 const getRomFileInfo = async (game: Game) => {
   const romLocation = path.join(ROM_PATH, game.system, ...(game.rompath ?? []), game.romname);
 
   const stats = await stat(romLocation);
-  const fileStream = createReadStream(romLocation, { highWaterMark: CHUNK_SIZE });
+  const fileStream = createReadStream(romLocation);
+
+  const size = stats.size
+  if(size > MAX_CRC_SIZE) return { size: String(size) }
 
   let crc: number;
   for await(const data of fileStream) {
@@ -21,7 +24,7 @@ const getRomFileInfo = async (game: Game) => {
 
   return {
     crc: crc!.toString(16),
-    size: String(stats.size)
+    size: String(size)
   }
 }
 

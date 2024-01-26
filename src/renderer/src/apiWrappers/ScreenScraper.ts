@@ -76,7 +76,7 @@ export class ScreenScraper {
       return entry?.text;
     }
 
-    const { crc, size } = (game.crc && game.romsize)
+    const { crc, size } = (game.romsize)
       ? { crc: game.crc, size: game.romsize }
       : await window.getRomFileInfo(game);
 
