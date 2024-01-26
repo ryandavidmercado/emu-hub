@@ -22,6 +22,7 @@ hub | *noun*:
     * ROMs directory can be entered into the ROMs property of the config
       * EmuHub follows ES-DE naming conventions for systems.
           * Example: `[ROM-FOLDER]/nes/Super Mario Bros 3.nes`
+    * Don't worry about RetroArch -> bin and RetroArch -> cores being empty; these are fallback values meant to be set if the defaults don't work. Only adjust these if RetroArch-based systems aren't launching!
     * Restart EmuHub to apply changes
 1. Scrape games!
     1. Hit START to open the EmuHub menu
@@ -35,6 +36,17 @@ hub | *noun*:
         * Try creating a new collection! Collections will display individual scrollers in the Home page
         * Hit Down in the Game View to access game information and dynamic recommendations (by genre, developer, and publisher)
     * Hit Play on the Game View to launch
+  
+## Troubleshooting
+> My games are failing to launch!
+If you've already followed step 1 and verified that you've installed the necessary RetroArch cores and standalone emulators, you might need to edit the config paths.
+* Non-RetroArch systems (PS2, etc)
+    * Edit Documents/EmuHub/config/emulators.yml
+* RetroArch systems
+    * Find the path to
+        1. Your RetroArch executable
+        2. Your RetroArch cores
+    * Edit the RetroArch -> bin and RetroArch -> cores properties of Documents/EmuHub/config/paths.yml  
 
 ## Supported Systems
 * Nintendo Entertainment System (RetroArch - Mesen)
