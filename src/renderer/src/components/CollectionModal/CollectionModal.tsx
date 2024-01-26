@@ -22,7 +22,7 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
   const [,addGameToCollection] = useAtom(collections.addGame);
   const [,addNotification] = useAtom(notifications.add);
 
-  const INPUT_PRIOIRTY = 11;
+  const INPUT_PRIOIRTY = 20;
 
   useOnInput((input) => {
     switch(input) {
