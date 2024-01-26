@@ -13,6 +13,8 @@ import removeGameFiles from './util/removeGameFiles';
 import os from "os"
 import initRomDir from './util/initRomDir';
 
+import { accessSync, constants as fsConstants } from 'fs';
+
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
 // just add to the DOM global.
@@ -33,6 +35,12 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('initRomDir', initRomDir)
     contextBridge.exposeInMainWorld('restart', () => { ipcRenderer.invoke('restart') })
     contextBridge.exposeInMainWorld('quit', () => { ipcRenderer.invoke('quit') })
+    contextBridge.exposeInMainWorld('checkDir', (dir: string) => {
+      try {
+        accessSync(dir, fsConstants.R_OK | fsConstants.W_OK);
+        return true;
+      } catch { return false; }
+    })
   } catch (error) {
     console.error(error)
   }

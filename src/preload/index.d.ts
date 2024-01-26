@@ -28,6 +28,7 @@ declare global {
     removeGameFiles: typeof removeGameFiles
     platform: "darwin" | "linux" | "win32"
     homedir: string
+    checkDir: (dir: string) => boolean
     initRomDir: typeof initRomDir
     restart: () => void
     quit: () => void

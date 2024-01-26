@@ -12,7 +12,7 @@ import Keyboard, { KeyboardButtonTheme, SimpleKeyboard } from "react-simple-keyb
 import "react-simple-keyboard/build/css/index.css";
 import "./keyboard.scss";
 
-const labelAtom = atom("");
+const labelAtom = atom<string | undefined>("");
 const eventHandler = createNanoEvents();
 const modalOpenAtom = atom(false);
 const inputAtom = atom("");
@@ -22,7 +22,7 @@ const isCapsAtom = atom<boolean>(false);
 const isShiftAtom = atom<boolean>(false);
 
 interface UseInputModalProps {
-  label: string;
+  label?: string;
   defaultValue?: string;
   isPassword?: boolean;
   style?: CSSProperties;

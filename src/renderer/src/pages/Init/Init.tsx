@@ -11,14 +11,18 @@ import css from "./Init.module.scss"
 import { eventHandler } from "@renderer/eventHandler"
 import { useOnInput } from "@renderer/hooks"
 import { settingsOpenAtom } from "@renderer/components/Settings"
+import { useInputModal } from "@renderer/components/InputModal/InputModal"
+import { MainPaths } from "@common/types/Paths"
 
 let isInitializing = false;
 
 const Init = () => {
-  const [paths] = useAtom(pathAtom)
+  const [configuredPaths, setPaths] = useAtom(pathAtom)
   const [systems] = useAtom(systemsAtoms.lists.all)
 
   const [settingsOpen] = useAtom(settingsOpenAtom);
+
+  const getInput = useInputModal();
 
   const [, scanRoms] = useAtom(games.scan)
   const { getSelection, modalProps } = useSelect();
@@ -26,9 +30,9 @@ const Init = () => {
   const navigate = useNavigate();
 
   // lock input while we're initializing
-  useOnInput(() => {}, { priority: 999, disabled: modalProps.open || settingsOpen })
+  useOnInput(() => {}, { priority: 20, disabled: modalProps.open || settingsOpen })
 
-  const main = async () => {
+  const main = async (paths: MainPaths = configuredPaths) => {
     await window.initRomDir(paths, systems)
     const gamesLength = await scanRoms();
 
@@ -44,17 +48,15 @@ const Init = () => {
           <div className={css.dir}>{paths.ROMs}</div>
           <div>You can either:</div>
           <ul>
-            <li>Load up some ROMs in this directory and restart EmuHub.</li>
-            <li>Change your ROMs directory by modifying...
-              <div className={css.dir}>{window.homedir}/Documents/EmuHub/config/paths.yml</div>
-              ...and restarting EmuHub.
-            </li>
+            <li>Load up some ROMs in this directory and restart EmuHub</li>
+            <li>Change your ROMs directory, or</li>
             <li>Head to the system stores to download some homebrew!</li>
           </ul>
         </div>
       ),
       options: [
         { id: 'close', label: "Close EmuHub" },
+        { id: 'change', label: "Change ROMs Directory" },
         { id: 'store', label: "Head to the stores!", colorScheme: "confirm" }
       ],
       canClose: false,
@@ -64,6 +66,25 @@ const Init = () => {
       case "close":
         window.quit();
         break;
+      case "change": {
+        const input = await getInput({
+          defaultValue: paths.ROMs
+        });
+
+        if(!input) return main();
+
+        const parentDir = window.path.dirname(input);
+        const canUseDir = window.checkDir(parentDir);
+
+        if(!canUseDir) return main();
+
+        const newPaths: MainPaths = { ...paths, ROMs: input }
+        setPaths(newPaths);
+
+        main(newPaths);
+
+        break;
+      }
       default: "store"
         eventHandler.emit("settings-jump-to-section", 2)
         break;
