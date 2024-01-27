@@ -26,6 +26,7 @@ interface UseInputModalProps {
   defaultValue?: string;
   isPassword?: boolean;
   style?: CSSProperties;
+  shiftOnOpen?: boolean;
 }
 
 export const useInputModal = () => {
@@ -37,14 +38,14 @@ export const useInputModal = () => {
   const [, setIsCaps] = useAtom(isCapsAtom);
   const [, setIsShift] = useAtom(isShiftAtom);
 
-  return async ({ label, defaultValue, isPassword, style }: UseInputModalProps) => {
+  return async ({ label, defaultValue, isPassword, style, shiftOnOpen = true }: UseInputModalProps) => {
     setLabel(label);
     setInput(defaultValue ?? "");
     setOpen(true);
     setIsPassword(isPassword ?? false);
     setStyle(style ?? {});
     setIsCaps(false);
-    setIsShift(true);
+    setIsShift(shiftOnOpen);
 
     let unbindCancelListener: Unsubscribe;
     let unbindSubmitHandler: Unsubscribe;
