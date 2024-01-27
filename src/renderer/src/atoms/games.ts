@@ -26,25 +26,6 @@ const scanGamesAtom = atom(null,
   }
 )
 
-const recentlyViewedAtom = atom((get) => {
-  const games = get(mainAtoms.lists.all);
-  return games
-    .filter(game => {
-      if (!game.lastViewed) return false; // if we haven't viewed this game, don't include it
-      if (!game.lastPlayed) return true; // if we haven't played this game yet (and we've viewed it), include it
-
-      // only include this game if our last played is before our last viewed
-      // from the user's perspective, this "promotes" a game from Recently Viewed to Continue Playing when we launch it
-      return (
-        new Date(game.lastPlayed).getTime() < new Date(game.lastViewed).getTime()
-      )
-    })
-    .sort((a, b) =>
-      new Date(b.lastViewed!).valueOf() - new Date(a.lastViewed!).valueOf()
-    )
-    .slice(0, 8)
-});
-
 const recentlyPlayedAtom = atom((get) => {
   const games = get(mainAtoms.lists.all);
   return games
@@ -60,14 +41,39 @@ const recentlyAddedAtom = atom((get) => {
   return games
     .filter(game => game.added && !game.lastPlayed)
     .filter((game) =>
-      // 172800000: 2 days in milliseconds
-      new Date().getTime() - new Date(game.added!).getTime() < 172800000
+      // 86400000: 1 day in milliseconds
+      new Date().getTime() - new Date(game.added!).getTime() < 86400000
     )
     .sort((a, b) =>
       new Date(b.added!).valueOf() - new Date(a.added!).valueOf()
     )
     .slice(0, 8)
 })
+
+interface RecentlyViewedFilters {
+  played?: boolean;
+  added?: boolean;
+}
+
+const recentlyViewedAtom = atomFamily((filter: RecentlyViewedFilters) => atom((get) => {
+  const games = get(mainAtoms.lists.all);
+  const playedIds = new Set(get(recentlyPlayedAtom).map(g => g.id));
+  const addedIds = new Set(get(recentlyAddedAtom).map(g => g.id));
+
+  return games
+    .filter(game => {
+      if (!game.lastViewed) return false;
+
+      if (filter.played && playedIds.has(game.id)) return false;
+      if (filter.added && addedIds.has(game.id)) return false;
+
+      return true;
+    })
+    .sort((a, b) =>
+      new Date(b.lastViewed!).valueOf() - new Date(a.lastViewed!).valueOf()
+    )
+    .slice(0, 8)
+}));
 
 const launchGameAtom = atom(null, async (get, set, gameId: string) => {
   const systemsList = get(systemMainAtoms.lists.all);

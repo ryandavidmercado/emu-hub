@@ -17,7 +17,7 @@ export const Home = () => {
   const [scrollerIndex, setScrollerIndex] = useState(0);
 
   const [systemsList] = useAtom(systems.lists.onlyWithGames);
-  const [recentlyViewedGamesList] = useAtom(games.lists.recentlyViewed);
+  const [recentlyViewedGamesList] = useAtom(games.lists.recentlyViewed({ added: true, played: true }));
   const [recentlyPlayedGamesList] = useAtom(games.lists.recentlyPlayed);
   const [recentlyAddedGamesList] = useAtom(games.lists.recentlyAdded);
   const [collectionsList] = useAtom(collections.lists.withGames);
