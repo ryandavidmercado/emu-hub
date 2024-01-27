@@ -190,7 +190,6 @@ const Store = ({ system, store, isActive, onBack, onExit, inputPriority }: Store
               controlledActiveIndex={activeIndex}
               controlledSetActiveIndex={setActiveIndex}
               inputPriority={inputPriority}
-              scrollType="center"
             />
             <AlphabetSelector
               entries={entries}

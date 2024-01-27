@@ -13,12 +13,14 @@ import { useOnInput } from "@renderer/hooks"
 import { settingsOpenAtom } from "@renderer/components/Settings"
 import { useInputModal } from "@renderer/components/InputModal/InputModal"
 import { MainPaths } from "@common/types/Paths"
+import notifications from "@renderer/atoms/notifications"
 
 let isInitializing = false;
 
 const Init = () => {
   const [configuredPaths, setPaths] = useAtom(pathAtom)
   const [systems] = useAtom(systemsAtoms.lists.all)
+  const [, addNotification] = useAtom(notifications.add)
 
   const [settingsOpen] = useAtom(settingsOpenAtom);
 
@@ -76,7 +78,13 @@ const Init = () => {
         const parentDir = window.path.dirname(input);
         const canUseDir = window.checkDir(parentDir);
 
-        if(!canUseDir) return main();
+        if(!canUseDir) {
+          addNotification({
+            text: `Unable to access ${parentDir}!`,
+            type: "error",
+          })
+          return main(paths);
+        }
 
         const newPaths: MainPaths = { ...paths, ROMs: input }
         setPaths(newPaths);
@@ -92,7 +100,7 @@ const Init = () => {
 
     const unbind = eventHandler.on('settings-close', () => {
       unbind();
-      main();
+      main(paths);
     })
   }
 
