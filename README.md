@@ -13,6 +13,7 @@ hub | *noun*:
 
 ## Initial Setup
 1. (Steam Deck only)
+    * Make sure to set the EmuHub AppImage to executable: https://docs.appimage.org/introduction/quickstart.html
     * If you're planning on running EmuHub from Game Mode, make sure to set the launch arguments in Steam to --no-sandbox, otherwise games will fail to launch.
 1. Verify you've installed necessary emulators
     * EmuHub currently only supports one emulator per system; the needed dependencies are listed below under Supported Systems.
@@ -33,9 +34,15 @@ hub | *noun*:
     * Hit Play on the Game View to launch
   
 ## Troubleshooting
+> EmuHub won't launch! (I'm on Steam Deck)
+
+Make sure you've set the EmuHub AppImage to executable: https://docs.appimage.org/introduction/quickstart.html
+
+If you're running EmuHub through Game Mode, add --no-sandbox to the launch arguments.
+
 > My games are failing to launch! (I'm on Steam Deck)
 
-If you're running EmuHub on Steam Deck through Game Mode, add --no-sandbox to the launch arguments.
+Make sure you've installed the necessary RetroArch cores and standalone emulators! The easiest way to do this is to install EmuDeck; this will preinstall all of the necessary emulators for you.
 
 > My games are failing to launch! (I'm on MacOS)
 
