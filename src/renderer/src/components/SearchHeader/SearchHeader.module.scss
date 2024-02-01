@@ -1,0 +1,31 @@
+.bgOverlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  content: '';
+  z-index: 3;
+  background-color: black;
+}
+
+.searchContainer {
+  position: absolute;
+  width: 100%;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+
+  .searchbar {
+    background-color: hsl(177, 24%, 84%);
+    color: hsl(200, 15%, 10%);
+    padding: 15px 30px;
+    border-radius: 20px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    font-family: Figtree Variable;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 150px;
+    font-size: 1.2rem
+  }
+}

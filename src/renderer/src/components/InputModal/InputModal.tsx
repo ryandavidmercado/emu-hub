@@ -20,6 +20,7 @@ const isPasswordAtom = atom(false);
 const styleAtom = atom<CSSProperties>({});
 const isCapsAtom = atom<boolean>(false);
 const isShiftAtom = atom<boolean>(false);
+const shiftOnSpaceAtom = atom<boolean>(true);
 
 interface UseInputModalProps {
   label?: string;
@@ -27,6 +28,7 @@ interface UseInputModalProps {
   isPassword?: boolean;
   style?: CSSProperties;
   shiftOnOpen?: boolean;
+  shiftOnSpace?: boolean;
 }
 
 export const useInputModal = () => {
@@ -37,8 +39,16 @@ export const useInputModal = () => {
   const [, setStyle] = useAtom(styleAtom);
   const [, setIsCaps] = useAtom(isCapsAtom);
   const [, setIsShift] = useAtom(isShiftAtom);
+  const [, setShiftOnSpace] = useAtom(shiftOnSpaceAtom);
 
-  return async ({ label, defaultValue, isPassword, style, shiftOnOpen = true }: UseInputModalProps) => {
+  return async ({
+    label,
+    defaultValue,
+    isPassword,
+    style,
+    shiftOnOpen = true,
+    shiftOnSpace = true
+  }: UseInputModalProps) => {
     setLabel(label);
     setInput(defaultValue ?? "");
     setOpen(true);
@@ -46,6 +56,7 @@ export const useInputModal = () => {
     setStyle(style ?? {});
     setIsCaps(false);
     setIsShift(shiftOnOpen);
+    setShiftOnSpace(shiftOnSpace);
 
     let unbindCancelListener: Unsubscribe;
     let unbindSubmitHandler: Unsubscribe;
@@ -77,6 +88,7 @@ export const InputModal = () => {
 
   const [isCaps, setIsCaps] = useAtom(isCapsAtom);
   const [isShift, setIsShift] = useAtom(isShiftAtom);
+  const [shiftOnSpace] = useAtom(shiftOnSpaceAtom);
 
   const [keyboardHandler, setKeyboardHandler] = useState<SimpleKeyboard>();
 
@@ -171,7 +183,7 @@ export const InputModal = () => {
                 break;
               case "{space}":
                 setInput(i => i + " ");
-                setIsShift(true);
+                if(!isCaps && shiftOnSpace) setIsShift(true);
                 break;
               case "{tab}":
                 setInput(i => i + " ");

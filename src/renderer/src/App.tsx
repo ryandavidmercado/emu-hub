@@ -11,6 +11,7 @@ import Notifications from './components/Notifications/Notifications';
 import { InputModal } from './components/InputModal/InputModal';
 import ConfirmationModal from './components/ConfirmationModal/ConfirmationModal';
 import Init from './pages/Init/Init';
+import { SearchView } from './pages/SearchView/SearchView';
 
 function App() {
   const { parentRef, waveHeight } = useWaveHeight(.3);
@@ -47,6 +48,10 @@ const appRoutes = [
   {
     path: "/home",
     element: <Home />
+  },
+  {
+    path: "/games/search/:searchQuery",
+    element: <SearchView />
   },
   {
     path: "/game/:gameId",
