@@ -15,11 +15,11 @@ const mainAtoms = arrayConfigAtoms<Game>({ storageKey: 'games' });
 const scanGamesAtom = atom(null,
   async (get, set) => {
     const newGames = await window.scanRoms(
-      true,
       get(pathsAtom),
       get(systemMainAtoms.lists.all),
       get(mainAtoms.lists.all)
     );
+
     set(mainAtoms.lists.all, newGames);
 
     return newGames.length;
