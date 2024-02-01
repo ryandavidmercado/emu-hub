@@ -9,6 +9,7 @@ import notifications from "./notifications";
 import { ScreenScraper } from "@renderer/apiWrappers/ScreenScraper";
 import screenScraperAtom from "./screenscaper";
 import deepEqual from "fast-deep-equal"
+import uFuzzy from "@leeoniya/ufuzzy";
 
 const mainAtoms = arrayConfigAtoms<Game>({ storageKey: 'games' });
 
@@ -259,6 +260,25 @@ const removeAtom = atom(null, (get, set, id: string) => {
   set(mainAtoms.remove, id);
 })
 
+const searchAtom = atom((get) => {
+  const allGames = get(mainAtoms.lists.all);
+
+  const haystack = allGames.map(game => game.name ?? game.romname);
+  const searcher = new uFuzzy();
+
+  return (query: string) => {
+    if(!query) return [];
+
+    const [indices, _info, order] = searcher.search(haystack, query)
+    if(!order || !indices) return [];
+
+    return order.map(index => {
+      const gameIndex = indices[index]
+      return allGames[gameIndex];
+    })
+  }
+})
+
 export default {
   ...mainAtoms,
   lists: {
@@ -267,7 +287,8 @@ export default {
     recentlyPlayed: recentlyPlayedAtom,
     recentlyAdded: recentlyAddedAtom,
     system: forSystemAtom,
-    byAttribute: byAttributeAtom
+    byAttribute: byAttributeAtom,
+    search: searchAtom
   },
   launch: launchGameAtom,
   scan: scanGamesAtom,
