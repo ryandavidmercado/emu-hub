@@ -174,8 +174,12 @@ interface ScrapeSettings {
 const scrapeGameAtom = atom(null,
   async (get, set, { gameId, extraText }: ScrapeSettings) => {
     const ssCreds = get(screenScraperAtom);
+
     const game = get(mainAtoms.single(gameId))
     if (!game) throw new Error(`Tried to scrape undefined game: ${gameId}`);
+
+    const system = get(systemMainAtoms.single(game.system));
+    if (!system) throw new Error(`Tried to scrape game for undefined system: ${game.system}`);
 
     const notificationId = `scrape-${game.id}`;
 
@@ -189,7 +193,7 @@ const scrapeGameAtom = atom(null,
     const ss = new ScreenScraper({ userId: ssCreds.username, userPassword: ssCreds.password });
 
     try {
-      const finalGame = await ss.scrapeByRomInfo(game)
+      const finalGame = await ss.scrapeByRomInfo(game, system)
       set(mainAtoms.single(gameId), finalGame)
       set(notifications.remove, notificationId);
       set(notifications.add, {
