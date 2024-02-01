@@ -34,7 +34,7 @@ const Init = () => {
   // lock input while we're initializing
   useOnInput(() => {}, { priority: 20, disabled: modalProps.open || settingsOpen })
 
-  const main = async (paths: MainPaths = configuredPaths) => {
+  const main = async (paths: MainPaths) => {
     await window.initRomDir(paths, systems)
     const gamesLength = await scanRoms();
 
@@ -70,10 +70,11 @@ const Init = () => {
         break;
       case "change": {
         const input = await getInput({
-          defaultValue: paths.ROMs
+          defaultValue: paths.ROMs,
+          shiftOnOpen: false
         });
 
-        if(!input) return main();
+        if(!input) return main(paths);
 
         const parentDir = window.path.dirname(input);
         const canUseDir = window.checkDir(parentDir);
@@ -107,7 +108,7 @@ const Init = () => {
   useEffect(() => {
     if(!isInitializing) {
       isInitializing = true;
-      main();
+      main(configuredPaths);
     }
   }, [])
 

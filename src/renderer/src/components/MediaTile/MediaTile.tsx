@@ -10,10 +10,12 @@ export interface TileMedia {
   foregroundText?: string
 }
 
-interface Props {
+export type AspectRatio = "landscape" | "square"
+
+export interface MediaTileProps {
   active?: boolean
   activeRef?: React.RefObject<HTMLDivElement>
-  aspectRatio?: "landscape" | "square"
+  aspectRatio?: AspectRatio
   style?: CSSProperties
   swapTransform?: boolean
   className?: string
@@ -29,7 +31,7 @@ const MediaTile = ({
   style,
   swapTransform,
   media
-}: Props) => {
+}: MediaTileProps) => {
   return (
     <div
       className={classNames(css.elem, css[aspectRatio], {

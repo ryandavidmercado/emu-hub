@@ -1,5 +1,4 @@
 import { ScrollerProps } from "../Scroller";
-import MediaTile from "../MediaTile/MediaTile";
 import { useId, useMemo } from "react";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeGrid as Grid } from "react-window"
@@ -12,6 +11,7 @@ import Label from "../Label/Label";
 import css from "./GridScroller.module.scss"
 import { Game } from "@common/types/Game";
 import { System } from "@common/types/System";
+import GameTile from "../MediaTile/Presets/GameTile";
 
 const activeCellAtom = atomFamily((_id: string) => atom({
   row: 0,
@@ -31,16 +31,11 @@ const GameCell = ({ columnIndex, rowIndex, style, data }) => {
 
   return (
     <div className={css.tileWrapper} style={style} >
-      <MediaTile
+      <GameTile
         active={isActive}
         swapTransform
         className={css.tile}
-        media={gameData.poster
-          ? {
-            background: gameData.poster
-          }
-          : { background: gameData.screenshot, foreground: gameData.logo, foregroundText: gameData.name ?? gameData.romname }
-        }
+        game={gameData}
       />
     </div>
   )
