@@ -1,4 +1,4 @@
-import { Game, MediaTypes } from "@common/types";
+import { Game, MediaTypes, System } from "@common/types";
 import { SOFTNAME } from "@renderer/const/const";
 import fetchRetry from "fetch-retry";
 
@@ -50,7 +50,7 @@ export class ScreenScraper {
     this.addParamsToUrl(params, this.url);
   }
 
-  async scrapeByRomInfo(game: Game): Promise<Game> {
+  async scrapeByRomInfo(game: Game, system: System): Promise<Game> {
     const path = "jeuInfos.php";
 
     const getArt = (ssMediaType: string | string[], ehMediaType: keyof MediaTypes, region: string, response: any) => {
@@ -80,7 +80,7 @@ export class ScreenScraper {
       ? { crc: game.crc, size: game.romsize }
       : await window.getRomFileInfo(game);
 
-    const params = { romnom: game.romname, crc, size };
+    const params = { romnom: game.romname, systemeid: system.ssId, crc, size };
 
     try {
       const response = await this.fetchWithParams(path, params);

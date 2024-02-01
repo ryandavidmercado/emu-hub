@@ -24,7 +24,7 @@ const readLocalMedia = (mediaPath: string) => {
 }
 
 const getExternalPath = (mediaPath: string) => {
-  if(map[mediaPath]) return map[mediaPath];
+  // if(map[mediaPath]) return map[mediaPath];
   if (mediaPath.includes("http://") || mediaPath.includes("https://") || mediaPath.includes("data:")) return mediaPath;
   return readLocalMedia(mediaPath)
 }

@@ -5,6 +5,7 @@ const emulatorIds = new Set(defaultEmulators.map(emu => emu.id));
 const defaultSystems = [
   {
     "id": "psx",
+    "ssId": 57,
     "name": "Sony PlayStation",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Playstation_logo_colour.svg/1280px-Playstation_logo_colour.svg.png",
     "hero": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/PlayStation-SCPH-1000-with-Controller.jpg/2880px-PlayStation-SCPH-1000-with-Controller.jpg",
@@ -23,7 +24,7 @@ const defaultSystems = [
   },
   {
     "id": "nes",
-    "ssId": "3",
+    "ssId": 3,
     "name": "Nintendo Entertainment System",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/NES_logo.svg/288px-NES_logo.svg.png?20230801110942",
     "hero": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/NES-Console-Set.jpg/2880px-NES-Console-Set.jpg",
@@ -46,6 +47,7 @@ const defaultSystems = [
   },
   {
     "id": "wii",
+    "ssId": 16,
     "name": "Nintendo Wii",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/1/1c/Wii_logo.png",
     "hero": "https://i.imgur.com/PWtkTsw.png",
@@ -62,6 +64,7 @@ const defaultSystems = [
   },
   {
     "id": "n64",
+    "ssId": 14,
     "name": "Nintendo 64",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Nintendo_64_logo.png?20210112130405",
     "hero": "https://i.imgur.com/nhU1Xo4.png",
@@ -78,6 +81,7 @@ const defaultSystems = [
   },
   {
     "id": "gc",
+    "ssId": 13,
     "name": "Gamecube",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Nintendo_GameCube-06.svg/640px-Nintendo_GameCube-06.svg.png",
     "emulators": [
@@ -93,6 +97,7 @@ const defaultSystems = [
   },
   {
     "id": "dreamcast",
+    "ssId": 23,
     "name": "Dreamcast",
     "releaseYear": "1998",
     "company": "Sega",
@@ -111,6 +116,7 @@ const defaultSystems = [
   },
   {
     "id": "gb",
+    "ssId": 9,
     "name": "Game Boy",
     "releaseYear": "1989",
     "company": "Nintendo",
@@ -132,6 +138,7 @@ const defaultSystems = [
   },
   {
     "id": "gbc",
+    "ssId": 10,
     "name": "Game Boy Color",
     "releaseYear": "1998",
     "company": "Nintendo",
@@ -153,6 +160,7 @@ const defaultSystems = [
   },
   {
     "id": "gba",
+    "ssId": 12,
     "name": "Game Boy Advance",
     "releaseYear": "2001",
     "company": "Nintendo",
@@ -174,6 +182,7 @@ const defaultSystems = [
   },
   {
     "id": "nds",
+    "ssId": 15,
     "name": "Nintendo DS",
     "releaseYear": "2004",
     "company": "Nintendo",
@@ -188,6 +197,7 @@ const defaultSystems = [
   },
   {
     "id": "genesis",
+    "ssId": 1,
     "name": "Sega Genesis",
     "releaseYear": "1988",
     "company": "Sega",
@@ -208,6 +218,7 @@ const defaultSystems = [
   },
   {
     "id": "ps2",
+    "ssId": 52,
     "name": "Sony PlayStation 2",
     "releaseYear": "2000",
     "company": "Sony",
@@ -226,6 +237,7 @@ const defaultSystems = [
   },
   {
     "id": "psp",
+    "ssId": 61,
     "name": "Sony PlayStation Portable",
     "releaseYear": "2004",
     "company": "Sony",
@@ -243,6 +255,7 @@ const defaultSystems = [
   },
   {
     "id": "saturn",
+    "ssId": 22,
     "name": "Sega Saturn",
     "releaseYear": "1994",
     "company": "Sega",
@@ -259,6 +272,7 @@ const defaultSystems = [
   },
   {
     "id": "snes",
+    "ssId": 4,
     "name": "Super Nintendo Entertainment System",
     "releaseYear": "1995",
     "company": "Nintendo",
@@ -280,6 +294,7 @@ const defaultSystems = [
   },
   {
     "id": "switch",
+    "ssId": 225,
     "name": "Nintendo Switch",
     "releaseYear": "2017",
     "company": "Nintendo",
@@ -296,6 +311,7 @@ const defaultSystems = [
   },
   {
     "id": "wiiu",
+    "ssId": 18,
     "name": "Nintendo Wii U",
     "releaseYear": "2012",
     "company": "Nintendo",
