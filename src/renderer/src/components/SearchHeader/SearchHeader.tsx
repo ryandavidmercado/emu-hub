@@ -81,7 +81,7 @@ const SearchHeader = ({ active, onExitDown, onExitBack }: Props) => {
       >
         <div className={css.searchbar}>
           Search
-          <IoMdSearch size="1.3rem" />
+          <IoMdSearch />
         </div>
       </motion.div>
     </>
