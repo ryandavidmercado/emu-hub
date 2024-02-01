@@ -49,6 +49,7 @@ const scanRoms = async (
     // handle multi-part games by filtering out other tracks/discs
     contents = contents.filter(entry => !entry.match(/\((Track|Disc) [^1]\)/));
     if(!contents.length) return;
+    if(contents.includes('.eh-ignore')) return;
 
     const extnames = systemExtnameMap[systemConfig.id] || (() => {
       const extnames = new Set(systemConfig.fileExtensions.map(normalizeExtname))
