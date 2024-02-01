@@ -6,8 +6,6 @@ import path from "path";
 
 const localAssets = import.meta.glob<{ default: string }>('../../../resources/**/*', { eager: true });
 
-const map: Record<string, string> = {}
-
 const readLocalMedia = (mediaPath: string) => {
   try {
     const imgFile = readFileSync(mediaPath);
@@ -16,7 +14,6 @@ const readLocalMedia = (mediaPath: string) => {
     if (!mimeType) throw ("Couldn't get file MIME type!")
 
     const url = bufferToDataUrl(mimeType, imgFile) as unknown as string;
-    map[mediaPath] = url;
     return url;
   } catch (e) {
     return ""
@@ -24,7 +21,6 @@ const readLocalMedia = (mediaPath: string) => {
 }
 
 const getExternalPath = (mediaPath: string) => {
-  // if(map[mediaPath]) return map[mediaPath];
   if (mediaPath.includes("http://") || mediaPath.includes("https://") || mediaPath.includes("data:")) return mediaPath;
   return readLocalMedia(mediaPath)
 }
