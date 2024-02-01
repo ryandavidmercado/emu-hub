@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Showcase, ShowcaseContent } from "../../components/Showcase"
 import css from "./Home.module.scss"
 import { useAtom } from "jotai";
@@ -48,7 +48,7 @@ export const Home = () => {
     }
   })()
 
-  const scrollers = [
+  const scrollers = useMemo(() => [
     {
       id: "continue-playing",
       elems: recentlyPlayedGamesList,
@@ -94,7 +94,14 @@ export const Home = () => {
         ? "landscape" as const
         : "square" as const
     })) as ScrollerConfig<Game>[]
-  ]
+  ], [
+    recentlyPlayedGamesList,
+    recentlyAddedGamesList,
+    systemsList,
+    recentlyViewedGamesList,
+    collectionsList
+  ])
+
 
   return (
     <div

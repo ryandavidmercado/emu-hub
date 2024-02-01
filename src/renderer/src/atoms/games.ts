@@ -73,7 +73,7 @@ const recentlyViewedAtom = atomFamily((filter: RecentlyViewedFilters) => atom((g
       new Date(b.lastViewed!).valueOf() - new Date(a.lastViewed!).valueOf()
     )
     .slice(0, 8)
-}));
+}), deepEqual);
 
 const launchGameAtom = atom(null, async (get, set, gameId: string) => {
   const systemsList = get(systemMainAtoms.lists.all);
