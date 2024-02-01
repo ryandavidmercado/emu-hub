@@ -3,10 +3,11 @@ import { CSSProperties, Ref, useEffect, useRef, useState } from "react";
 import css from "./Scroller.module.scss"
 import { useKeepVisible, useOnInput } from "../../hooks"
 import { Input, ScrollType } from "../../enums";
-import MediaTile, { TileMedia } from "../MediaTile/MediaTile";
 import Label from "../Label/Label";
 import { System } from "@common/types/System";
 import { Game } from "@common/types";
+import SystemTile from "../MediaTile/Presets/SystemTile";
+import GameTile from "../MediaTile/Presets/GameTile";
 
 export interface ScrollerProps<T extends Game | System> {
   aspectRatio?: "landscape" | "square"
@@ -59,32 +60,16 @@ export const Scroller = <T extends Game | System>({
     const elemIsActive = i === activeIndex
     const isSystem = getIsSystem(elem);
 
-    const tileMedia: TileMedia = (() => {
-      if(isSystem) return {
-        foreground: {
-          resourceType: "logo",
-          resourceCollection: "systems",
-          resourceId: elem.id,
-        }
-      }
+    const tileProps = {
+      key: elem.id,
+      activeRef: activeRef,
+      active: elemIsActive && isActive,
+      aspectRatio
+    }
 
-      if(elem.poster
-        && (!elem.gameTileDisplayType || elem.gameTileDisplayType === "poster")
-        && aspectRatio === "landscape"
-      ) return { background: elem.poster }
-
-      return { background: elem.screenshot, foreground: elem.logo, foregroundText: elem.name ?? elem.romname }
-    })()
-
-    return (
-      <MediaTile
-        media={tileMedia}
-        key={elem.id}
-        activeRef={activeRef}
-        active={elemIsActive && isActive}
-        aspectRatio={aspectRatio}
-      />
-    )
+    return isSystem
+      ? <SystemTile system={elem} {...tileProps} />
+      : <GameTile game={elem} {...tileProps} />
   })
 
   useOnInput((input) => {
