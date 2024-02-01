@@ -318,5 +318,4 @@ const parsedSystems: System[] = defaultSystems.map(system => {
   }
 }).filter(Boolean) as System[]
 
-console.log(parsedSystems)
 export default parsedSystems
