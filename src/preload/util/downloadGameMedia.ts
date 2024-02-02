@@ -24,6 +24,8 @@ const downloadGameMedia = async (game: Game, medias: GameMedia[]) => {
 
     let buffer = Buffer.from(await response.arrayBuffer());
     try {
+      // screenscraper assets often come with padding that leads to layout inconsistency
+      // get rid of it!
       buffer = await sharp(buffer).trim().toBuffer();
     } catch(e) {
       console.log(`Couldn't crop asset ${mediaType} for ${game.romname} -- ${e}`);
