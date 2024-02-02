@@ -7,6 +7,7 @@ import css from "./GameSettingsModal.module.scss";
 import MultiPageControllerForm, { MultiFormPage } from "../ControllerForm/MultiPage"
 import { ControllerFormEntry } from "../ControllerForm/ControllerForm"
 import { IoTrash } from "react-icons/io5"
+import { InputPriority } from "@renderer/const/inputPriorities"
 
 interface Props {
   game: Game,
@@ -105,7 +106,7 @@ const GameSettingsModal = ({ game, open, setOpen }: Props) => {
         <MultiPageControllerForm
           pages={pages}
           active={true}
-          inputPriority={20}
+          inputPriority={InputPriority.GENERAL_MODAL}
           hasParentContainer={false}
           onExitBack={() => { setOpen(false) }}
         />

@@ -16,6 +16,7 @@ import Collections from "./Collections/Collections";
 import Power from "./Power/Power";
 import { eventHandler } from "@renderer/eventHandler";
 import { atom, useAtom } from "jotai";
+import { InputPriority } from "@renderer/const/inputPriorities";
 
 const sections: Section[] = [
   {
@@ -98,7 +99,7 @@ const Settings = () => {
       }
     },
     {
-      priority: 19,
+      priority: InputPriority.SETTINGS_MODAL_OPEN_CLOSE,
       enforcePriority: false
     }
   )
@@ -123,7 +124,7 @@ const Settings = () => {
       }
     },
     {
-      priority: 10,
+      priority: InputPriority.SETTINGS_MODAL,
       disabled: !open
     }
   )
@@ -139,12 +140,12 @@ const Settings = () => {
             activeSection={activeSection}
             setActiveSection={setActiveSection}
             isActive={activeSide === "left"}
-            inputPriority={10}
+            inputPriority={InputPriority.SETTINGS_MODAL}
           />
         </div>
         <div className={classNames(css.right, (activeSide !== "right") && css.inactive)}>
           <ActiveComponent
-            inputPriority={10}
+            inputPriority={InputPriority.SETTINGS_MODAL}
             isActive={activeSide === "right"}
             onExit={() => setActiveSide("left") }
             onExitModal={() => setOpen(false) }

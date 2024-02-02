@@ -5,6 +5,7 @@ import { useOnInput } from "@renderer/hooks";
 import { Input } from "@renderer/enums";
 import css from "./ConfirmationModal.module.scss";
 import classNames from "classnames";
+import { InputPriority } from "@renderer/const/inputPriorities";
 
 const openAtom = atom(false)
 const textAtom = atom<string | undefined>(undefined);
@@ -59,7 +60,7 @@ const ConfirmationModal = () => {
         break;
     }
   }, {
-    priority: 99,
+    priority: InputPriority.INPUT_MODAL,
     disabled: !open
   })
 
