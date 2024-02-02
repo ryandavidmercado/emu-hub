@@ -36,9 +36,16 @@ const downloadGameMedia = async (game: Game, medias: GameMedia[]) => {
 
     return {
       ...acc,
-      [mediaType]: mediaPath
+      [mediaType]: mediaPath,
     }
   }, game)
+
+  newGame.gameTileDisplayType =
+    newGame.hero
+      ? "fanart"
+      : newGame.screenshot
+        ? "screenshot"
+        : undefined
 
   return newGame;
 }
