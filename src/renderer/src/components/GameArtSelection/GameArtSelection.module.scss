@@ -1,0 +1,94 @@
+@import "@renderer/scss/colors";
+
+.container {
+  background-color: $background;
+  border-radius: 20px;
+  overflow: hidden;
+  min-width: 850px;
+
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+
+  .left, .right {
+    display: grid;
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+  }
+
+  .row {
+    padding: 2rem;
+  }
+
+  .left {
+    .row {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      font-family: Figtree Variable;
+      font-size: 2rem;
+      color: $fadedminus;
+
+      .sub {
+        font-size: 1rem;
+      }
+
+      transition: background-color .1s ease, color .1s ease;
+
+      &.active {
+        background-color: $primary;
+        color: $background-dark;
+      }
+    }
+    backdrop-filter: brightness(80%);
+  }
+
+  .right {
+    .row {
+      display: flex;
+      justify-content: space-around;
+      gap: 3rem;
+
+      transition: backdrop-filter .1s ease;
+
+      &.active {
+        backdrop-filter: brightness(140%);
+      }
+
+      .column {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+
+  .contentWithLabel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+
+    font-family: Figtree Variable;
+    font-size: 1.2rem;
+    color: $faded;
+
+    .showcaseWrapper {
+      display: block;
+    }
+  }
+
+  .img {
+    transition: border .15s ease, transform .15s ease;
+
+    height: 15vh;
+    object-fit: cover;
+    box-shadow: 1px 4px 3px rgba(0, 0, 0, 0.5);
+    border: 3px solid transparent;
+    border-radius: 3px;
+
+    &.active {
+      border: 3px solid $primary;
+      transform: scale(1.04);
+    }
+  }
+}

@@ -24,5 +24,5 @@ export type Game = {
   romsize?: string
   showcaseDisplayType?: "screenshot" | "fanart",
   gamePageDisplayType?: "screenshot" | "fanart",
-  gameTileDisplayType?: "screenshot" | "poster"
+  gameTileDisplayType?: "screenshot" | "fanart" | "poster"
 } & MediaTypes

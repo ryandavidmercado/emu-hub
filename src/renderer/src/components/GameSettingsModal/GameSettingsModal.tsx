@@ -1,13 +1,16 @@
 import games from "@renderer/atoms/games"
 import { Game } from "@common/types"
 import Modal from "../Modal/Modal"
-import { Dispatch } from "react"
+import { Dispatch, useState } from "react"
 import { SetStateAction, useAtom } from "jotai"
 import css from "./GameSettingsModal.module.scss";
 import MultiPageControllerForm, { MultiFormPage } from "../ControllerForm/MultiPage"
 import { ControllerFormEntry } from "../ControllerForm/ControllerForm"
 import { IoTrash } from "react-icons/io5"
 import { InputPriority } from "@renderer/const/inputPriorities"
+import { DefaultGameDisplayType } from "@renderer/atoms/defaults/gameDisplayTypes"
+import { FaAngleRight } from "react-icons/fa"
+import GameArtSelction from "../GameArtSelection/GameArtSelection"
 
 interface Props {
   game: Game,
@@ -19,19 +22,24 @@ const GameSettingsModal = ({ game, open, setOpen }: Props) => {
   const [, removeGame] = useAtom(games.remove);
   const [, updateGame] = useAtom(games.single(game.id));
 
-  const showcaseDisplayType = game.showcaseDisplayType ?? "screenshot";
-  const gamePageDisplayType = game.gamePageDisplayType ?? "screenshot";
-  const gameTileDisplayType = game.gameTileDisplayType ?? "poster";
+  const [inGameArtSelection, setInGameArtSelection] = useState(false);
+
+  const showcaseDisplayType = game.showcaseDisplayType ?? DefaultGameDisplayType.showcase;
+  const gamePageDisplayType = game.gamePageDisplayType ?? DefaultGameDisplayType.gamePage;
+  const gameTileDisplayType = game.gameTileDisplayType ?? DefaultGameDisplayType.gameTile;
 
   const pages: MultiFormPage[] = [
     {
       id: 'main',
       entries: [
-        game.screenshot && (game.hero || game.poster) && {
+        (game.screenshot || game.hero || game.poster) && {
           id: 'game-art',
           label: 'Game Art',
-          type: 'navigate',
-          navigateTo: 'game-art'
+          type: 'action',
+          onSelect: () => {
+            setInGameArtSelection(true);
+          },
+          Icon: FaAngleRight
         },
         {
           id: 'rename',
@@ -102,15 +110,18 @@ const GameSettingsModal = ({ game, open, setOpen }: Props) => {
       id="game-settings"
       open={open}
     >
-      <div className={css.container}>
-        <MultiPageControllerForm
-          pages={pages}
-          active={true}
-          inputPriority={InputPriority.GENERAL_MODAL}
-          hasParentContainer={false}
-          onExitBack={() => { setOpen(false) }}
-        />
-      </div>
+      {!inGameArtSelection
+        ? <div className={css.container}>
+            <MultiPageControllerForm
+              pages={pages}
+              active={true}
+              inputPriority={InputPriority.GENERAL_MODAL}
+              hasParentContainer={false}
+              onExitBack={() => { setOpen(false) }}
+            />
+          </div>
+        : <GameArtSelction game={game} onExit={() => setInGameArtSelection(false) }/>
+      }
     </Modal>
   )
 }

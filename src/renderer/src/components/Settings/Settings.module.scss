@@ -1,3 +1,5 @@
+@import "@renderer/scss/colors";
+
 .modal {
   position: fixed;
   width: 100%;
@@ -14,7 +16,7 @@
 .body {
   width: 80%;
   height: 80%;
-  background-color: hsl(200, 15%, 20%);
+  background-color: $background;
   border-radius: 20px;
 
   display: flex;
