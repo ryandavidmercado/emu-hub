@@ -2,7 +2,7 @@ import { Game } from "@common/types"
 import MediaTile, { MediaTileProps, TileMedia } from "../MediaTile"
 import { DefaultGameDisplayType } from "@renderer/atoms/defaults/gameDisplayTypes"
 
-type Props = Omit<MediaTileProps, "media"> & { game: Game, displayType: Game["gameTileDisplayType"] }
+type Props = Omit<MediaTileProps, "media"> & { game: Game, displayType?: Game["gameTileDisplayType"] }
 
 const GameTile = ({
   game,

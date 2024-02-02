@@ -8,7 +8,7 @@ const fetch = fetchRetry(window.fetch, {
   retryDelay: 800
 }) // ScreenScraper fails often on 429
 
-type URLParams = Record<string, string | undefined>
+type URLParams = Record<string, string | number | undefined>
 interface ConstructorProps {
   userId?: string;
   userPassword?: string;
@@ -21,7 +21,7 @@ export class ScreenScraper {
 
   private url: URL;
 
-  private addParamsToUrl(params: Record<string, string | undefined>, url: URL) {
+  private addParamsToUrl(params: Record<string, string | number | undefined>, url: URL) {
     Object.entries(params).forEach(([key, value]) => {
       if (value) url.searchParams.append(key, String(value));
     })
