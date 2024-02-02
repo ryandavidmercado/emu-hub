@@ -5,6 +5,7 @@ import { Input } from "@renderer/enums";
 import css from "./SelectModal.module.scss";
 import classNames from "classnames";
 import { Dispatch, ReactNode, SetStateAction, useState } from "react";
+import { InputPriority } from "@renderer/const/inputPriorities";
 
 const eventHandler = createNanoEvents();
 
@@ -74,7 +75,7 @@ const ConfirmationModal = ({ open, text, selected, setSelected, options, canClos
         break;
     }
   }, {
-    priority: 99,
+    priority: InputPriority.INPUT_MODAL,
     disabled: !open
   })
 

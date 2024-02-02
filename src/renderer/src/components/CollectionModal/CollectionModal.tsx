@@ -9,6 +9,7 @@ import { FaPlus } from "react-icons/fa6"
 import { Game } from "@common/types";
 import collections from "@renderer/atoms/collections";
 import notifications from "@renderer/atoms/notifications";
+import { InputPriority } from "@renderer/const/inputPriorities";
 
 interface Props {
   open: boolean
@@ -22,8 +23,6 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
   const [,addGameToCollection] = useAtom(collections.addGame);
   const [,addNotification] = useAtom(notifications.add);
 
-  const INPUT_PRIOIRTY = 20;
-
   useOnInput((input) => {
     switch(input) {
       case Input.B:
@@ -31,7 +30,7 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
     }
   }, {
     disabled: !open,
-    priority: INPUT_PRIOIRTY
+    priority: InputPriority.GENERAL_MODAL
   })
 
   // TODO: this list doesn't work properly when it exceeds container height
@@ -76,7 +75,7 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
         <ControllerForm
           entries={entries}
           isActive={true}
-          inputPriority={INPUT_PRIOIRTY}
+          inputPriority={InputPriority.GENERAL_MODAL}
           maxHeight="70vh"
         />
       </div>

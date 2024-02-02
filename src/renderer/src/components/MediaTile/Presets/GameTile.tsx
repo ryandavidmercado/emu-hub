@@ -1,21 +1,42 @@
 import { Game } from "@common/types"
 import MediaTile, { MediaTileProps, TileMedia } from "../MediaTile"
+import { DefaultGameDisplayType } from "@renderer/atoms/defaults/gameDisplayTypes"
 
-type Props = Omit<MediaTileProps, "media"> & { game: Game }
+type Props = Omit<MediaTileProps, "media"> & { game: Game, displayType?: Game["gameTileDisplayType"] }
 
 const GameTile = ({
   game,
   aspectRatio = "landscape",
+  displayType: displayTypeFromProps,
   ...props
 }: Props) => {
   const tileMedia: TileMedia = (() => {
-    if (
-      game.poster
-      && (!game.gameTileDisplayType || game.gameTileDisplayType === "poster")
-      && aspectRatio === "landscape"
-    ) return { background: game.poster }
+    const displayType = displayTypeFromProps ?? game.gameTileDisplayType ?? DefaultGameDisplayType.gameTile;
 
-    return { background: game.screenshot, foreground: game.logo, foregroundText: game.name ?? game.romname }
+    const art = displayType === "fanart" ? "hero" : displayType;
+    let background = game[art];
+    if(!background) background = game.screenshot;
+
+    // we can only use poster on landscape tiles; if set, use screenshot + logo instead
+    if(aspectRatio !== "landscape") {
+      return {
+        background: art === "poster" ? game.screenshot : background,
+        foreground: game.logo,
+        foregroundText: game.name ?? game.romname
+      }
+    }
+
+    return {
+      background: background,
+      foreground: (() => {
+        if(art === "poster" && background) return undefined;
+        return game.logo
+      })(),
+      foregroundText: (() => {
+        if(art === "poster" && background) return undefined;
+        return game.name ?? game.romname
+      })()
+    }
   })()
 
   return <MediaTile
