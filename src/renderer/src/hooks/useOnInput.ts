@@ -15,7 +15,8 @@ const kbKeyMap: Partial<Record<KeyboardEvent['key'], Input>> = {
   s: Input.DOWN,
   "Enter": Input.A,
   "Escape": Input.B,
-  "Backspace": Input.START
+  "Backspace": Input.START,
+  "Tab": Input.SELECT
 }
 
 interface Subscriber {
