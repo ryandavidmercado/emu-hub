@@ -3,6 +3,7 @@ import { Game } from "@common/types";
 import { ASSETS_PATH } from "./const";
 import { mkdir, writeFile } from "fs/promises";
 import sharp from "sharp"
+import { refreshImages } from "./loadMedia";
 
 interface GameMedia {
   mediaType: string,
@@ -21,6 +22,7 @@ const downloadGameMedia = async (game: Game, medias: GameMedia[]) => {
     const mediaPath = path.join(gameAssetsPath, `${mediaType}.${format}`)
 
     const response = await fetch(url);
+    if(response.status === 404) throw "Image not found"
 
     let buffer = Buffer.from(await response.arrayBuffer());
     try {
@@ -56,6 +58,7 @@ const downloadGameMedia = async (game: Game, medias: GameMedia[]) => {
         ? "screenshot"
         : undefined
 
+  refreshImages();
   return newGame;
 }
 

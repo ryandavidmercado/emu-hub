@@ -1,4 +1,4 @@
-import { Dispatch, useMemo, useRef, useState } from "react";
+import { Dispatch, useRef, useState } from "react";
 import { Scroller, ScrollerProps } from "../Scroller"
 import { useKeepVisible } from "@renderer/hooks";
 import { ScrollType } from "@renderer/enums";
@@ -34,7 +34,7 @@ const Scrollers = ({
 
   const activeRef = useRef<HTMLDivElement>(null);
 
-  const content = useMemo(() => {
+  const content = () => {
     const filteredScrollers = scrollers.filter(s => s.elems.length)
 
     const onPrevScroller = () => {
@@ -58,7 +58,7 @@ const Scrollers = ({
         disableInput={isDisabled}
       />
     ))
-  }, [activeIndex, setActiveIndex, scrollers, isDisabled, onExitUp, onExitDown]);
+  };
 
   useKeepVisible(activeRef, 35, ScrollType.VERTICAL, true)
 
@@ -66,7 +66,7 @@ const Scrollers = ({
     <div
       className={className}
     >
-      {content}
+      {content()}
     </div>
   )
 }

@@ -1,6 +1,25 @@
 @import "@renderer/scss/colors";
 @import url('https://fonts.googleapis.com/css2?family=Lora&family=Ubuntu:wght@700&family=Young+Serif&display=swap');
 
+.foreground {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  object-fit: contain;
+}
+
+.background {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+
+  &.withForeground {
+    filter: brightness(65%) blur(.6px);
+  }
+}
+
 .elem {
   height: clamp(120px, 12vh, 300px);
   filter: brightness(85%);
@@ -22,10 +41,18 @@
   &.square {
     aspect-ratio: 1 / 1;
     height: clamp(150px, 15vh, 300px);
+
+    .foreground {
+      padding: 5%;
+    }
   }
 
   &.landscape {
     aspect-ratio: 92 / 43;
+
+    .foreground {
+      padding: 4% 12%;
+    }
   }
 
   &.active {
@@ -48,7 +75,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1rem;
+  padding: 3.5% 8%;
 }
 
 .foregroundText {
@@ -67,22 +94,4 @@
   -webkit-box-orient: vertical;
 }
 
-.background {
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
 
-  &.withForeground {
-    filter: brightness(65%) blur(.6px);
-  }
-}
-
-.foreground {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  top: 0;
-  left: 0;
-  object-fit: contain;
-  padding: 1rem;
-}
