@@ -13,10 +13,13 @@ import ConfirmationModal from './components/ConfirmationModal/ConfirmationModal'
 import Init from './pages/Init/Init';
 import { SearchView } from './pages/SearchView/SearchView';
 import SearchHeader from './components/SearchHeader/SearchHeader';
+import { useColorChangeListener } from './colors/useChangeListener';
 
 function App() {
   const { parentRef, waveHeight } = useWaveHeight(.3);
   const windowFocused = useWindowFocus();
+
+  useColorChangeListener();
 
   return (
     <div className="App" ref={parentRef}>
@@ -25,7 +28,7 @@ function App() {
         <AppRoutes />
       </HashRouter>
       {waveHeight && <Wave
-        fill="hsla(0, 0%, 0%, 50%)"
+        fill="hsla(0, 0%, 0%, 60%)"
         className="wave"
         style={{ display: "flex" }}
         options={{

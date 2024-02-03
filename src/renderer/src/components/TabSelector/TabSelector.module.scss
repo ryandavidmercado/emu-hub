@@ -15,9 +15,9 @@
   border-radius: 2rem;
 
   color: white;
-  /* border: 2px solid $primary; */
+  /* border: 2px solid var(--primary); */
 
-  /* background-color: $primary; */
+  /* background-color: var(--primary); */
   /* background-clip: padding-box; */
 
   /* border: 2px solid transparent; */
@@ -28,8 +28,8 @@
   transition: all .1s ease;
 
   &.active {
-    background-color: $primary;
-    color: $background-dark;
+    background-color: var(--primary);
+    color: var(--background-dark);
     transform: scale(1.1);
   }
 }

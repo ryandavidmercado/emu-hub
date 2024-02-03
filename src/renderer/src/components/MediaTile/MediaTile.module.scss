@@ -31,7 +31,7 @@
   flex-shrink: 0;
   position: relative;
   box-sizing: border-box;
-  background-color: $background-lighter;
+  background-color: var(--background-lighter);
   background-clip: content-box;
 
   &.swapTransform {
@@ -57,7 +57,7 @@
 
   &.active {
     filter: brightness(100%);
-    border: 3px solid $primary;
+    border: 3px solid var(--primary);
     transform: scale(1.04);
 
     &.swapTransform {

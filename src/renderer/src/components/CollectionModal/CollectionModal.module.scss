@@ -7,7 +7,8 @@
 
 .container {
   width: 30vw;
-  background-color: $background;
+  background-color: var(--background-medium);
   display: flex;
   flex-direction: column;
+  box-shadow: 5px 0px 5px rgba(0, 0, 0, .4);
 }

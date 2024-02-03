@@ -20,7 +20,7 @@
   &.active {
     transform: scale(1.1);
 
-    background-color: $primary;
+    background-color: var(--primary);
     color: hsl(0, 0%, 20%);
 
     border-color: transparent;
@@ -29,9 +29,9 @@
       max-width: 150px;
     }
 
-    &.default { background-color: $primary; }
+    &.default { background-color: var(--primary); }
     &.caution { background-color: $caution; }
-    &.warning { background-color: $warning; color: $background-dark; }
+    &.warning { background-color: $warning; color: var(--background-dark); }
     &.confirm { background-color: $confirm; }
   }
 }

@@ -16,8 +16,9 @@
 .body {
   width: 80%;
   height: 80%;
-  background-color: $background;
+  background-color: var(--background);
   border-radius: 20px;
+  box-shadow: 5px 0px 5px rgba(0, 0, 0, .4);
 
   display: flex;
   overflow: hidden;
@@ -25,7 +26,7 @@
 
 .left {
   flex: 1;
-  backdrop-filter: brightness(80%);
+  background-color: var(--background-medium);
   padding: 20px;
 }
 

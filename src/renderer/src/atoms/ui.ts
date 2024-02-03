@@ -1,10 +1,19 @@
-import { atomWithStorage } from "jotai/utils";
+import { ColorSchemeId } from "@renderer/colors/colorSchemes";
+import { objConfigAtom } from "./util/objConfigAtom";
 
-const defaultConfig = {
+interface UIConfig {
   grid: {
-    columnCount: 3
+    columnCount: number
   }
+  colorScheme: ColorSchemeId
 }
 
-const uiConfigAtom = atomWithStorage<typeof defaultConfig>('ui', defaultConfig, window.configStorage, { getOnInit: true });
+const defaultConfig: UIConfig = {
+  grid: {
+    columnCount: 3
+  },
+  colorScheme: "default"
+}
+
+const uiConfigAtom = objConfigAtom({ defaults: defaultConfig, storageKey: 'ui' });
 export default uiConfigAtom;

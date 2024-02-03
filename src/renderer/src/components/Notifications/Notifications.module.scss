@@ -21,12 +21,12 @@
 }
 
 .notificationDisplay {
-  background-color: $primary;
+  background-color: var(--primary);
   padding: 1.5rem 2rem;
   font-family: Figtree Variable;
   font-size: 1.2rem;
 
-  color: $background-dark;
+  color: var(--background-dark);
   border-radius: 1rem;
   width: 35vw;
 

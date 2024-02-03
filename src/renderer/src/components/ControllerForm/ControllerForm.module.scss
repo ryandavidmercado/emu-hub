@@ -21,11 +21,11 @@
   transition: all .1s ease;
 
   &.active {
-    color: $background;
+    color: black;
 
-    &.default { background-color: $primary; }
-    &.caution { background-color: $caution; color: $background-dark; }
-    &.warning { background-color: $warning; color: $background-dark; }
+    &.default { background-color: var(--primary) }
+    &.caution { background-color: $caution }
+    &.warning { background-color: $warning }
     &.confirm { background-color: $confirm; }
   }
 }
@@ -70,7 +70,7 @@
     background-color: hsla(0, 0%, 70%, 60%);
     transition: background-color .4s ease, opacity .1s ease;
     &.enabled {
-      background-color: $primary;
+      background-color: var(--primary);
     }
   }
 
@@ -79,12 +79,23 @@
   }
 
   &.active {
-    background-color: $background;
+    background-color: var(--background);
     opacity: 1;
-    /* .toggleInner { background-color: $fadedminus;} */
   }
 }
 
 .round {
   border-radius: 20px;
+}
+
+.selectorInput {
+  display: flex;
+  align-items: center;
+  opacity: .5;
+  transition: opacity .15s ease, scale .1s ease;
+
+  &.active {
+    opacity: 1;
+    scale: 1.1;
+  }
 }

@@ -45,7 +45,7 @@
   transition: color .1s ease, transform .1s ease;
 
   &.active {
-    color: $primary;
+    color: var(--primary);
     transform: scale(1.5)
   }
 }
