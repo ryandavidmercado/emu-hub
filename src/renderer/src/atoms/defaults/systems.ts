@@ -54,7 +54,8 @@ const defaultSystems = [
     "fileExtensions": [
       ".iso",
       ".cso",
-      ".rvz"
+      ".rvz",
+      ".wbfs"
     ],
     "emulators": [
       "dolphin"
@@ -229,7 +230,8 @@ const defaultSystems = [
       ".cso",
       ".mdf",
       ".nrg",
-      ".bin"
+      ".bin",
+      ".iso"
     ],
     "emulators": [
       "pcsx2"
@@ -321,10 +323,10 @@ const defaultSystems = [
     "emulators": [
       "cemu"
     ]
-  }
+  },
 ]
 
-const parsedSystems: System[] = defaultSystems.map(system => {
+const parsedSystems: System[] = defaultSystems.map((system) => {
   const emulators = system.emulators.filter(e => emulatorIds.has(e))
   if(!emulators.length) return null;
 
@@ -334,4 +336,37 @@ const parsedSystems: System[] = defaultSystems.map(system => {
   }
 }).filter(Boolean) as System[]
 
-export default parsedSystems
+const merger = (userSystems: System[], defaultSystems: System[]) => {
+  const defaultsLookup = defaultSystems.reduce((acc, system) => ({
+    ...acc,
+    [system.id]: system
+  }), {} as Record<string, System>)
+
+  const userLookup = userSystems.reduce((acc, system) => ({
+    ...acc,
+    [system.id]: system
+  }), {} as Record<string, System>);
+
+  const newSystems = userSystems.map(userSystem => {
+    const defaultSystem = defaultsLookup[userSystem.id];
+    if(!defaultSystem) return userSystem;
+
+    return {
+      ...defaultSystem,
+      ...userSystem,
+      fileExtensions: [...new Set([...defaultSystem.fileExtensions, ...userSystem.fileExtensions])],
+      emulators: [...new Set([...defaultSystem.emulators ?? [], ...userSystem.emulators ?? []])]
+    }
+  });
+
+  for(const defaultSystem of defaultSystems) {
+    if(!userLookup[defaultSystem.id]) newSystems.push(defaultSystem)
+  }
+
+  return newSystems;
+}
+
+const mergedSystems = merger(window.configStorage.getItem('systems', []), parsedSystems);
+window.configStorage.setItem('systems', mergedSystems);
+
+export default mergedSystems
