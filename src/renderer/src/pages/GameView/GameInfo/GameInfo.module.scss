@@ -1,3 +1,5 @@
+@import "@renderer/scss/colors";
+
 .container {
   display: flex;
   flex-direction: column;
@@ -10,9 +12,15 @@
 }
 
 .description {
-  padding-top: 1rem;
-  // filter: drop-shadow(0px 4px 2px rgba(0, 0, 0, .8));
   max-height: 65vh;
   max-width: 1300px;
-  overflow: hidden;
+  background-color: $background-medium;
+  padding: 1.8rem;
+  border-radius: 1rem;
+
+  .descriptionText {
+    height: 100%;
+    white-space: pre-wrap;
+    overflow: hidden;
+  }
 }

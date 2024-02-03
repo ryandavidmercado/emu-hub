@@ -31,7 +31,7 @@
   flex-shrink: 0;
   position: relative;
   box-sizing: border-box;
-  background-color: hsla(200, 10%, 40%, 100%);
+  background-color: $background-lighter;
   background-clip: content-box;
 
   &.swapTransform {
@@ -43,7 +43,7 @@
     height: clamp(150px, 15vh, 300px);
 
     .foreground {
-      padding: 5%;
+      padding: 10%;
     }
   }
 

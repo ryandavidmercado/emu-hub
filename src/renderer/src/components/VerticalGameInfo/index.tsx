@@ -13,8 +13,6 @@ interface Props {
 }
 
 const VerticalGameInfo = ({ className, game }: Props) => {
-  const getDecodedHTMLString = (text: string) => new DOMParser().parseFromString(text, "text/html").body.innerText;
-
   const pills = useGamePills(game);
   const pillElements = useMemo(() => (
     pills.map(pill => (
@@ -36,9 +34,9 @@ const VerticalGameInfo = ({ className, game }: Props) => {
       <Marquee
         className={css.description}
       >
-        {getDecodedHTMLString(game.description || "")}
+        {game.description}
       </Marquee>
-      {Boolean(pillElements.length) && Boolean(game.description) &&
+      {Boolean(pillElements.length) &&
         <div className={css.pills}>
           {pillElements}
         </div>

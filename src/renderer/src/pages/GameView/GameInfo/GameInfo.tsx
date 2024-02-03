@@ -11,9 +11,11 @@ const GameInfo = ({ className, game }: TabContentProps) => {
   if(!game) return null;
   return (
     <div className={classNames(css.container, className)}>
-      <Marquee className={css.description}>
-        {game.description}
-      </Marquee>
+      <div className={css.description}>
+        <Marquee className={css.descriptionText}>
+          {game.description}
+        </Marquee>
+      </div>
       <div className={css.pills}>
         {pills && pills.length && pills.map(pill => <Pill
           key={pill.id}

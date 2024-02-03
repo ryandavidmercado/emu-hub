@@ -14,6 +14,8 @@ interface ConstructorProps {
   userPassword?: string;
 }
 
+const getDecodedHTMLString = (text: string) => new DOMParser().parseFromString(text, "text/html").body.innerText;
+
 export class ScreenScraper {
   private devid = import.meta.env.RENDERER_VITE_SCREENSCRAPER_DEVID;
   private devpassword = import.meta.env.RENDERER_VITE_SCREENSCRAPER_DEVPASSWORD;
@@ -96,7 +98,7 @@ export class ScreenScraper {
 
       return {
         ...gameWithMedias,
-        description: getByLanguage("en", response.jeu?.synopsis ?? []),
+        description: getDecodedHTMLString(getByLanguage("en", response.jeu?.synopsis ?? [])),
         players: response.jeu.joueurs?.text,
         name: getByRegion("us", response.jeu?.noms),
         genre: getByLanguage("en", response.jeu.genres?.[0]?.noms ?? []),
