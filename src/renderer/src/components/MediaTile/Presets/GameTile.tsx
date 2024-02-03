@@ -20,7 +20,7 @@ const GameTile = ({
     // we can only use poster on landscape tiles; if set, use screenshot + logo instead
     if(aspectRatio !== "landscape") {
       return {
-        background: art === "poster" ? (game.poster ?? game.screenshot) : background,
+        background: art === "poster" ? (game.hero ?? game.screenshot) : background,
         foreground: game.logo,
         foregroundText: game.name ?? game.romname
       }
