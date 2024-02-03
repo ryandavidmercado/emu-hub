@@ -88,3 +88,15 @@
 .round {
   border-radius: 20px;
 }
+
+.numberDisplay {
+  display: flex;
+  align-items: center;
+  opacity: .5;
+  transition: opacity .15s ease, scale .1s ease;
+
+  &.active {
+    opacity: 1;
+    scale: 1.1;
+  }
+}

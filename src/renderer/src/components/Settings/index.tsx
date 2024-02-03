@@ -17,6 +17,8 @@ import Power from "./Power/Power";
 import { eventHandler } from "@renderer/eventHandler";
 import { atom, useAtom } from "jotai";
 import { InputPriority } from "@renderer/const/inputPriorities";
+import { MdFeaturedPlayList, MdOutlineFeaturedPlayList } from "react-icons/md";
+import Interface from "./Interface/Interface";
 
 const sections: Section[] = [
   {
@@ -39,6 +41,13 @@ const sections: Section[] = [
     Icon: AiOutlineAppstore,
     IconActive: AiFillAppstore,
     component: Stores
+  },
+  {
+    id: 'ui',
+    label: "Interface",
+    Icon: MdOutlineFeaturedPlayList,
+    IconActive: MdFeaturedPlayList,
+    component: Interface
   },
   {
     id: 'power',

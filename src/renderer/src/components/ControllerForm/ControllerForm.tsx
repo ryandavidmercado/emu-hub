@@ -1,6 +1,6 @@
 import { IconType } from "react-icons";
 import css from "./ControllerForm.module.scss";
-import { CSSProperties, Dispatch, useMemo, useState } from "react";
+import { CSSProperties, Dispatch, useCallback, useMemo, useState } from "react";
 import { useOnInput } from "@renderer/hooks";
 import { Input } from "@renderer/enums";
 import classNames from "classnames";
@@ -9,7 +9,7 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import type { SetStateAction } from "react";
 import { motion } from "framer-motion";
 import { useInputModal } from "../InputModal/InputModal";
-import { FaRegKeyboard } from "react-icons/fa";
+import { FaCaretLeft, FaCaretRight, FaRegKeyboard } from "react-icons/fa";
 import { useConfirmation } from "../ConfirmationModal/ConfirmationModal";
 
 export type ColorScheme = "default" | "caution" | "warning" | "confirm"
@@ -34,6 +34,12 @@ export type FormTypes = ({
   onInput: (input: string) => void
   hideFormWhileActive?: boolean
   inputStyle?: CSSProperties;
+} | {
+  type: "number",
+  defaultValue: number;
+  onNumber?: (number: number) => void
+  min?: number;
+  max?: number;
 })
 
 export type ControllerFormEntry = {
@@ -48,6 +54,11 @@ export type ControllerFormEntry = {
 interface ItemData {
   entries: ControllerFormEntry[];
   activeIndex: number;
+  activeNumberInput: string;
+  clearActiveNumberInput: () => void;
+  inputPriority: number;
+  nextInput: () => void;
+  prevInput: () => void;
 }
 
 interface Props {
@@ -82,6 +93,7 @@ const ControllerForm = ({
   const activeEntry = entries[activeIndex];
 
   const [hiddenForInput, setHiddenForInput] = useState(false);
+  const [activeNumberInput, setActiveNumberInput] = useState("");
 
   const getInput = useInputModal();
   const getConfirmation = useConfirmation();
@@ -112,8 +124,20 @@ const ControllerForm = ({
         setHiddenForInput(false);
         if(!newValue) return;
         activeEntry.onInput(newValue);
+        break;
+      case "number":
+        setActiveNumberInput(activeEntry.id);
+        break;
     }
   }
+
+  const prevInput = useCallback(() => {
+    setActiveIndex((i) => Math.max(i - 1, 0))
+  }, [])
+
+  const nextInput = useCallback(() => {
+    setActiveIndex((i) => Math.min(i + 1, entries.length - 1))
+  }, [])
 
   useOnInput((input) => {
     switch (input) {
@@ -121,10 +145,10 @@ const ControllerForm = ({
         onSelect();
         break;
       case Input.DOWN:
-        setActiveIndex((i) => Math.min(i + 1, entries.length - 1))
+        nextInput();
         break;
       case Input.UP:
-        setActiveIndex((i) => Math.max(i - 1, 0))
+        prevInput();
         break;
     }
   }, {
@@ -133,8 +157,14 @@ const ControllerForm = ({
   })
 
   const itemData = useMemo<ItemData>(() => ({
-    entries, activeIndex
-  }), [entries, activeIndex])
+    entries,
+    activeIndex,
+    activeNumberInput,
+    inputPriority: inputPriority ?? 0,
+    clearActiveNumberInput: () => { setActiveNumberInput("") },
+    nextInput,
+    prevInput
+  }), [entries, activeIndex, activeNumberInput, inputPriority, nextInput, prevInput])
 
   if(hiddenForInput) return null;
   return (
@@ -204,6 +234,19 @@ const ListEntry = ({ index, style, data }: ListEntryProps) => {
           useDisableStyling={entry.useDisableStyling}
         />
       }
+      {entry.type === "number" &&
+        <NumberDisplay
+          value={entry.defaultValue ?? 0}
+          min={entry.min}
+          max={entry.max}
+          active={data.activeNumberInput === entry.id}
+          inputPriority={data.inputPriority + 1}
+          onExit={data.clearActiveNumberInput}
+          onNumber={entry.onNumber}
+          nextInput={data.nextInput}
+          prevInput={data.prevInput}
+        />
+      }
       {
         (() => {
           const defaultIcons: Partial<Record<FormTypes["type"], IconType>> = {
@@ -246,6 +289,53 @@ const Toggle = ({ active, enabled, useDisableStyling = true }: { active: boolean
         )}
       />
     </motion.div>
+  )
+}
+
+interface NumberDisplayProps {
+  value: number
+  min?: number
+  max?: number
+  inputPriority: number
+  active?: boolean
+  onExit: () => void
+  onNumber?: (number: number) => void
+  nextInput: () => void;
+  prevInput: () => void;
+}
+
+const NumberDisplay = ({ active, value, min, max, inputPriority, onExit, onNumber, nextInput, prevInput }: NumberDisplayProps) => {
+  useOnInput((input) => {
+    switch(input) {
+      case Input.DOWN:
+        nextInput();
+        onExit();
+        break;
+      case Input.UP:
+        prevInput();
+        onExit();
+        break;
+      case Input.LEFT:
+        onNumber?.(Math.max(value - 1, min ?? 0));
+        break;
+      case Input.RIGHT:
+        onNumber?.(Math.min(value + 1, max ?? Infinity));
+        break;
+      case Input.A:
+      case Input.B:
+        onExit()
+    }
+  }, {
+    disabled: !active,
+    priority: inputPriority
+  })
+
+  return (
+    <div className={classNames(css.numberDisplay, active && css.active)}>
+      <FaCaretLeft />
+        <div>{value}</div>
+      <FaCaretRight />
+    </div>
   )
 }
 

@@ -1,4 +1,4 @@
-import { atomWithStorage } from "jotai/utils";
+import { objConfigAtom } from "./util/objConfigAtom";
 
 const defaultConfig = {
   grid: {
@@ -6,5 +6,5 @@ const defaultConfig = {
   }
 }
 
-const uiConfigAtom = atomWithStorage<typeof defaultConfig>('ui', defaultConfig, window.configStorage, { getOnInit: true });
+const uiConfigAtom = objConfigAtom({ defaults: defaultConfig, storageKey: 'ui' });
 export default uiConfigAtom;
