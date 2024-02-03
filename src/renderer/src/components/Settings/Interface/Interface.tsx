@@ -4,6 +4,7 @@ import { useOnInput } from "@renderer/hooks"
 import { Input } from "@renderer/enums"
 import { useAtom } from "jotai"
 import uiConfigAtom from "@renderer/atoms/ui"
+import { ColorSchemeId, colorSchemes } from "@renderer/colors/colorSchemes"
 
 const Interface = ({ inputPriority, isActive, onExit }: SectionProps) => {
   const [uiConfig, updateUiConfig] = useAtom(uiConfigAtom);
@@ -18,6 +19,18 @@ const Interface = ({ inputPriority, isActive, onExit }: SectionProps) => {
       min: 2,
       max: 4,
       onNumber: (num) => { updateUiConfig(config => { config.grid.columnCount = num })}
+    },
+    {
+      id: "color-scheme",
+      type: "selector",
+      label: "Color Scheme",
+      value: uiConfig.colorScheme ?? "default",
+      options: colorSchemes.map(scheme => ({
+        id: scheme.id,
+        label: scheme.label
+      })),
+      onSelect: (scheme) => { updateUiConfig((config) => { config.colorScheme = scheme as ColorSchemeId }) },
+      wraparound: true
     }
   ]
 

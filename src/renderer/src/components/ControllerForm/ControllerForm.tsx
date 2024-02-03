@@ -6,13 +6,17 @@ import { Input } from "@renderer/enums";
 import classNames from "classnames";
 import { Align, FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import type { SetStateAction } from "react";
+import type { ReactNode, SetStateAction } from "react";
 import { motion } from "framer-motion";
 import { useInputModal } from "../InputModal/InputModal";
 import { FaCaretLeft, FaCaretRight, FaRegKeyboard } from "react-icons/fa";
 import { useConfirmation } from "../ConfirmationModal/ConfirmationModal";
 
 export type ColorScheme = "default" | "caution" | "warning" | "confirm"
+export type SelectorOption = {
+  id: string
+  label: string | ReactNode
+}
 
 export type FormTypes = ({
   type: "action",
@@ -40,6 +44,12 @@ export type FormTypes = ({
   onNumber?: (number: number) => void
   min?: number;
   max?: number;
+} | {
+  type: "selector",
+  value: string;
+  options: SelectorOption[]
+  onSelect: (id: string) => void;
+  wraparound?: boolean;
 })
 
 export type ControllerFormEntry = {
@@ -54,8 +64,8 @@ export type ControllerFormEntry = {
 interface ItemData {
   entries: ControllerFormEntry[];
   activeIndex: number;
-  activeNumberInput: string;
-  clearActiveNumberInput: () => void;
+  activeSelectorInput: string;
+  clearActiveSelectorInput: () => void;
   inputPriority: number;
   nextInput: () => void;
   prevInput: () => void;
@@ -93,7 +103,7 @@ const ControllerForm = ({
   const activeEntry = entries[activeIndex];
 
   const [hiddenForInput, setHiddenForInput] = useState(false);
-  const [activeNumberInput, setActiveNumberInput] = useState("");
+  const [activeSelectorInput, setActiveSelectorInput] = useState("");
 
   const getInput = useInputModal();
   const getConfirmation = useConfirmation();
@@ -125,8 +135,9 @@ const ControllerForm = ({
         if(!newValue) return;
         activeEntry.onInput(newValue);
         break;
+      case "selector":
       case "number":
-        setActiveNumberInput(activeEntry.id);
+        setActiveSelectorInput(activeEntry.id);
         break;
     }
   }
@@ -159,12 +170,12 @@ const ControllerForm = ({
   const itemData = useMemo<ItemData>(() => ({
     entries,
     activeIndex,
-    activeNumberInput,
+    activeSelectorInput,
     inputPriority: inputPriority ?? 0,
-    clearActiveNumberInput: () => { setActiveNumberInput("") },
+    clearActiveSelectorInput: () => { setActiveSelectorInput("") },
     nextInput,
     prevInput
-  }), [entries, activeIndex, activeNumberInput, inputPriority, nextInput, prevInput])
+  }), [entries, activeIndex, activeSelectorInput, inputPriority, nextInput, prevInput])
 
   if(hiddenForInput) return null;
   return (
@@ -239,12 +250,25 @@ const ListEntry = ({ index, style, data }: ListEntryProps) => {
           value={entry.defaultValue ?? 0}
           min={entry.min}
           max={entry.max}
-          active={data.activeNumberInput === entry.id}
+          active={data.activeSelectorInput === entry.id}
           inputPriority={data.inputPriority + 1}
-          onExit={data.clearActiveNumberInput}
+          onExit={data.clearActiveSelectorInput}
           onNumber={entry.onNumber}
           nextInput={data.nextInput}
           prevInput={data.prevInput}
+        />
+      }
+      {entry.type === "selector" &&
+        <Selector
+          value={entry.value}
+          inputPriority={data.inputPriority + 1}
+          onExit={data.clearActiveSelectorInput}
+          active={data.activeSelectorInput === entry.id}
+          prevInput={data.prevInput}
+          nextInput={data.nextInput}
+          options={entry.options}
+          onSelect={entry.onSelect}
+          wraparound={entry.wraparound}
         />
       }
       {
@@ -266,7 +290,7 @@ const ListEntry = ({ index, style, data }: ListEntryProps) => {
   )
 }
 
-const Toggle = ({ active, enabled, useDisableStyling = true }: { active: boolean, enabled: boolean, useDisableStyling }) => {
+const Toggle = ({ active, enabled, useDisableStyling = true }: { active: boolean, enabled: boolean, useDisableStyling?: boolean }) => {
   return (
     <motion.div
       className={classNames(
@@ -292,12 +316,69 @@ const Toggle = ({ active, enabled, useDisableStyling = true }: { active: boolean
   )
 }
 
+interface SelectorProps {
+  value: string;
+  inputPriority: number
+  active: boolean
+  onExit: () => void
+  onSelect: (id: string) => void
+  nextInput: () => void
+  prevInput: () => void
+  options: SelectorOption[]
+  wraparound?: boolean;
+}
+
+const Selector = ({ active, value, inputPriority, onExit, onSelect, nextInput, prevInput, options, wraparound }: SelectorProps) => {
+  let activeOptionIndex = options.findIndex(opt => opt.id === value);
+  if(activeOptionIndex === -1) activeOptionIndex = 0;
+
+  useOnInput((input) => {
+    switch(input) {
+      case Input.DOWN:
+        nextInput();
+        onExit();
+        break;
+      case Input.UP:
+        prevInput();
+        onExit();
+        break;
+      case Input.LEFT:
+        if(activeOptionIndex === 0) {
+          if(!wraparound) return;
+          return onSelect(options[options.length - 1].id);
+        }
+        onSelect(options[activeOptionIndex - 1].id);
+        break;
+      case Input.RIGHT:
+        if(activeOptionIndex === options.length - 1) {
+          if(!wraparound) return;
+          return onSelect(options[0].id);
+        }
+        onSelect(options[activeOptionIndex + 1].id);
+        break;
+      case Input.A:
+      case Input.B:
+        onExit()
+    }
+  }, {
+    disabled: !active,
+    priority: inputPriority
+  })
+
+  return (
+    <div className={classNames(css.selectorInput, active && css.active)}>
+      <FaCaretLeft />
+        <div>{options[activeOptionIndex].label}</div>
+      <FaCaretRight />
+    </div>
+  )
+}
 interface NumberDisplayProps {
   value: number
   min?: number
   max?: number
   inputPriority: number
-  active?: boolean
+  active: boolean
   onExit: () => void
   onNumber?: (number: number) => void
   nextInput: () => void;
@@ -331,7 +412,7 @@ const NumberDisplay = ({ active, value, min, max, inputPriority, onExit, onNumbe
   })
 
   return (
-    <div className={classNames(css.numberDisplay, active && css.active)}>
+    <div className={classNames(css.selectorInput, active && css.active)}>
       <FaCaretLeft />
         <div>{value}</div>
       <FaCaretRight />

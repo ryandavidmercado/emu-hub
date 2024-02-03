@@ -2,11 +2,12 @@
 
 .container {
   width: 600px;
-  background-color: $background;
+  background-color: var(--background-medium);
   border-radius: 20px;
   font-family: Figtree Variable;
   color: white;
   overflow: hidden;
+  box-shadow: 5px 0px 5px rgba(0, 0, 0, .4);
 }
 
 .label {

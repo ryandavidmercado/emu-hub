@@ -2,7 +2,7 @@
 
 .container {
   width: 650px;
-  background-color: $background;
+  background-color: var(--background);
   border-radius: 20px;
   font-family: Figtree Variable;
   font-size: 1.5rem;
@@ -28,10 +28,10 @@
 
       &.active {
         background-color: $confirm;
-        color: $background-dark;
+        color: var(--background-dark);
         border: 1px solid transparent;
 
-        &.default { background-color: $primary; }
+        &.default { background-color: var(--primary); }
         &.confirm { background-color: $confirm; }
       }
     }

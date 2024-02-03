@@ -1,13 +1,12 @@
 @import "@renderer/scss/colors";
 
 .container {
-  background-color: $background;
+  background-color: var(--background-medium);
   border-radius: 20px;
   overflow: hidden;
-  min-width: 850px;
+  box-shadow: 5px 0px 5px rgba(0, 0, 0, .4);
 
-  display: grid;
-  grid-template-columns: 1fr 3fr;
+  display: flex;
 
   .left, .right {
     display: grid;
@@ -24,20 +23,20 @@
       flex-direction: column;
       justify-content: center;
       font-family: Figtree Variable;
-      font-size: 2rem;
+      font-size: 1.3rem;
       color: $fadedminus;
 
-      min-width: 280px;
+      min-width: 250px;
 
       .sub {
-        font-size: 1rem;
+        font-size: .8rem;
       }
 
       transition: background-color .1s ease, color .1s ease;
 
       &.active {
-        background-color: $primary;
-        color: $background-dark;
+        background-color: var(--primary);
+        color: var(--background-dark);
       }
     }
     backdrop-filter: brightness(80%);
@@ -71,7 +70,7 @@
     gap: 1rem;
 
     font-family: Figtree Variable;
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: $faded;
 
     .showcaseWrapper {
@@ -89,7 +88,7 @@
     border-radius: 3px;
 
     &.active {
-      border: 3px solid $primary;
+      border: 3px solid var(--primary);
       transform: scale(1.04);
     }
   }

@@ -2,7 +2,7 @@
 
 .container {
   width: 650px;
-  background-color: $background;
+  background-color: var(--background);
   border-radius: 20px;
   font-family: Figtree Variable;
   font-size: 1.5rem;
@@ -11,6 +11,7 @@
   padding: 3rem;
   display: flex;
   flex-direction: column;
+  box-shadow: 5px 0px 5px rgba(0, 0, 0, .4);
   gap: 2rem;
 
   .options {
@@ -30,15 +31,15 @@
     .confirm {
       &.active {
         background-color: $confirm;
-        color: $background-dark;
+        color: var(--background-dark);
         border: 1px solid transparent;
       }
     }
 
     .cancel {
       &.active {
-        background-color: $primary;
-        color: $background-dark;
+        background-color: var(--primary);
+        color: var(--background-dark);
         border: 1px solid transparent;
       }
     }

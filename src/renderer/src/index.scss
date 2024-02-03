@@ -1,7 +1,15 @@
 @import "@renderer/scss/colors";
 
 :root {
-  background-color: $background;
+  --background: hsl(200, 15%, 20%);
+  --background-medium: hsl(200, 15%, 15%);
+  --background-dark: hsl(200, 15%, 10%);
+  --background-light: hsl(200, 15%, 30%);
+  --background-lighter: hsl(200, 15%, 40%);
+  --primary: hsl(200, 30%, 84%);
+
+  transition: background-color .5s ease;
+  background-color: var(--background);
 }
 
 html {
