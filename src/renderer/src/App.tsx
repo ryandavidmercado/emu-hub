@@ -25,7 +25,7 @@ function App() {
         <AppRoutes />
       </HashRouter>
       {waveHeight && <Wave
-        fill="hsla(0, 0%, 0%, 50%)"
+        fill="hsl(200, 15%, 10%)"
         className="wave"
         style={{ display: "flex" }}
         options={{

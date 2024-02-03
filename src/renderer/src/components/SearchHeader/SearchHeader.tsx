@@ -92,7 +92,7 @@ const SearchHeader = () => {
         className={css.searchContainer}
       >
         <div className={css.searchbar}>
-          Search
+          Search Games
           <IoMdSearch />
         </div>
       </motion.div>
