@@ -12,6 +12,7 @@ import { InputModal } from './components/InputModal/InputModal';
 import ConfirmationModal from './components/ConfirmationModal/ConfirmationModal';
 import Init from './pages/Init/Init';
 import { SearchView } from './pages/SearchView/SearchView';
+import SearchHeader from './components/SearchHeader/SearchHeader';
 
 function App() {
   const { parentRef, waveHeight } = useWaveHeight(.3);
@@ -20,6 +21,7 @@ function App() {
   return (
     <div className="App" ref={parentRef}>
       <HashRouter>
+        <SearchHeader />
         <AppRoutes />
       </HashRouter>
       {waveHeight && <Wave

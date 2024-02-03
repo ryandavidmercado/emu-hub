@@ -12,7 +12,6 @@ import collections from "@renderer/atoms/collections";
 import { getGameShowcaseConfig } from "@renderer/components/Showcase/presets/game";
 import { getSystemShowcaseConfig } from "@renderer/components/Showcase/presets/system";
 import classNames from "classnames";
-import SearchHeader from "@renderer/components/SearchHeader/SearchHeader";
 
 export const Home = () => {
   const [scrollerIndex, setScrollerIndex] = useState(0);
@@ -22,7 +21,6 @@ export const Home = () => {
   const [recentlyPlayedGamesList] = useAtom(games.lists.recentlyPlayed);
   const [recentlyAddedGamesList] = useAtom(games.lists.recentlyAdded);
   const [collectionsList] = useAtom(collections.lists.withGames);
-  const [searchActive, setSearchActive] = useState(false);
 
   const [currentContent, setCurrentContent] = useState<{ type: "game", data: Game } | { type: "system", data: SystemWithGames }>();
   const gamePills = useGamePills(currentContent?.type === "game" ? currentContent.data : null);
@@ -106,16 +104,8 @@ export const Home = () => {
 
   return (
     <div
-      className={classNames(
-        css.landing,
-        searchActive && css.hide
-      )}
+      className={css.landing}
     >
-      <SearchHeader
-        active={searchActive}
-        onExitDown={() => { setSearchActive(false) }}
-        onExitBack={() => { setSearchActive(false) }}
-      />
       <Showcase
         className={classNames(css.showcase, scrollerIndex !== 0 && css.shadowLong)}
         content={showcaseContent}
@@ -125,8 +115,6 @@ export const Home = () => {
         className={css.scrollers}
         key={scrollers.length}
         controlledIndex={{ index: scrollerIndex, setIndex : setScrollerIndex }}
-        onExitUp={() => { setSearchActive(true) }}
-        isDisabled={searchActive}
       />
     </div>
   )
