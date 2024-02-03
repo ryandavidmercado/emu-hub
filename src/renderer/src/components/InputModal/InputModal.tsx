@@ -11,6 +11,7 @@ import Keyboard, { KeyboardButtonTheme, SimpleKeyboard } from "react-simple-keyb
 
 import "react-simple-keyboard/build/css/index.css";
 import "./keyboard.scss";
+import { InputPriority } from "@renderer/const/inputPriorities";
 
 const labelAtom = atom<string | undefined>("");
 const eventHandler = createNanoEvents();
@@ -144,7 +145,7 @@ export const InputModal = () => {
     }
   }, {
     disabled: !open,
-    priority: 99,
+    priority: InputPriority.INPUT_MODAL,
     // disableForDevice: "keyboard"
   })
   return (

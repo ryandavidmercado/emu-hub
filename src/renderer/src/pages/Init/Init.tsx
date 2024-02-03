@@ -14,6 +14,7 @@ import { settingsOpenAtom } from "@renderer/components/Settings"
 import { useInputModal } from "@renderer/components/InputModal/InputModal"
 import { MainPaths } from "@common/types/Paths"
 import notifications from "@renderer/atoms/notifications"
+import { InputPriority } from "@renderer/const/inputPriorities"
 
 let isInitializing = false;
 
@@ -32,7 +33,7 @@ const Init = () => {
   const navigate = useNavigate();
 
   // lock input while we're initializing
-  useOnInput(() => {}, { priority: 20, disabled: modalProps.open || settingsOpen })
+  useOnInput(() => {}, { priority: InputPriority.GENERAL_MODAL, disabled: modalProps.open || settingsOpen })
 
   const main = async (paths: MainPaths) => {
     await window.initRomDir(paths, systems)
