@@ -77,6 +77,9 @@ const GameView = ({ gameId }: { gameId?: string }) => {
   useOnInput((input) => {
     switch (input) {
       case Input.B:
+        if(activeSection === "tabs") {
+          return setActiveSection("game");
+        }
         return navigate(-1);
     }
   }, {

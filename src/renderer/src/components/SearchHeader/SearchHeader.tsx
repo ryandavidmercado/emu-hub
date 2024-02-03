@@ -8,28 +8,37 @@ import { Input } from "@renderer/enums/Input";
 import css from "./SearchHeader.module.scss";
 import { IoMdSearch } from "react-icons/io";
 import { AnimatePresence, motion } from "framer-motion";
+import { InputPriority } from "@renderer/const/inputPriorities";
+import { useState } from "react";
 
-interface Props {
-  active: boolean
-  onExitDown?: () => void
-  onExitBack?: () => void
-}
+const SearchHeader = () => {
+  const [active, setActive] = useState(false);
 
-const SearchHeader = ({ active, onExitDown, onExitBack }: Props) => {
   const getInput = useInputModal();
   const navigate = useNavigate();
   const [searchGames] = useAtom(games.lists.search);
   const [, addNotification] = useAtom(notifications.add);
 
+  useOnInput((input) => {
+    switch(input) {
+      case Input.SELECT: {
+        setActive(!active)
+      }
+    }
+  }, {
+    enforcePriority: false,
+    priority: InputPriority.HEADER_BAR_OPEN_CLOSE
+  })
+
   useOnInput(async (input) => {
     switch(input) {
       case Input.DOWN:
-        onExitDown?.();
+        setActive(false);
         break;
       case Input.A: {
         const query = await getInput({ label: "Search Games", shiftOnOpen: false, shiftOnSpace: false });
         if(!query) {
-          onExitBack?.();
+          setActive(false);
           return;
         }
 
@@ -41,19 +50,22 @@ const SearchHeader = ({ active, onExitDown, onExitBack }: Props) => {
             timeout: 1.5
           });
 
-          onExitBack?.();
+          setActive(false);
           break;
         }
 
         navigate(`/games/search/${encodeURIComponent(query)}`);
+        setActive(false);
         break;
       }
+      case Input.SELECT:
       case Input.B:
-        onExitBack?.();
+        setActive(false);
         break;
     }
   }, {
-    disabled: !active
+    disabled: !active,
+    priority: InputPriority.HEADER_BAR
   })
 
   return (
@@ -61,7 +73,7 @@ const SearchHeader = ({ active, onExitDown, onExitBack }: Props) => {
       <AnimatePresence>
         {active && <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: .2, transition: { duration: .1 }}}
+          animate={{ opacity: .3, transition: { duration: .1 }}}
           exit={{ opacity: 0, transition: { duration: .1 }}}
           className={css.bgOverlay}
         />}

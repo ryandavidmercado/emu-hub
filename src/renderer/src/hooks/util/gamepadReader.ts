@@ -12,6 +12,7 @@ const buttonKeyMap: Record<number, Input> = {
   13: Input.DOWN,
   0: Input.A,
   1: Input.B,
+  8: Input.SELECT,
   9: Input.START
 }
 
