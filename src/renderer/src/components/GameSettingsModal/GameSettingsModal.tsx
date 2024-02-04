@@ -11,6 +11,8 @@ import { InputPriority } from "@renderer/const/inputPriorities"
 import { DefaultGameDisplayType } from "@renderer/atoms/defaults/gameDisplayTypes"
 import { FaAngleRight } from "react-icons/fa"
 import GameArtSelction from "../GameArtSelection/GameArtSelection"
+import systems from "@renderer/atoms/systems"
+import emulators from "@renderer/atoms/emulators"
 
 interface Props {
   game: Game,
@@ -22,11 +24,21 @@ const GameSettingsModal = ({ game, open, setOpen }: Props) => {
   const [, removeGame] = useAtom(games.remove);
   const [, updateGame] = useAtom(games.single(game.id));
 
+  const [gameSystem] = useAtom(systems.single(game.system))
+  const [getEmulator] = useAtom(emulators.curriedSingle);
+
   const [inGameArtSelection, setInGameArtSelection] = useState(false);
 
   const showcaseDisplayType = game.showcaseDisplayType ?? DefaultGameDisplayType.showcase;
   const gamePageDisplayType = game.gamePageDisplayType ?? DefaultGameDisplayType.gamePage;
   const gameTileDisplayType = game.gameTileDisplayType ?? DefaultGameDisplayType.gameTile;
+
+  const emulatorsList = (gameSystem.emulators ?? []).map(getEmulator).map(emu => ({
+    id: emu.id,
+    label: emu.name
+  }));
+
+  const selectedEmulator = game.emulator ?? emulatorsList[0]?.id;
 
   const pages: MultiFormPage[] = [
     {
@@ -40,6 +52,14 @@ const GameSettingsModal = ({ game, open, setOpen }: Props) => {
             setInGameArtSelection(true);
           },
           Icon: FaAngleRight
+        },
+        emulatorsList?.length && {
+          id: 'emulator',
+          label: "Emulator",
+          type: "selector",
+          options: emulatorsList,
+          value: selectedEmulator,
+          onSelect: (emuId: string) => { updateGame({ emulator: emuId })}
         },
         {
           id: 'rename',
