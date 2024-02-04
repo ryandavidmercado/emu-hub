@@ -1,7 +1,7 @@
 @import "@renderer/scss/colors";
 
 .container {
-  background-color: var(--background-medium);
+  background-color: var(--background);
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 5px 0px 5px rgba(0, 0, 0, .4);
@@ -39,7 +39,7 @@
         color: var(--background-dark);
       }
     }
-    backdrop-filter: brightness(80%);
+    background-color: var(--background-dark);
   }
 
   .right {
