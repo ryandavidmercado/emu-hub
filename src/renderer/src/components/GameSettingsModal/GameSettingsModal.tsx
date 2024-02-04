@@ -59,7 +59,8 @@ const GameSettingsModal = ({ game, open, setOpen }: Props) => {
           type: "selector",
           options: emulatorsList,
           value: selectedEmulator,
-          onSelect: (emuId: string) => { updateGame({ emulator: emuId })}
+          onSelect: (emuId: string) => { updateGame({ emulator: emuId })},
+          wraparound: true
         },
         {
           id: 'rename',
