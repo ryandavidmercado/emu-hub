@@ -75,7 +75,8 @@ const defaultSystems = [
       ".zip"
     ],
     "emulators": [
-      "mupen64plus_next_libretro"
+      "mupen64plus_next_libretro",
+      "parallel_n64_libretro"
     ],
     "releaseYear": "1999",
     "company": "Nintendo"
