@@ -136,6 +136,8 @@ const ControllerForm = ({
         activeEntry.onInput(newValue);
         break;
       case "selector":
+        if(activeEntry.options.length > 1) setActiveSelectorInput(activeEntry.id);
+        break;
       case "number":
         setActiveSelectorInput(activeEntry.id);
         break;
@@ -332,6 +334,9 @@ const Selector = ({ active, value, inputPriority, onExit, onSelect, nextInput, p
   let activeOptionIndex = options.findIndex(opt => opt.id === value);
   if(activeOptionIndex === -1) activeOptionIndex = 0;
 
+  const canGoLeft = activeOptionIndex > 0 || (wraparound && options.length > 1);
+  const canGoRight = (activeOptionIndex < options.length - 1) || (wraparound && options.length > 1);
+
   useOnInput((input) => {
     switch(input) {
       case Input.DOWN:
@@ -367,9 +372,9 @@ const Selector = ({ active, value, inputPriority, onExit, onSelect, nextInput, p
 
   return (
     <div className={classNames(css.selectorInput, active && css.active)}>
-      <FaCaretLeft />
+      <FaCaretLeft className={classNames(css.caret, !canGoLeft && css.disabled)} />
         <div>{options[activeOptionIndex].label}</div>
-      <FaCaretRight />
+      <FaCaretRight className={classNames(css.caret, !canGoRight && css.disabled) }/>
     </div>
   )
 }
@@ -386,6 +391,9 @@ interface NumberDisplayProps {
 }
 
 const NumberDisplay = ({ active, value, min, max, inputPriority, onExit, onNumber, nextInput, prevInput }: NumberDisplayProps) => {
+  const canGoLeft = (min === undefined) || value > min;
+  const canGoRight = (max === undefined) || value < max;
+
   useOnInput((input) => {
     switch(input) {
       case Input.DOWN:
@@ -413,9 +421,9 @@ const NumberDisplay = ({ active, value, min, max, inputPriority, onExit, onNumbe
 
   return (
     <div className={classNames(css.selectorInput, active && css.active)}>
-      <FaCaretLeft />
+      <FaCaretLeft className={classNames(css.caret, !canGoLeft && css.disabled)} />
         <div>{value}</div>
-      <FaCaretRight />
+      <FaCaretRight className={classNames(css.caret, !canGoRight && css.disabled)}/>
     </div>
   )
 }

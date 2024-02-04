@@ -25,7 +25,8 @@ const defaultSystems = [
     "ssId": 3,
     "name": "Nintendo Entertainment System",
     "emulators": [
-      "mesen_libretro"
+      "mesen_libretro",
+      "nestopia_libretro"
     ],
     "fileExtensions": [
       ".nes",

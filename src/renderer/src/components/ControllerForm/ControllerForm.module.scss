@@ -91,8 +91,17 @@
 .selectorInput {
   display: flex;
   align-items: center;
+  gap: .25rem;
   opacity: .5;
   transition: opacity .15s ease, scale .1s ease;
+
+  .caret {
+    transition: width .2s ease;
+
+    &.disabled {
+      width: 0;
+    }
+  }
 
   &.active {
     opacity: 1;
