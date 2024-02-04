@@ -25,4 +25,5 @@ export type Game = {
   showcaseDisplayType?: "screenshot" | "fanart",
   gamePageDisplayType?: "screenshot" | "fanart",
   gameTileDisplayType?: "screenshot" | "fanart" | "poster"
+  emulator?: string;
 } & MediaTypes

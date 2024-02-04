@@ -7,6 +7,11 @@ const defaultEmulators = [
     "name": "Mesen"
   },
   {
+    "id": "nestopia_libretro",
+    "core": "nestopia_libretro",
+    "name": "Nestopia UE"
+  },
+  {
     "id": "mupen64plus_next_libretro",
     "name": "Mupen64Plus-Next",
     "platform": {
