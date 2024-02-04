@@ -14,7 +14,7 @@ function createWindow(): void {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     },
-    fullscreen: true,
+    fullscreen: app.isPackaged,
     backgroundColor: "hsl(200, 15%, 20%)"
   })
 
