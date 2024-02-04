@@ -8,12 +8,14 @@ const SystemTile = ({
   aspectRatio = "landscape",
   ...props
 }: Props) => {
+  const bundledLogo = window.loadMedia({
+    resourceType: "logo",
+    resourceCollection: "systems",
+    resourceId: system.id,
+  })
+
   const tileMedia = {
-    foreground: {
-      resourceType: "logo",
-      resourceCollection: "systems",
-      resourceId: system.id,
-    }
+    foreground: bundledLogo || system.logo
   } as const
 
   return <MediaTile
