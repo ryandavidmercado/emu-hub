@@ -56,6 +56,7 @@ const launchGame = (game: Game, emulator: Emulator) => {
     ? parseLaunchCommand(emulator.launchCommand, bin, romLocation)
     : `${bin} ${args.join(" ")}`
 
+  console.log(`Launching ${game.name ?? game.romname} with command: ${execString}`);
   return exec(execString);
 }
 
