@@ -7,8 +7,6 @@ const defaultSystems = [
     "id": "psx",
     "ssId": 57,
     "name": "Sony PlayStation",
-    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Playstation_logo_colour.svg/1280px-Playstation_logo_colour.svg.png",
-    "hero": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/PlayStation-SCPH-1000-with-Controller.jpg/2880px-PlayStation-SCPH-1000-with-Controller.jpg",
     "emulators": [
       "duckstation"
     ],
@@ -26,8 +24,6 @@ const defaultSystems = [
     "id": "nes",
     "ssId": 3,
     "name": "Nintendo Entertainment System",
-    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/NES_logo.svg/288px-NES_logo.svg.png?20230801110942",
-    "hero": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/NES-Console-Set.jpg/2880px-NES-Console-Set.jpg",
     "emulators": [
       "mesen_libretro"
     ],
@@ -49,8 +45,6 @@ const defaultSystems = [
     "id": "wii",
     "ssId": 16,
     "name": "Nintendo Wii",
-    "logo": "https://upload.wikimedia.org/wikipedia/commons/1/1c/Wii_logo.png",
-    "hero": "https://i.imgur.com/PWtkTsw.png",
     "fileExtensions": [
       ".iso",
       ".cso",
@@ -67,15 +61,14 @@ const defaultSystems = [
     "id": "n64",
     "ssId": 14,
     "name": "Nintendo 64",
-    "logo": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Nintendo_64_logo.png?20210112130405",
-    "hero": "https://i.imgur.com/nhU1Xo4.png",
     "fileExtensions": [
       ".n64",
       ".z64",
       ".zip"
     ],
     "emulators": [
-      "mupen64plus_next_libretro"
+      "mupen64plus_next_libretro",
+      "parallel_n64_libretro"
     ],
     "releaseYear": "1999",
     "company": "Nintendo"
@@ -84,7 +77,6 @@ const defaultSystems = [
     "id": "gc",
     "ssId": 13,
     "name": "Gamecube",
-    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Nintendo_GameCube-06.svg/640px-Nintendo_GameCube-06.svg.png",
     "emulators": [
       "dolphin"
     ],

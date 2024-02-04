@@ -8,8 +8,20 @@ const defaultEmulators = [
   },
   {
     "id": "mupen64plus_next_libretro",
-    "core": "mupen64plus_next_libretro",
-    "name": "Mupen64Plus-Next"
+    "name": "Mupen64Plus-Next",
+    "platform": {
+      "win32": {
+        "core": "mupen64plus_next_libretro"
+      },
+      "linux": {
+        "core": "mupen64plus_next_libretro"
+      }
+    }
+  },
+  {
+    "id": "parallel_n64_libretro",
+    "core": "parallel_n64_libretro",
+    "name": "ParaLLEl N64"
   },
   {
     "id": "sameboy_libretro",
@@ -127,7 +139,7 @@ const parseBin = (bin: string) => {
     .replaceAll("%HOMEDIR%", window.homedir)
 }
 
-const parsedEmulators: Emulator[] = defaultEmulators.map(emulator => {
+const parsedEmulators = defaultEmulators.map(emulator => {
   const { platform, ...emulatorConfig } = emulator;
   const platformData = platform?.[window.platform];
 
@@ -138,7 +150,7 @@ const parsedEmulators: Emulator[] = defaultEmulators.map(emulator => {
     ...(platformData ?? {})
   }
 
-  if(withPlatformData.bin) {
+  if("bin" in withPlatformData && withPlatformData.bin) {
     return {
       ...withPlatformData,
       bin: parseBin(withPlatformData.bin)
@@ -146,6 +158,27 @@ const parsedEmulators: Emulator[] = defaultEmulators.map(emulator => {
   }
 
   return withPlatformData;
-}).filter(Boolean)
+}).filter(Boolean) as Emulator[]
+
+const merger = (userEmulators: Emulator[], defaultEmulators: Emulator[]) => {
+  const defaultsLookup = defaultEmulators.reduce((acc, emulator) => ({
+    ...acc,
+    [emulator.id]: emulator
+  }), {} as Record<string, Emulator>)
+
+  const userLookup = userEmulators.reduce((acc, emulator) => ({
+    ...acc,
+    [emulator.id]: emulator
+  }), {} as Record<string, Emulator>);
+
+  const ids = [...new Set([...Object.keys(defaultsLookup), ...Object.keys(userLookup)])];
+  return ids.map(id => ({
+    ...(defaultsLookup[id] ?? {}),
+    ...(userLookup[id] ?? {})
+  }))
+}
+
+const mergedEmulators = merger(window.configStorage.getItem('emulators', []), parsedEmulators);
+window.configStorage.setItem('emulators', mergedEmulators);
 
 export default parsedEmulators;
