@@ -12,7 +12,8 @@ function createWindow(): void {
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      webSecurity: false
     },
     fullscreen: app.isPackaged,
     backgroundColor: "hsl(200, 15%, 20%)"

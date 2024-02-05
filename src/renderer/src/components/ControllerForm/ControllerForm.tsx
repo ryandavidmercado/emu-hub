@@ -367,7 +367,7 @@ const Selector = ({ active, value, inputPriority, onExit, onSelect, nextInput, p
     }
   }, {
     disabled: !active,
-    priority: inputPriority
+    priority: inputPriority,
   })
 
   return (
@@ -378,6 +378,7 @@ const Selector = ({ active, value, inputPriority, onExit, onSelect, nextInput, p
     </div>
   )
 }
+
 interface NumberDisplayProps {
   value: number
   min?: number

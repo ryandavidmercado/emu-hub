@@ -3,6 +3,9 @@ export type Emulator = {
   name: string
   arg?: string
   launchCommand?: string
+  launchCommands?: {
+    [ext: string]: string
+  }
 } & ({
   core: string
 } | {

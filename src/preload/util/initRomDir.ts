@@ -11,6 +11,8 @@ const initRomDir = async (paths: MainPaths, systems: System[]) => {
   } catch(e) { }
 
   for(const system of systems) {
+    if(system.romdir) continue;
+
     const systemPath = path.join(ROM_PATH, system.id);
     await mkdir(systemPath, { recursive: true })
   }

@@ -136,6 +136,22 @@ const defaultEmulators = [
         "bin": "/Applications/Dolphin.app/Contents/MacOS/Dolphin"
       }
     }
+  },
+  {
+    "id": "vita3k",
+    "name": "Vita3K",
+    "platform": {
+      "darwin": {
+        "bin": "/Applications/Vita3K.app/Contents/MacOS/Vita3K"
+      },
+      "linux": {
+        "bin": "%HOMEDIR%/Applications/Vita3K/Vita3K"
+      }
+    },
+    "launchCommands": {
+      ".bin": "%EMUPATH% --fullscreen -r %ROMDIRNAME%",
+      ".psvita": "%EMUPATH% --fullscreen -r %ROMTEXTCONTENT%"
+    }
   }
 ]
 

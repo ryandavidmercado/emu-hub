@@ -52,8 +52,10 @@ const launchGame = (game: Game, emulator: Emulator) => {
     args = [emulator.arg, `"${romLocation}"`].filter(Boolean) as string[];
   }
 
-  const execString = emulator.launchCommand
-    ? parseLaunchCommand(emulator.launchCommand, bin, romLocation)
+  const launchCommand = emulator.launchCommands?.[path.extname(game.romname)] ?? emulator.launchCommand;
+
+  const execString = launchCommand
+    ? parseLaunchCommand(launchCommand, bin, romLocation)
     : `${bin} ${args.join(" ")}`
 
   console.log(`Launching ${game.name ?? game.romname} with command: ${execString}`);

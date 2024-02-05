@@ -317,11 +317,48 @@ const defaultSystems = [
       "cemu"
     ]
   },
+  {
+    "id": "psvita",
+    "igdbId": 46,
+    "ssId": 62,
+    "name": "Sony PlayStation Vita",
+    "releaseYear": "2011",
+    "company": "Sony",
+    "fileExtensions": [
+      ".psvita",
+      ".bin"
+    ],
+    "emulators": [
+      "vita3k"
+    ]
+  }
 ]
+
+// const parseRomDir = (dir: string) => {
+//   return dir
+//     .replaceAll("%HOMEDIR%", window.homedir)
+// }
 
 const parsedSystems: System[] = defaultSystems.map((system) => {
   const emulators = system.emulators.filter(e => emulatorIds.has(e))
   if(!emulators.length) return null;
+
+  // const { platform, ...systemConfig } = system;
+  // const platformData = platform?.[window.platform];
+
+  // if(platform && !platformData) return null;
+
+  // let withPlatformData = {
+  //   ...systemConfig,
+  //   ...(platformData ?? {})
+  // }
+
+  // if("romdir" in withPlatformData && withPlatformData.romdir) {
+  //   withPlatformData = {
+  //     ...withPlatformData,
+  //     romdir: parseRomDir(withPlatformData.romdir)
+  //   }
+  // }
 
   return {
     ...system,

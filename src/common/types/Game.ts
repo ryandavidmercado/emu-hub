@@ -1,3 +1,9 @@
+export interface GameMedia {
+  mediaType: string,
+  url: string,
+  format: string
+}
+
 export interface MediaTypes {
   poster?: string
   hero?: string

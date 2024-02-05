@@ -30,9 +30,11 @@ export interface System {
   company: string;
   handheld?: boolean;
   ssId?: number;
+  igdbId?: number;
   emulators?: string[];
   stores?: SystemStore[];
   logo?: string;
+  romdir?: string;
 }
 
 export type SystemWithGames = System & { games: Game[], screenshot?: string }

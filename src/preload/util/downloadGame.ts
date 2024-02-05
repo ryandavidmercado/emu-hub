@@ -12,10 +12,10 @@ import { MainPaths } from "@common/types/Paths";
 const uid = new ShortUniqueId();
 
 const downloadGame = async (system: System, url: string, paths: MainPaths) => {
-  const systemPath = path.join(paths.ROMs, system.id)
+  const systemPath = system.romdir || path.join(paths.ROMs, system.id)
 
   const romname = decodeURIComponent(path.basename(url));
-  const name = path.basename(romname, path.extname(romname))
+  const name = path.basename(romname, path.extname(romname)).replace(/\([^\)]*\)/g, "").trim();
 
   const id = uid.rnd();
 
@@ -72,7 +72,7 @@ const downloadGame = async (system: System, url: string, paths: MainPaths) => {
   return {
     romname: gameFile,
     rompath,
-    name: path.basename(gameFile, path.extname(gameFile)),
+    name: path.basename(gameFile, path.extname(gameFile)).replace(/\([^\)]*\)/g, "").trim(),
     id,
     system: system.id,
     added: new Date().toUTCString()

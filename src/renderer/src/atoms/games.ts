@@ -10,6 +10,7 @@ import { ScreenScraper } from "@renderer/apiWrappers/ScreenScraper";
 import screenScraperAtom from "./screenscaper";
 import deepEqual from "fast-deep-equal"
 import uFuzzy from "@leeoniya/ufuzzy";
+import { IGDB } from "@renderer/apiWrappers/IGDB";
 
 const mainAtoms = arrayConfigAtoms<Game>({ storageKey: 'games' });
 
@@ -133,7 +134,6 @@ const downloadGameAtom = atom(null,
       let downloadedGame = await window.downloadGame(system, href, get(pathsAtom));
       downloadedGame = {
         ...downloadedGame,
-        name: name ?? downloadedGame.name,
         description,
         genre
       }
@@ -169,10 +169,12 @@ const downloadGameAtom = atom(null,
 interface ScrapeSettings {
   gameId: string
   extraText?: string
+  scraper?: "screenscraper" | "igdb"
+  scrapeBy?: "rom" | "name"
 }
 
 const scrapeGameAtom = atom(null,
-  async (get, set, { gameId, extraText }: ScrapeSettings) => {
+  async (get, set, { gameId, extraText, scraper = "screenscraper", scrapeBy = "rom" }: ScrapeSettings) => {
     const ssCreds = get(screenScraperAtom);
 
     const game = get(mainAtoms.single(gameId))
@@ -193,8 +195,19 @@ const scrapeGameAtom = atom(null,
     const ss = new ScreenScraper({ userId: ssCreds.username, userPassword: ssCreds.password });
 
     try {
-      const finalGame = await ss.scrapeByRomInfo(game, system)
-      set(mainAtoms.single(gameId), finalGame)
+      let scrapedGame: Game;
+      switch(scraper) {
+        case "screenscraper":
+          scrapedGame = scrapeBy === "rom"
+            ? await ss.scrapeByRomInfo(game, system)
+            : await ss.scrapeByName(game, system);
+          break;
+        case "igdb":
+          const igdb = await IGDB.build();
+          scrapedGame = await igdb.scrape(game, system);
+      }
+
+      set(mainAtoms.single(gameId), scrapedGame)
       set(notifications.remove, notificationId);
       set(notifications.add, {
         id: `${notificationId}-done`,
@@ -203,10 +216,14 @@ const scrapeGameAtom = atom(null,
       });
     } catch (e) {
       const err = e as { crc: string, size: string }
-      set(mainAtoms.single(gameId), {
-        crc: err.crc,
-        romsize: err.size
-      })
+
+      if(err.crc && err.size) {
+        set(mainAtoms.single(gameId), {
+          crc: err.crc,
+          romsize: err.size
+        })
+      }
+
       set(notifications.remove, notificationId);
       set(notifications.add, {
         id: `${notificationId}-error`,
@@ -217,20 +234,23 @@ const scrapeGameAtom = atom(null,
   }
 )
 
-interface ScrapeAllGamesSettings {
+type ScrapeAllGamesSettings = {
   excludeNotMissing: boolean,
-}
+} & Omit<ScrapeSettings, "gameId" | "extraText">
 
 const scrapeAllGamesAtom = atom(null, async (get, set, settings: ScrapeAllGamesSettings) => {
+  const { excludeNotMissing, ...scrapeSettings } = settings;
+
   let gamesList = get(mainAtoms.lists.all);
-  if (settings.excludeNotMissing) {
+  if (excludeNotMissing) {
     gamesList = gamesList.filter(game => !game.hero && !game.screenshot && !game.logo)
   }
 
   for (const [index, game] of gamesList.entries()) {
     await set(scrapeGameAtom, {
       gameId: game.id,
-      extraText: ` (${index + 1} / ${gamesList.length})`
+      extraText: ` (${index + 1} / ${gamesList.length})`,
+      ...scrapeSettings
     })
   }
 })

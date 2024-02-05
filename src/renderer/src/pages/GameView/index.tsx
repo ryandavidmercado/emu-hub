@@ -28,13 +28,13 @@ import notifications from "@renderer/atoms/notifications";
 import ShortUniqueId from "short-unique-id";
 import GameSettingsModal from "@renderer/components/GameSettingsModal/GameSettingsModal";
 import MediaImage from "@renderer/components/MediaImage/MediaImage";
+import ScrapeModal from "@renderer/components/ScrapeModal/ScrapeModal";
 
 const uid = new ShortUniqueId();
 
 const GameView = ({ gameId }: { gameId?: string }) => {
   const [game, updateGame] = useAtom(games.single(gameId ?? ""));
   const [, launchGame] = useAtom(games.launch);
-  const [, scrapeGame] = useAtom(games.scrape);
 
   useEffect(() => {
     updateGame({
@@ -54,6 +54,7 @@ const GameView = ({ gameId }: { gameId?: string }) => {
 
   const [collectionModalOpen, setCollectionModalOpen] = useState(false);
   const [gameSettingsModalOpen, setGameSettingsModalOpen] = useState(false);
+  const [scrapeModalOpen, setScrapeModalOpen] = useState(false);
 
   const canScrape = !notificationsList.some(notif =>
     notif.id.startsWith(`scrape-${game?.id}`)
@@ -168,7 +169,7 @@ const GameView = ({ gameId }: { gameId?: string }) => {
                 Icon: IoCloudDownloadOutline,
                 IconActive: IoCloudDownload,
                 label: "Scrape",
-                onSelect: () => { scrapeGame({ gameId: game.id }) },
+                onSelect: () => { setScrapeModalOpen(true) },
                 disabled: isInGame || !canScrape
               }
             ]}
@@ -226,6 +227,11 @@ const GameView = ({ gameId }: { gameId?: string }) => {
       <GameSettingsModal
         open={gameSettingsModalOpen}
         setOpen={setGameSettingsModalOpen}
+        game={game}
+      />
+      <ScrapeModal
+        open={scrapeModalOpen}
+        setOpen={setScrapeModalOpen}
         game={game}
       />
     </motion.div>

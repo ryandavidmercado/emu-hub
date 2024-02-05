@@ -36,7 +36,9 @@ const scanRoms = async (
   }
 
   const scanFolder = async (systemConfig: System, pathTokens: string[] = []) => {
-    const dir = path.join(ROM_PATH, systemConfig.id, ...pathTokens);
+    const systemRomDir = systemConfig.romdir || path.join(ROM_PATH, systemConfig.id);
+
+    const dir = path.join(systemRomDir, ...pathTokens);
     let contents: string[];
 
     try {

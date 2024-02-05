@@ -33,7 +33,6 @@ const CollectionModal = ({ open, setOpen, game }: Props) => {
     priority: InputPriority.GENERAL_MODAL
   })
 
-  // TODO: this list doesn't work properly when it exceeds container height
   const entries: ControllerFormEntry[] = [
     {
       id: "new-collection",
