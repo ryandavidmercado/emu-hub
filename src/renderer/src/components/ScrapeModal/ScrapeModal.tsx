@@ -19,7 +19,7 @@ interface Props {
 
 const ScrapeModal = ({ open, setOpen, game }: Props) => {
   const [, scrapeGame] = useAtom(games.scrape);
-  const [scrapeBy, setScrapeBy] = useState("rom");
+  const [scrapeBy, setScrapeBy] = useState<"name" | "rom">("rom");
 
   useOnInput((input) => {
     switch(input) {
@@ -51,7 +51,7 @@ const ScrapeModal = ({ open, setOpen, game }: Props) => {
         { id: "rom", label: "ROM Info (Name, Size, CRC)" },
         { id: "name", label: "Game Name" }
       ],
-      onSelect: (id) => setScrapeBy(id),
+      onSelect: (id) => setScrapeBy(id as "name" | "rom"),
       wraparound: true,
       value: scrapeBy,
     },
@@ -61,7 +61,7 @@ const ScrapeModal = ({ open, setOpen, game }: Props) => {
       label: "Scrape Now",
       colorScheme: "confirm",
       onSelect: () => {
-        scrapeGame({ gameId: game.id, scraper })
+        scrapeGame({ gameId: game.id, scraper, scrapeBy })
       },
       Icon: IoCloudDownload,
     }
