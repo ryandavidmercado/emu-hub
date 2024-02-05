@@ -7,8 +7,6 @@ import { nameMappers } from "@common/features/nameMappers";
 
 const uid = new ShortUniqueId();
 
-const systemExtnameMap: Record<string, Set<string>> = {}
-
 const scanRoms = async (
   paths: MainPaths,
   currentSystems: System[],
@@ -26,15 +24,6 @@ const scanRoms = async (
   const addedDate = new Date().toUTCString();
   const newGames: Game[] = [];
   const romsDir = await readdir(ROM_PATH);
-
-  // remove leading periods, make lowercase
-  const normalizeExtname = (extname: string) => {
-    const leadingPeriodRemoved = extname.startsWith(".")
-      ? extname.slice(1)
-      : extname;
-
-    return leadingPeriodRemoved.toLowerCase();
-  }
 
   const scanFolder = async (systemConfig: System, pathTokens: string[] = []) => {
     const systemRomDir = systemConfig.romdir || path.join(ROM_PATH, systemConfig.id);
@@ -54,11 +43,7 @@ const scanRoms = async (
     if(!contents.length) return;
     if(contents.includes('.eh-ignore')) return;
 
-    const extnames = systemExtnameMap[systemConfig.id] || (() => {
-      const extnames = new Set(systemConfig.fileExtensions.map(normalizeExtname))
-      systemExtnameMap[systemConfig.id] = extnames;
-      return extnames;
-    })()
+    const extnames = systemConfig.fileExtensions;
 
     for (const entry of contents) {
       const entryPath = path.join(dir, entry);
@@ -70,7 +55,7 @@ const scanRoms = async (
         continue;
       }
 
-      if (!extnames.has(normalizeExtname(entryExt))) continue;
+      if (!extnames.includes(entryExt.toLowerCase())) continue;
 
       const lookupKey = getGameLookupKey(entry, systemConfig.id, pathTokens);
       const gameConfigEntry = gameLookupMap[lookupKey];
@@ -83,7 +68,7 @@ const scanRoms = async (
       const name = (() => {
         const defaultName = path.basename(entry, entryExt);
 
-        const nameConfig = systemConfig.defaultNames?.[entryExt];
+        const nameConfig = systemConfig.defaultNames?.[entryExt.toLowerCase()];
         if(!nameConfig) return defaultName;
 
         let name: string;
