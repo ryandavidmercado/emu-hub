@@ -1,5 +1,8 @@
 import { System } from "@common/types";
 import defaultEmulators from "./emulators";
+import { mergeWith } from "lodash"
+import { merger } from "./util/merger";
+
 const emulatorIds = new Set(defaultEmulators.map(emu => emu.id));
 
 const defaultSystems = [
@@ -341,37 +344,16 @@ const defaultSystems = [
     "defaultNames": {
       ".bin": {
         type: "pathToken",
-        token: -1
+        token: -1,
+        map: "vita"
       }
     }
   }
 ]
 
-// const parseRomDir = (dir: string) => {
-//   return dir
-//     .replaceAll("%HOMEDIR%", window.homedir)
-// }
-
 const parsedSystems: System[] = defaultSystems.map((system) => {
   const emulators = system.emulators.filter(e => emulatorIds.has(e))
   if(!emulators.length) return null;
-
-  // const { platform, ...systemConfig } = system;
-  // const platformData = platform?.[window.platform];
-
-  // if(platform && !platformData) return null;
-
-  // let withPlatformData = {
-  //   ...systemConfig,
-  //   ...(platformData ?? {})
-  // }
-
-  // if("romdir" in withPlatformData && withPlatformData.romdir) {
-  //   withPlatformData = {
-  //     ...withPlatformData,
-  //     romdir: parseRomDir(withPlatformData.romdir)
-  //   }
-  // }
 
   return {
     ...system,
@@ -379,37 +361,7 @@ const parsedSystems: System[] = defaultSystems.map((system) => {
   }
 }).filter(Boolean) as System[]
 
-const merger = (userSystems: System[], defaultSystems: System[]) => {
-  const defaultsLookup = defaultSystems.reduce((acc, system) => ({
-    ...acc,
-    [system.id]: system
-  }), {} as Record<string, System>)
-
-  const userLookup = userSystems.reduce((acc, system) => ({
-    ...acc,
-    [system.id]: system
-  }), {} as Record<string, System>);
-
-  const newSystems = userSystems.map(userSystem => {
-    const defaultSystem = defaultsLookup[userSystem.id];
-    if(!defaultSystem) return userSystem;
-
-    return {
-      ...defaultSystem,
-      ...userSystem,
-      fileExtensions: [...new Set([...defaultSystem.fileExtensions, ...userSystem.fileExtensions])],
-      emulators: [...new Set([...defaultSystem.emulators ?? [], ...userSystem.emulators ?? []])]
-    }
-  });
-
-  for(const defaultSystem of defaultSystems) {
-    if(!userLookup[defaultSystem.id]) newSystems.push(defaultSystem)
-  }
-
-  return newSystems;
-}
-
-const mergedSystems = merger(window.configStorage.getItem('systems', []), parsedSystems);
+const mergedSystems = mergeWith(parsedSystems, window.configStorage.getItem('systems', []), merger);
 window.configStorage.setItem('systems', mergedSystems);
 
 export default mergedSystems

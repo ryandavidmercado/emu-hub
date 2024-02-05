@@ -1,4 +1,5 @@
 import { MediaTypes, Game } from "@common/types/Game"
+import { NameMapper } from "./NameMapper";
 
 export type SystemStore = {
   id: string;
@@ -38,7 +39,8 @@ export interface System {
   defaultNames?: {
     [ext: string]: {
       type: "pathToken",
-      token: number
+      token: number,
+      map?: NameMapper
     }
   }
 }

@@ -1,4 +1,6 @@
 import { Emulator } from "@common/types"
+import { mergeWith } from "lodash"
+import { merger } from "./util/merger"
 
 const defaultEmulators = [
   {
@@ -181,25 +183,7 @@ const parsedEmulators = defaultEmulators.map(emulator => {
   return withPlatformData;
 }).filter(Boolean) as Emulator[]
 
-const merger = (userEmulators: Emulator[], defaultEmulators: Emulator[]) => {
-  const defaultsLookup = defaultEmulators.reduce((acc, emulator) => ({
-    ...acc,
-    [emulator.id]: emulator
-  }), {} as Record<string, Emulator>)
-
-  const userLookup = userEmulators.reduce((acc, emulator) => ({
-    ...acc,
-    [emulator.id]: emulator
-  }), {} as Record<string, Emulator>);
-
-  const ids = [...new Set([...Object.keys(defaultsLookup), ...Object.keys(userLookup)])];
-  return ids.map(id => ({
-    ...(defaultsLookup[id] ?? {}),
-    ...(userLookup[id] ?? {})
-  }))
-}
-
-const mergedEmulators = merger(window.configStorage.getItem('emulators', []), parsedEmulators);
+const mergedEmulators = mergeWith(parsedEmulators, window.configStorage.getItem('emulators', []), merger);
 window.configStorage.setItem('emulators', mergedEmulators);
 
 export default parsedEmulators;

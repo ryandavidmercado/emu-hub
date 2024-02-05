@@ -3,6 +3,7 @@ import path from "path";
 import ShortUniqueId from "short-unique-id";
 import { MainPaths } from "@common/types/Paths";
 import { readdir, stat } from "fs/promises";
+import { nameMappers } from "@common/features/nameMappers";
 
 const uid = new ShortUniqueId();
 
@@ -85,10 +86,14 @@ const scanRoms = async (
         const nameConfig = systemConfig.defaultNames?.[entryExt];
         if(!nameConfig) return defaultName;
 
+        let name: string;
         switch(nameConfig.type) {
           case "pathToken":
-            return pathTokens.at(nameConfig.token) ?? defaultName;
+            name = pathTokens.at(nameConfig.token) ?? defaultName;
         }
+
+        if(nameConfig.map) name = nameMappers[nameConfig.map](name);
+        return name;
       })()
 
       newGames.push({
