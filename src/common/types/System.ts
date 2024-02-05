@@ -35,6 +35,12 @@ export interface System {
   stores?: SystemStore[];
   logo?: string;
   romdir?: string;
+  defaultNames?: {
+    [ext: string]: {
+      type: "pathToken",
+      token: number
+    }
+  }
 }
 
 export type SystemWithGames = System & { games: Game[], screenshot?: string }

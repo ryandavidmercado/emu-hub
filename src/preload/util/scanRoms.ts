@@ -79,12 +79,24 @@ const scanRoms = async (
         continue;
       }
 
+      const name = (() => {
+        const defaultName = path.basename(entry, entryExt);
+
+        const nameConfig = systemConfig.defaultNames?.[entryExt];
+        if(!nameConfig) return defaultName;
+
+        switch(nameConfig.type) {
+          case "pathToken":
+            return pathTokens.at(nameConfig.token) ?? defaultName;
+        }
+      })()
+
       newGames.push({
         id: uid.rnd(),
         rompath: pathTokens.length ? pathTokens : undefined,
         romname: entry,
         system: systemConfig.id,
-        name: path.basename(entry, entryExt),
+        name,
         added: addedDate
       })
     }

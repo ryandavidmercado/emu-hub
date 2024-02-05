@@ -16,7 +16,7 @@ hub | *noun*:
     * Make sure to set the EmuHub AppImage to executable: https://docs.appimage.org/introduction/quickstart.html
     * If you're planning on running EmuHub from Game Mode, make sure to set the launch arguments in Steam to --no-sandbox, otherwise games will fail to launch.
 1. Verify you've installed necessary emulators
-    * EmuHub currently only supports one emulator per system; the needed dependencies are listed below under Supported Systems.
+    * The needed dependencies are listed below under Supported Systems.
     * If you're running on a Steam Deck with EmuDeck installed, this has already been taken care of for you. (DISCLAIMER: EmuHub is not affiliated with EmuDeck!)
 1. Launch EmuHub
     * This will generate config, asset, and rom folders under Documents/EmuHub and guide you through first setup
@@ -32,7 +32,7 @@ hub | *noun*:
         * Try creating a new collection! Collections will display individual scrollers in the Home page
         * Hit Down in the Game View to access game information and dynamic recommendations (by genre, developer, and publisher)
     * Hit Play on the Game View to launch
-  
+
 ## Troubleshooting
 > EmuHub won't launch! (I'm on Steam Deck)
 
@@ -53,7 +53,7 @@ If you've already followed step 1 and verified that you've installed the necessa
     * Find the path to
         1. Your RetroArch executable
         2. Your RetroArch cores
-    * Edit the RetroArch -> bin and RetroArch -> cores properties of Documents/EmuHub/config/paths.yml  
+    * Edit the RetroArch -> bin and RetroArch -> cores properties of Documents/EmuHub/config/paths.yml
 
 ## Supported Systems
 * Nintendo Entertainment System (RetroArch - Mesen)
@@ -61,7 +61,7 @@ If you've already followed step 1 and verified that you've installed the necessa
 * Nintendo 64 (RetroArch - Mupen64Plus-Next)
 * Nintendo GameCube (Dolphin)
 * Nintendo Wii (Dolphin)
-* Nintendo Wii U *(wua only)* (Cemu)
+* Nintendo Wii U (Cemu)
 * Nintendo Switch (yuzu)
 * Game Boy (RetroArch - Sameboy)
 * Game Boy Color (RetroArch - Sameboy)
@@ -73,6 +73,7 @@ If you've already followed step 1 and verified that you've installed the necessa
 * Sony PlayStation (DuckStation)
 * Sony PlayStation 2 (PCSX2)
 * Sony PlayStation Portable (PPSSPP)
+* Sony PlayStation Vita (Vita3K)
 
 ## Supported Platforms
 * Linux

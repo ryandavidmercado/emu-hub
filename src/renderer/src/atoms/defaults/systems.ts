@@ -311,11 +311,18 @@ const defaultSystems = [
     "releaseYear": "2012",
     "company": "Nintendo",
     "fileExtensions": [
-      ".wua"
+      ".wua",
+      ".rpx"
     ],
     "emulators": [
       "cemu"
-    ]
+    ],
+    "defaultNames": {
+      ".rpx": {
+        type: "pathToken",
+        token: -2
+      }
+    }
   },
   {
     "id": "psvita",
