@@ -99,7 +99,7 @@ const launchGameAtom = atom(null, async (get, set, gameId: string) => {
   })
 
   return window
-    .launchGame(game, emulator);
+    .launchGame(game, emulator, system);
 })
 
 const forSystemAtom = atomFamily((systemId: string, sortType = "alphabetical") => (
