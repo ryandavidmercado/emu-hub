@@ -8,7 +8,6 @@ import MultiPageControllerForm, { MultiFormPage } from "../ControllerForm/MultiP
 import { ControllerFormEntry } from "../ControllerForm/ControllerForm"
 import { IoTrash } from "react-icons/io5"
 import { InputPriority } from "@renderer/const/inputPriorities"
-import { DefaultGameDisplayType } from "@renderer/atoms/defaults/gameDisplayTypes"
 import { FaAngleRight } from "react-icons/fa"
 import GameArtSelction from "../GameArtSelection/GameArtSelection"
 import systems from "@renderer/atoms/systems"
