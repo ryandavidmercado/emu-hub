@@ -337,7 +337,13 @@ const defaultSystems = [
     ],
     "emulators": [
       "vita3k"
-    ]
+    ],
+    "defaultNames": {
+      ".bin": {
+        type: "pathToken",
+        token: -1
+      }
+    }
   }
 ]
 
