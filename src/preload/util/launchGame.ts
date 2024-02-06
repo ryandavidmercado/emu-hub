@@ -1,5 +1,5 @@
 import path from "path";
-import { Game, Emulator } from "@common/types";
+import { Game, Emulator, System } from "@common/types";
 import { FLATPAK_PATH } from "./const";
 import { exec as execCb } from "child_process";
 import { promisify } from "util";
@@ -29,10 +29,12 @@ const parseLaunchCommand = (command: string, emulatorLocation: string, romLocati
   }, command);
 }
 
-const launchGame = (game: Game, emulator: Emulator) => {
+const launchGame = (game: Game, emulator: Emulator, system: System) => {
   const { RetroArch: RA_PATHS, ROMs: ROM_PATH } = loadConfig("paths", {} /* we don't need to supply a default; jotai initializes this config on boot */) as MainPaths;
 
-  const romLocation = path.join(ROM_PATH, game.system, ...(game.rompath ?? []), game.romname);
+  const systemDir = system.romdir ?? path.join(ROM_PATH, system.id);
+  const romLocation = path.join(systemDir, ...(game.rompath ?? []), game.romname);
+
   let bin: string;
   let args: string[];
 
@@ -52,8 +54,10 @@ const launchGame = (game: Game, emulator: Emulator) => {
     args = [emulator.arg, `"${romLocation}"`].filter(Boolean) as string[];
   }
 
-  const execString = emulator.launchCommand
-    ? parseLaunchCommand(emulator.launchCommand, bin, romLocation)
+  const launchCommand = emulator.launchCommands?.[path.extname(game.romname)] ?? emulator.launchCommand;
+
+  const execString = launchCommand
+    ? parseLaunchCommand(launchCommand, bin, romLocation)
     : `${bin} ${args.join(" ")}`
 
   console.log(`Launching ${game.name ?? game.romname} with command: ${execString}`);

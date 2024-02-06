@@ -29,15 +29,6 @@ export class ScreenScraper {
     })
   }
 
-  private async fetchWithParams(path: string, params: URLParams) {
-    const url = new URL(this.url.href);
-    url.pathname += path;
-    this.addParamsToUrl(params, url)
-
-    const res = await (await fetch(url)).json();
-    return res.response;
-  }
-
   constructor({ userId, userPassword }: ConstructorProps = {}) {
     this.url = new URL(this.baseUrl)
     const params = {
@@ -52,13 +43,20 @@ export class ScreenScraper {
     this.addParamsToUrl(params, this.url);
   }
 
-  async scrapeByRomInfo(game: Game, system: System): Promise<Game> {
-    const path = "jeuInfos.php";
+  private async fetchWithParams(path: string, params: URLParams) {
+    const url = new URL(this.url.href);
+    url.pathname += path;
+    this.addParamsToUrl(params, url)
 
-    const getArt = (ssMediaType: string | string[], ehMediaType: keyof MediaTypes, region: string, response: any) => {
+    const res = await (await fetch(url)).json();
+    return res.response;
+  }
+
+  private async saveScrapeResponseToGame(gameResponse: any, game: Game) {
+    const getArt = (ssMediaType: string | string[], ehMediaType: keyof MediaTypes, region: string) => {
       const ssMediaTypes = typeof ssMediaType === "string" ? [ssMediaType] : ssMediaType;
 
-      const entriesOfType = response.jeu.medias.filter(media => ssMediaTypes.includes(media.type));
+      const entriesOfType = gameResponse.medias.filter(media => ssMediaTypes.includes(media.type));
       const artEntry = entriesOfType.find(entry => !entry.region || ["wor", region].includes(entry.region)) ?? entriesOfType[0];
 
       return {
@@ -78,6 +76,29 @@ export class ScreenScraper {
       return entry?.text;
     }
 
+    const medias = [
+      getArt("fanart", "hero", "us"),
+      getArt("steamgrid", "poster", "us"),
+      getArt(["wheel", "wheel-hd"], "logo", "us"),
+      getArt("ss", "screenshot", "us")
+    ].filter(media => media.url && media.format)
+
+    const gameWithMedias = await window.downloadGameMedia(game, medias)
+
+    return {
+      ...gameWithMedias,
+      description: getDecodedHTMLString(getByLanguage("en", gameResponse.synopsis ?? [])),
+      players: gameResponse.joueurs?.text,
+      name: getByRegion("us", gameResponse.noms),
+      genre: getByLanguage("en", gameResponse.genres?.[0]?.noms ?? []),
+      publisher: gameResponse.editeur?.text,
+      developer: gameResponse.developpeur?.text,
+    }
+  }
+
+  async scrapeByRomInfo(game: Game, system: System): Promise<Game> {
+    const path = "jeuInfos.php";
+
     const { crc, size } = (game.romsize)
       ? { crc: game.crc, size: game.romsize }
       : await window.getRomFileInfo(game);
@@ -86,30 +107,31 @@ export class ScreenScraper {
 
     try {
       const response = await this.fetchWithParams(path, params);
-
-      const medias = [
-        getArt("fanart", "hero", "us", response),
-        getArt("steamgrid", "poster", "us", response),
-        getArt(["wheel", "wheel-hd"], "logo", "us", response),
-        getArt("ss", "screenshot", "us", response)
-      ].filter(media => media.url && media.format)
-
-      const gameWithMedias = await window.downloadGameMedia(game, medias)
+      const gameWithMetadata = await this.saveScrapeResponseToGame(response.jeu, game)
 
       return {
-        ...gameWithMedias,
-        description: getDecodedHTMLString(getByLanguage("en", response.jeu?.synopsis ?? [])),
-        players: response.jeu.joueurs?.text,
-        name: getByRegion("us", response.jeu?.noms),
-        genre: getByLanguage("en", response.jeu.genres?.[0]?.noms ?? []),
-        publisher: response.jeu.editeur?.text,
-        developer: response.jeu.developpeur?.text,
+        ...gameWithMetadata,
         crc,
         romsize: size
       }
     } catch (e) {
       // if we failed to scrape, at least save crc & romsize so we don't have to recalculate these
       throw ({ size, crc, err: e })
+    }
+  }
+
+  async scrapeByName(game: Game, system: System): Promise<Game> {
+    const path = "jeuRecherche.php"
+    const params = { systemeid: system.ssId, recherche: game.name }
+
+    try {
+      const response = await this.fetchWithParams(path, params);
+      const gameResponse = response.jeux?.[0]
+
+      if(!gameResponse) throw "Game not found!"
+      return await this.saveScrapeResponseToGame(gameResponse, game)
+    } catch(e) {
+      throw { err: e }
     }
   }
 }

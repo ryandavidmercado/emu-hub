@@ -8,7 +8,6 @@ import MultiPageControllerForm, { MultiFormPage } from "../ControllerForm/MultiP
 import { ControllerFormEntry } from "../ControllerForm/ControllerForm"
 import { IoTrash } from "react-icons/io5"
 import { InputPriority } from "@renderer/const/inputPriorities"
-import { DefaultGameDisplayType } from "@renderer/atoms/defaults/gameDisplayTypes"
 import { FaAngleRight } from "react-icons/fa"
 import GameArtSelction from "../GameArtSelection/GameArtSelection"
 import systems from "@renderer/atoms/systems"
@@ -28,10 +27,6 @@ const GameSettingsModal = ({ game, open, setOpen }: Props) => {
   const [getEmulator] = useAtom(emulators.curriedSingle);
 
   const [inGameArtSelection, setInGameArtSelection] = useState(false);
-
-  const showcaseDisplayType = game.showcaseDisplayType ?? DefaultGameDisplayType.showcase;
-  const gamePageDisplayType = game.gamePageDisplayType ?? DefaultGameDisplayType.gamePage;
-  const gameTileDisplayType = game.gameTileDisplayType ?? DefaultGameDisplayType.gameTile;
 
   const emulatorsList = (gameSystem.emulators ?? []).map(getEmulator).map(emu => ({
     id: emu.id,
@@ -60,7 +55,7 @@ const GameSettingsModal = ({ game, open, setOpen }: Props) => {
           options: emulatorsList,
           value: selectedEmulator,
           onSelect: (emuId: string) => { updateGame({ emulator: emuId })},
-          wraparound: true
+          wraparound: true,
         },
         {
           id: 'rename',
@@ -87,42 +82,6 @@ const GameSettingsModal = ({ game, open, setOpen }: Props) => {
           }
         }
       ].filter(Boolean) as ControllerFormEntry[]
-    },
-    {
-      id: 'game-art',
-      entries: [
-        game.screenshot && game.hero && {
-          id: 'game-view',
-          label: "Game Page",
-          sublabel: `Current: ${gamePageDisplayType === "screenshot" ? "Screenshot": "Fanart"}`,
-          type: "toggle",
-          enabled: gamePageDisplayType === "screenshot",
-          setEnabled: () => { updateGame({ gamePageDisplayType: gamePageDisplayType === "screenshot" ? "fanart" : "screenshot" })},
-          useDisableStyling: false
-        },
-        game.screenshot && game.hero && {
-          id: 'showcase-home',
-          label: "Showcase (Home Page)",
-          sublabel: `Current: ${showcaseDisplayType === "screenshot" ? "Screenshot" : "Fanart"}`,
-          type: "toggle",
-          enabled: showcaseDisplayType === "screenshot",
-          setEnabled: () => {
-            updateGame({ showcaseDisplayType: showcaseDisplayType === "screenshot" ? "fanart" : "screenshot" })
-          },
-          useDisableStyling: false
-        },
-        game.screenshot && game.poster && {
-          id: 'tile',
-          label: "Game Tile",
-          type: "toggle",
-          enabled: gameTileDisplayType === "poster",
-          sublabel: `Current: ${gameTileDisplayType === "poster" ? "Poster" : "Screenshot + Logo"}`,
-          setEnabled: () => {
-            updateGame({ gameTileDisplayType: gameTileDisplayType === "poster" ? "screenshot" : "poster" })
-          },
-          useDisableStyling: false
-        }
-      ].filter(Boolean) as ControllerFormEntry[],
     }
   ]
 

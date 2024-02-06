@@ -7,6 +7,7 @@ import MultiPageControllerForm, { MultiFormPage } from "@renderer/components/Con
 import notifications from "@renderer/atoms/notifications";
 import screenScraperAtom from "@renderer/atoms/screenscaper";
 import { IoCloudDownload } from "react-icons/io5";
+import { scrapers } from "@renderer/const/scrapers";
 
 const General = ({ isActive, onExit, inputPriority }: SectionProps) => {
   const [, scanRoms] = useAtom(games.scan)
@@ -15,6 +16,9 @@ const General = ({ isActive, onExit, inputPriority }: SectionProps) => {
 
   const [includeWithMedia, setIncludeWithMedia] = useState(false);
   const [, scrapeAllGames] = useAtom(games.scrapeAll);
+  const [scraper, setScraper] = useState<string>(scrapers[0].id);
+
+  const [scrapeBy, setScrapeBy] = useState("rom");
 
   const pages: MultiFormPage[] = [
     {
@@ -46,10 +50,31 @@ const General = ({ isActive, onExit, inputPriority }: SectionProps) => {
       id: 'scrape',
       entries: [
         {
-          id: 'scrape-settings',
+          id: 'ss-credentials',
           type: 'navigate',
           label: "ScreenScraper Credentials",
-          navigateTo: "scrape-credentials"
+          navigateTo: "ss-credentials"
+        },
+        {
+          id: 'select-scraper',
+          type: "selector",
+          label: "Scraping Service",
+          options: [...scrapers],
+          value: scraper,
+          onSelect: (id) => { setScraper(id) },
+          wraparound: true
+        },
+        {
+          id: 'scrape-by',
+          type: 'selector',
+          label: "Scrape By:",
+          options: [
+            { id: "rom", label: "ROM Info (Name, Size, CRC)" },
+            { id: "name", label: "Game Name" }
+          ],
+          onSelect: (id) => setScrapeBy(id),
+          wraparound: true,
+          value: scrapeBy,
         },
         {
           id: 'scrape-missing',
@@ -67,14 +92,16 @@ const General = ({ isActive, onExit, inputPriority }: SectionProps) => {
           Icon: IoCloudDownload,
           onSelect: () => {
             scrapeAllGames({
-              excludeNotMissing: !includeWithMedia
+              excludeNotMissing: !includeWithMedia,
+              scrapeBy: scrapeBy as "name" | "rom" | undefined,
+              scraper: scraper as "screenscraper" | "igdb" | undefined
             })
           }
         }
       ]
     },
     {
-      id: 'scrape-credentials',
+      id: 'ss-credentials',
       entries: [
         {
           id: 'ss-username',

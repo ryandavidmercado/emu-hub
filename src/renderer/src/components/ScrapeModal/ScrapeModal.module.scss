@@ -1,0 +1,14 @@
+@import "@renderer/scss/colors";
+
+.container {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.container {
+  width: 600px;
+  background-color: var(--background);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 5px 0px 5px rgba(0, 0, 0, .4);
+}

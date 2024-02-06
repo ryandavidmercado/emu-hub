@@ -3,10 +3,9 @@ import path from "path";
 import ShortUniqueId from "short-unique-id";
 import { MainPaths } from "@common/types/Paths";
 import { readdir, stat } from "fs/promises";
+import { nameMappers } from "@common/features/nameMappers";
 
 const uid = new ShortUniqueId();
-
-const systemExtnameMap: Record<string, Set<string>> = {}
 
 const scanRoms = async (
   paths: MainPaths,
@@ -26,17 +25,10 @@ const scanRoms = async (
   const newGames: Game[] = [];
   const romsDir = await readdir(ROM_PATH);
 
-  // remove leading periods, make lowercase
-  const normalizeExtname = (extname: string) => {
-    const leadingPeriodRemoved = extname.startsWith(".")
-      ? extname.slice(1)
-      : extname;
-
-    return leadingPeriodRemoved.toLowerCase();
-  }
-
   const scanFolder = async (systemConfig: System, pathTokens: string[] = []) => {
-    const dir = path.join(ROM_PATH, systemConfig.id, ...pathTokens);
+    const systemRomDir = systemConfig.romdir || path.join(ROM_PATH, systemConfig.id);
+
+    const dir = path.join(systemRomDir, ...pathTokens);
     let contents: string[];
 
     try {
@@ -51,11 +43,7 @@ const scanRoms = async (
     if(!contents.length) return;
     if(contents.includes('.eh-ignore')) return;
 
-    const extnames = systemExtnameMap[systemConfig.id] || (() => {
-      const extnames = new Set(systemConfig.fileExtensions.map(normalizeExtname))
-      systemExtnameMap[systemConfig.id] = extnames;
-      return extnames;
-    })()
+    const extnames = systemConfig.fileExtensions;
 
     for (const entry of contents) {
       const entryPath = path.join(dir, entry);
@@ -67,7 +55,7 @@ const scanRoms = async (
         continue;
       }
 
-      if (!extnames.has(normalizeExtname(entryExt))) continue;
+      if (!extnames.includes(entryExt.toLowerCase())) continue;
 
       const lookupKey = getGameLookupKey(entry, systemConfig.id, pathTokens);
       const gameConfigEntry = gameLookupMap[lookupKey];
@@ -77,12 +65,28 @@ const scanRoms = async (
         continue;
       }
 
+      const name = (() => {
+        const defaultName = path.basename(entry, entryExt);
+
+        const nameConfig = systemConfig.defaultNames?.[entryExt.toLowerCase()];
+        if(!nameConfig) return defaultName;
+
+        let name: string;
+        switch(nameConfig.type) {
+          case "pathToken":
+            name = pathTokens.at(nameConfig.token) ?? defaultName;
+        }
+
+        if(nameConfig.map) name = nameMappers[nameConfig.map](name);
+        return name;
+      })()
+
       newGames.push({
         id: uid.rnd(),
         rompath: pathTokens.length ? pathTokens : undefined,
         romname: entry,
         system: systemConfig.id,
-        name: path.basename(entry, entryExt),
+        name,
         added: addedDate
       })
     }

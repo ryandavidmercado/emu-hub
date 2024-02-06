@@ -1,4 +1,5 @@
 import { MediaTypes, Game } from "@common/types/Game"
+import { NameMapper } from "./NameMapper";
 
 export type SystemStore = {
   id: string;
@@ -30,9 +31,18 @@ export interface System {
   company: string;
   handheld?: boolean;
   ssId?: number;
+  igdbId?: number;
   emulators?: string[];
   stores?: SystemStore[];
   logo?: string;
+  romdir?: string;
+  defaultNames?: {
+    [ext: string]: {
+      type: "pathToken",
+      token: number,
+      map?: NameMapper
+    }
+  }
 }
 
 export type SystemWithGames = System & { games: Game[], screenshot?: string }

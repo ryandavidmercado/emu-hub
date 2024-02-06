@@ -11,7 +11,7 @@ interface GameMedia {
   format: string
 }
 
-const downloadGameMedia = async (game: Game, medias: GameMedia[]) => {
+const downloadGameMedia = async (game: Game, medias: GameMedia[], headers?: Record<string, string>) => {
   const gameAssetsPath = path.join(ASSETS_PATH, 'games', game.system, ...(game.rompath || []), `${game.romname}`);
 
   try {
@@ -21,7 +21,7 @@ const downloadGameMedia = async (game: Game, medias: GameMedia[]) => {
   const requests = medias.map(({ mediaType, url, format }) => async () => {
     const mediaPath = path.join(gameAssetsPath, `${mediaType}.${format}`)
 
-    const response = await fetch(url);
+    const response = await fetch(url, { headers });
     if(response.status === 404) throw "Image not found"
 
     let buffer = Buffer.from(await response.arrayBuffer());

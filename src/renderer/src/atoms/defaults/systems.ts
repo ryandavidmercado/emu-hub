@@ -1,5 +1,8 @@
 import { System } from "@common/types";
 import defaultEmulators from "./emulators";
+import { mergeWith } from "lodash"
+import { merger } from "./util/merger";
+
 const emulatorIds = new Set(defaultEmulators.map(emu => emu.id));
 
 const defaultSystems = [
@@ -311,12 +314,41 @@ const defaultSystems = [
     "releaseYear": "2012",
     "company": "Nintendo",
     "fileExtensions": [
-      ".wua"
+      ".wua",
+      ".rpx"
     ],
     "emulators": [
       "cemu"
-    ]
+    ],
+    "defaultNames": {
+      ".rpx": {
+        type: "pathToken",
+        token: -2
+      }
+    }
   },
+  {
+    "id": "psvita",
+    "igdbId": 46,
+    "ssId": 62,
+    "name": "Sony PlayStation Vita",
+    "releaseYear": "2011",
+    "company": "Sony",
+    "fileExtensions": [
+      ".psvita",
+      ".bin"
+    ],
+    "emulators": [
+      "vita3k"
+    ],
+    "defaultNames": {
+      ".bin": {
+        type: "pathToken",
+        token: -1,
+        map: "vita"
+      }
+    }
+  }
 ]
 
 const parsedSystems: System[] = defaultSystems.map((system) => {
@@ -329,37 +361,7 @@ const parsedSystems: System[] = defaultSystems.map((system) => {
   }
 }).filter(Boolean) as System[]
 
-const merger = (userSystems: System[], defaultSystems: System[]) => {
-  const defaultsLookup = defaultSystems.reduce((acc, system) => ({
-    ...acc,
-    [system.id]: system
-  }), {} as Record<string, System>)
-
-  const userLookup = userSystems.reduce((acc, system) => ({
-    ...acc,
-    [system.id]: system
-  }), {} as Record<string, System>);
-
-  const newSystems = userSystems.map(userSystem => {
-    const defaultSystem = defaultsLookup[userSystem.id];
-    if(!defaultSystem) return userSystem;
-
-    return {
-      ...defaultSystem,
-      ...userSystem,
-      fileExtensions: [...new Set([...defaultSystem.fileExtensions, ...userSystem.fileExtensions])],
-      emulators: [...new Set([...defaultSystem.emulators ?? [], ...userSystem.emulators ?? []])]
-    }
-  });
-
-  for(const defaultSystem of defaultSystems) {
-    if(!userLookup[defaultSystem.id]) newSystems.push(defaultSystem)
-  }
-
-  return newSystems;
-}
-
-const mergedSystems = merger(window.configStorage.getItem('systems', []), parsedSystems);
+const mergedSystems = mergeWith(parsedSystems, window.configStorage.getItem('systems', []), merger);
 window.configStorage.setItem('systems', mergedSystems);
 
 export default mergedSystems
