@@ -94,8 +94,8 @@ async function findLinuxEmulator(emulator: Emulator) {
         const entryPath = path.join(applicationPath, entry);
         const entryStat = await stat(entryPath);
 
-        if(!entryStat.isDirectory() && entry.match(matcher)) {
-          return path.join(applicationPath, entry);
+        if(!entryStat.isDirectory()) {
+          if(entry.match(matcher)) return path.join(applicationPath, entry);
         } else {
           // we can scan for binNames one layer deep; don't go deeper to keep this quick
           const entryContents = await readdir(entryPath);
