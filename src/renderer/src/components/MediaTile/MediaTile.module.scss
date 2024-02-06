@@ -8,6 +8,7 @@
   top: 0;
   left: 0;
   object-fit: contain;
+  transition: all .1s ease;
 }
 
 .background {
@@ -62,6 +63,11 @@
 
     &.swapTransform {
       transform: unset;
+    }
+
+    .foreground {
+      transform: scale(1.08);
+      filter: drop-shadow(-5px 5px 5px rgba(0, 0, 0, .3))
     }
   }
 }
