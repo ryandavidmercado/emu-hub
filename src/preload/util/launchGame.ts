@@ -1,11 +1,11 @@
 import path from "path";
 import { Game, Emulator, System } from "@common/types";
-import { FLATPAK_PATH } from "./const";
 import { exec as execCb } from "child_process";
 import { promisify } from "util";
 import { loadConfig } from "./configStorage";
 import { MainPaths } from "@common/types/Paths";
 import { readFileSync } from "fs";
+import findEmulator from "./findEmulator";
 
 const exec = promisify(execCb);
 
@@ -29,28 +29,23 @@ const parseLaunchCommand = (command: string, emulatorLocation: string, romLocati
   }, command);
 }
 
-const launchGame = (game: Game, emulator: Emulator, system: System) => {
-  const { RetroArch: RA_PATHS, ROMs: ROM_PATH } = loadConfig("paths", {} /* we don't need to supply a default; jotai initializes this config on boot */) as MainPaths;
+const launchGame = async (game: Game, emulator: Emulator, system: System) => {
+  const bin = await findEmulator(emulator);
+  const { ROMs: ROM_PATH } = loadConfig("paths", {} /* we don't need to supply a default; jotai initializes this config on boot */) as MainPaths;
 
   const systemDir = system.romdir ?? path.join(ROM_PATH, system.id);
   const romLocation = path.join(systemDir, ...(game.rompath ?? []), game.romname);
 
-  let bin: string;
   let args: string[];
 
-  if("core" in emulator) {
-    const coreLocation = `${path.join(RA_PATHS.cores, emulator.core)}.${RA_PATHS.coreExtension}`
-    bin = `${RA_PATHS.bin} -L "${coreLocation}"`;
-
+  if("core" in emulator.location) {
     args = [
       `"${romLocation}"`,
       "-f"
     ]
   } else if("flatpak" in emulator) {
-    bin = path.join(FLATPAK_PATH, emulator.flatpak);
     args = [emulator.arg, `"${romLocation}"`].filter(Boolean) as string[];
   } else {
-    bin = emulator.bin;
     args = [emulator.arg, `"${romLocation}"`].filter(Boolean) as string[];
   }
 

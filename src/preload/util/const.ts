@@ -10,7 +10,16 @@ const CONFIG_PATH = path.join(EMUHUB_PATH, "config");
 const ASSETS_PATH = path.join(EMUHUB_PATH, "assets");
 const GAME_ASSETS_PATH = path.join(ASSETS_PATH, "games");
 const SYSTEM_ASSETS_PATH = path.join(ASSETS_PATH, "systems");
+
 const FLATPAK_PATH = path.join(os.homedir(), ".local", "share", "flatpak", "exports", "bin");
+const FLATPAK_PATHS = [
+  path.join(os.homedir(), ".local", "share", "flatpak", "exports", "bin"),
+  path.join("/", "var", "lib", "flatpak", "exports", "share")
+]
+
+const LINUX_APPLICATION_PATHS = [
+  path.join(os.homedir(), "Applications")
+]
 
 for(const path of [
   EMUHUB_PATH,
@@ -30,5 +39,7 @@ export {
   FLATPAK_PATH,
   ASSETS_PATH,
   GAME_ASSETS_PATH,
-  SYSTEM_ASSETS_PATH
+  SYSTEM_ASSETS_PATH,
+  FLATPAK_PATHS,
+  LINUX_APPLICATION_PATHS
 }

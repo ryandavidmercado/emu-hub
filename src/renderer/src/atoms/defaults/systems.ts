@@ -364,4 +364,4 @@ const parsedSystems: System[] = defaultSystems.map((system) => {
 const mergedSystems = mergeWith(parsedSystems, window.configStorage.getItem('systems', []), merger);
 window.configStorage.setItem('systems', mergedSystems);
 
-export default mergedSystems
+export default parsedSystems
