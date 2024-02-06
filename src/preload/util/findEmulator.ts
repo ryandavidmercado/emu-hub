@@ -42,7 +42,7 @@ async function findDarwinEmulator(emulator: Emulator) {
   }
 
   const appDir = await readdir('/Applications');
-  const matcher = new RegExp(`^${emulator.location.darwin.name}.*\.app$`)
+  const matcher = new RegExp(`^${escapeRegExp(emulator.location.darwin.name)}.*\.app$`)
 
   const emuDir = appDir.find(app => app.match(matcher));
   if (!emuDir) throw {
@@ -62,7 +62,7 @@ async function findLinuxEmulator(emulator: Emulator) {
   }
 
   if (emulator.location.linux.appImage) {
-    const matcher = new RegExp(`^${emulator.location.linux.appImage}.*\.AppImage$`)
+    const matcher = new RegExp(`^${escapeRegExp(emulator.location.linux.appImage)}.*\.AppImage$`)
 
     for(const applicationPath of LINUX_APPLICATION_PATHS) {
       let dirContents: string[];
@@ -82,7 +82,7 @@ async function findLinuxEmulator(emulator: Emulator) {
   }
 
   if (emulator.location.linux.binName) {
-    const matcher = new RegExp(`^${emulator.location.linux.binName}$`)
+    const matcher = new RegExp(`^${escapeRegExp(emulator.location.linux.binName)}$`)
 
     for(const applicationPath of LINUX_APPLICATION_PATHS) {
       let dirContents: string[];
@@ -111,7 +111,7 @@ async function findLinuxEmulator(emulator: Emulator) {
   }
 
   if (emulator.location.linux.flatpak) {
-    const matcher = new RegExp(`^${emulator.location.linux.flatpak.replace('.', '\.')}(?:\.desktop){0,1}$`)
+    const matcher = new RegExp(`^${escapeRegExp(emulator.location.linux.flatpak)}(?:\.desktop){0,1}$`)
 
     for(const flatpakPath of FLATPAK_PATHS) {
       let dirContents: string[];
@@ -145,5 +145,9 @@ async function findLinuxEmulator(emulator: Emulator) {
     data: emulator.name
   }
 }
+
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+} // https://stackoverflow.com/a/6969486
 
 export default findEmulator
