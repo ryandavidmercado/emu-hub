@@ -1,8 +1,9 @@
 import { NameMapper } from "@common/types/NameMapper"
-import { vitaMap } from "./nameMapping/maps"
+import { vitaMap, ps3Map } from "./nameMapping/maps"
 
 const nameMaps: Record<NameMapper, Record<string, string>> = {
-  "vita": vitaMap
+  "vita": vitaMap,
+  "ps3": ps3Map
 }
 
 export const nameMappers = Object.entries(nameMaps).reduce((acc, [name, map]) => ({

@@ -14,6 +14,10 @@ const getRomFileInfo = async (game: Game) => {
   const romLocation = path.join(ROM_PATH, game.system, ...(game.rompath ?? []), game.romname);
 
   const stats = await stat(romLocation);
+
+  // avoid crash when interpreting a folder as a rom file (as with .ps3 directories)
+  if(stats.isDirectory()) return { crc: undefined, size: undefined }
+
   const fileStream = createReadStream(romLocation);
 
   const size = stats.size

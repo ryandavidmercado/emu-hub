@@ -50,12 +50,14 @@ const scanRoms = async (
       const entryExt = path.extname(entry);
       const entryStat = await stat(entryPath);
 
-      if (entryStat.isDirectory()) {
+      const isValidExt = extnames.includes(entryExt.toLowerCase());
+
+      if (entryStat.isDirectory() && !isValidExt) {
         await scanFolder(systemConfig, [...pathTokens, entry]);
         continue;
       }
 
-      if (!extnames.includes(entryExt.toLowerCase())) continue;
+      if (!isValidExt) continue;
 
       const lookupKey = getGameLookupKey(entry, systemConfig.id, pathTokens);
       const gameConfigEntry = gameLookupMap[lookupKey];

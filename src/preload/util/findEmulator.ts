@@ -50,7 +50,15 @@ async function findDarwinEmulator(emulator: Emulator) {
     data: emulator.name
   }
 
-  return path.join("/", "Applications", emuDir, "Contents", "MacOS", emulator.location.darwin.name)
+  const emuMacOSDir = path.join("/", "Applications", emuDir, "Contents", "MacOS");
+  const binName = await readdir(emuMacOSDir)?.[0];
+
+  if(!binName) throw {
+    type: 'emu-not-found',
+    data: emulator.name
+  }
+
+  return path.join("/", "Applications", emuDir, "Contents", "MacOS", binName)
 }
 
 async function findLinuxEmulator(emulator: Emulator) {

@@ -332,6 +332,7 @@ const defaultSystems = [
     "igdbId": 46,
     "ssId": 62,
     "name": "Sony PlayStation Vita",
+    "handheld": true,
     "releaseYear": "2011",
     "company": "Sony",
     "fileExtensions": [
@@ -346,6 +347,28 @@ const defaultSystems = [
         type: "pathToken",
         token: -1,
         map: "vita"
+      }
+    }
+  },
+  {
+    "id": "ps3",
+    "igdbId": 9,
+    "ssId": 59,
+    "name": "Sony PlayStation 3",
+    "releaseYear": "2006",
+    "company": "Sony",
+    "fileExtensions": [
+      ".ps3",
+      ".bin"
+    ],
+    "emulators": [
+      "rpcs3"
+    ],
+    "defaultNames": {
+      ".bin": {
+        "type": "pathToken",
+        "token": -2,
+        "map": "ps3"
       }
     }
   }

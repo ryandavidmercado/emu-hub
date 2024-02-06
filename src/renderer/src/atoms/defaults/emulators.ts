@@ -146,6 +146,19 @@ const defaultEmulators = [
       ".bin": "%EMUPATH% --fullscreen -r %ROMDIRNAME%",
       ".psvita": "%EMUPATH% --fullscreen -r %ROMTEXTCONTENT%"
     }
+  },
+  {
+    "id": "rpcs3",
+    "name": "RPCS3",
+    "location": {
+      "darwin": {
+        "name": "RPCS3"
+      },
+      "linux": {
+        "flatpak": "net.rpcs3.RPCS3",
+        "appImage": "rpcs3"
+      }
+    }
   }
 ]
 
