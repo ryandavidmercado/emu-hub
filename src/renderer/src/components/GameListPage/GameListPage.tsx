@@ -1,9 +1,9 @@
-import { Game } from "@common/types"
-import GridScroller from "@renderer/components/GridScroller/GridScroller"
-import css from "./GameListPage.module.scss"
-import VerticalGameInfo from "@renderer/components/VerticalGameInfo"
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Game } from '@common/types'
+import GridScroller from '@renderer/components/GridScroller/GridScroller'
+import css from './GameListPage.module.scss'
+import VerticalGameInfo from '@renderer/components/VerticalGameInfo'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 interface Props {
   games: Game[]
@@ -11,9 +11,9 @@ interface Props {
 }
 
 export const GameListPage = ({ games, label }: Props) => {
-  const [activeGame, setActiveGame] = useState(games[0]);
+  const [activeGame, setActiveGame] = useState(games[0])
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   return (
     <div className={css.container}>

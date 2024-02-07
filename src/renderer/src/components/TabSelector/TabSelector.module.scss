@@ -1,13 +1,13 @@
-@import "@renderer/scss/colors";
+@import '@renderer/scss/colors';
 
 .tabs {
   display: flex;
   gap: 2rem;
-  transition: opacity .1s ease;
+  transition: opacity 0.1s ease;
 }
 
 .opacityTransition {
-  transition: opacity .1s ease;
+  transition: opacity 0.1s ease;
 }
 
 .tab {
@@ -25,7 +25,7 @@
   font-family: Figtree Variable;
   font-size: 1.2rem;
 
-  transition: all .1s ease;
+  transition: all 0.1s ease;
 
   &.active {
     background-color: var(--primary);
@@ -44,6 +44,5 @@
 }
 
 .inactive {
-  opacity: .5;
+  opacity: 0.5;
 }
-

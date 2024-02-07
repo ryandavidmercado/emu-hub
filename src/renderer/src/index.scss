@@ -1,4 +1,4 @@
-@import "@renderer/scss/colors";
+@import '@renderer/scss/colors';
 
 :root {
   --background: hsl(200, 15%, 20%);
@@ -8,14 +8,16 @@
   --background-lighter: hsl(200, 15%, 40%);
   --primary: hsl(200, 30%, 84%);
 
-  transition: background-color .5s ease;
+  transition: background-color 0.5s ease;
   background-color: var(--background);
 }
 
 html {
   box-sizing: border-box;
 }
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: inherit;
 }
 
@@ -31,7 +33,6 @@ html {
   height: 100%;
 }
 
-
 body {
   margin: 0;
   padding: 0;
@@ -39,7 +40,8 @@ body {
   overflow: hidden;
 }
 
-#root, .App {
+#root,
+.App {
   height: 100%;
 }
 

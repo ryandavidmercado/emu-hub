@@ -1,4 +1,4 @@
-@import "@renderer/scss/colors";
+@import '@renderer/scss/colors';
 
 .container {
   width: 650px;
@@ -11,7 +11,7 @@
   padding: 3rem;
   display: flex;
   flex-direction: column;
-  box-shadow: 5px 0px 5px rgba(0, 0, 0, .4);
+  box-shadow: 5px 0px 5px rgba(0, 0, 0, 0.4);
   gap: 2rem;
 
   .options {
@@ -25,7 +25,9 @@
       border-radius: 20px;
       border: 1px solid white;
 
-      transition: color .1s ease, background-color .1s ease;
+      transition:
+        color 0.1s ease,
+        background-color 0.1s ease;
     }
 
     .confirm {

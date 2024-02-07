@@ -1,8 +1,12 @@
-import classNames from "classnames";
-import css from "./Label.module.scss";
+import classNames from 'classnames'
+import css from './Label.module.scss'
 
-const Label = ({ className, label, sublabel }: {
-  label: string,
+const Label = ({
+  className,
+  label,
+  sublabel
+}: {
+  label: string
   sublabel?: string
   className?: string
 }) => {
@@ -14,4 +18,4 @@ const Label = ({ className, label, sublabel }: {
   )
 }
 
-export default Label;
+export default Label

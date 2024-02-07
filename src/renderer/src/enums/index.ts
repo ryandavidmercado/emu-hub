@@ -1,2 +1,2 @@
-export * from "./Input"
-export * from "./ScrollType"
+export * from './Input'
+export * from './ScrollType'

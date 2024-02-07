@@ -1,2 +1,2 @@
-export * from "./vita"
-export * from "./ps3"
+export * from './vita'
+export * from './ps3'

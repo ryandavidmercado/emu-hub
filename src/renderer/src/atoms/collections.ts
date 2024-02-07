@@ -1,50 +1,52 @@
-import { atomFamily } from "jotai/utils";
-import { arrayConfigAtoms } from "./util/arrayConfigAtom";
-import { atom } from "jotai";
-import games from "./games";
-import { Game } from "@common/types";
+import { atomFamily } from 'jotai/utils'
+import { arrayConfigAtoms } from './util/arrayConfigAtom'
+import { atom } from 'jotai'
+import games from './games'
+import { Game } from '@common/types'
 
 interface Collection {
-  id: string;
-  name: string;
-  games: string[];
+  id: string
+  name: string
+  games: string[]
 }
 
-const mainAtoms = arrayConfigAtoms<Collection>({ default: [], storageKey: "collections" });
+const mainAtoms = arrayConfigAtoms<Collection>({ default: [], storageKey: 'collections' })
 const allWithGames = atom((get) => {
-  const collections = get(mainAtoms.lists.all);
-  return collections.map(collection => ({
+  const collections = get(mainAtoms.lists.all)
+  return collections.map((collection) => ({
     ...collection,
-    games: collection.games.map(game => get(games.single(game))).filter(Boolean) as Game[]
+    games: collection.games.map((game) => get(games.single(game))).filter(Boolean) as Game[]
   }))
 })
 
-const getWithGames = atomFamily((id: string) => atom((get) => {
-  const collection = get(allWithGames).find(collection => collection.id === id);
-  if(!collection) return null
+const getWithGames = atomFamily((id: string) =>
+  atom((get) => {
+    const collection = get(allWithGames).find((collection) => collection.id === id)
+    if (!collection) return null
 
-  return collection;
-}))
+    return collection
+  })
+)
 
-const curriedGetWithGames = atom((get) => (id: string) => get(getWithGames(id)));
+const curriedGetWithGames = atom((get) => (id: string) => get(getWithGames(id)))
 
 const addGame = atom(null, (get, set, collectionId: string, gameId: string) => {
-  const collection = get(mainAtoms.single(collectionId));
-  if(!collection) return;
+  const collection = get(mainAtoms.single(collectionId))
+  if (!collection) return
 
-  const currentGames = collection.games;
+  const currentGames = collection.games
   set(mainAtoms.single(collectionId), {
     games: [...currentGames, gameId]
   })
 })
 
 const removeGame = atom(null, (get, set, collectionId: string, gameId: string) => {
-  const collection = get(mainAtoms.single(collectionId));
-  if(!collection) throw `Tried to add game to invalid collection: ${collectionId}`
+  const collection = get(mainAtoms.single(collectionId))
+  if (!collection) throw `Tried to add game to invalid collection: ${collectionId}`
 
-  const currentGames = collection.games;
+  const currentGames = collection.games
   set(mainAtoms.single(collectionId), {
-    games: currentGames.filter(game => game !== gameId)
+    games: currentGames.filter((game) => game !== gameId)
   })
 })
 

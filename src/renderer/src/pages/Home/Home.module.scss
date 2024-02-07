@@ -1,4 +1,4 @@
-@import "@renderer/scss/colors";
+@import '@renderer/scss/colors';
 
 .landing {
   height: 100%;
@@ -14,10 +14,10 @@
   padding: 0 0 20px 0;
   height: 100%;
 
-  transition: opacity .2s ease;
+  transition: opacity 0.2s ease;
 
   &.hidden {
-    opacity: .4;
+    opacity: 0.4;
   }
 }
 
@@ -26,5 +26,5 @@
 }
 
 .shadowLong {
-  box-shadow: 0px 2px 12px 3px rgba(0, 0, 0, .6);
+  box-shadow: 0px 2px 12px 3px rgba(0, 0, 0, 0.6);
 }

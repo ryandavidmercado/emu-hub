@@ -1,3 +1,3 @@
-import { createNanoEvents } from "nanoevents";
+import { createNanoEvents } from 'nanoevents'
 
-export const eventHandler = createNanoEvents();
+export const eventHandler = createNanoEvents()
