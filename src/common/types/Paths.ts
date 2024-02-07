@@ -1,8 +1,7 @@
 export interface MainPaths {
-  RetroArch: {
+  RetroArch?: {
     bin: string;
     cores: string;
-    coreExtension: string;
   }
   ROMs: string
 }

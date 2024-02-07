@@ -12,6 +12,11 @@ export interface Emulator {
     bin: string
   } | {
     darwin?: { name: string }
-    linux?: { flatpak?: string, appImage?: string, binName?: string }
+    linux?: {
+      flatpak?: string,
+      appImage?: string,
+      binName?: string,
+      snap?: string
+    }
   }
 }

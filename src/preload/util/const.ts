@@ -15,6 +15,10 @@ const FLATPAK_PATHS = [
   path.join("/", "var", "lib", "flatpak", "exports", "share")
 ]
 
+const SNAP_PATHS = [
+  path.join("/", "snap")
+]
+
 const LINUX_APPLICATION_PATHS = [
   path.join(os.homedir(), "Applications"),
   path.join(os.homedir(), ".local", "share", "applications"),
@@ -39,5 +43,6 @@ export {
   ASSETS_PATH,
   GAME_ASSETS_PATH,
   FLATPAK_PATHS,
-  LINUX_APPLICATION_PATHS
+  LINUX_APPLICATION_PATHS,
+  SNAP_PATHS
 }

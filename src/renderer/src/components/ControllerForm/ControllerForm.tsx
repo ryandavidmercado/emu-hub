@@ -81,6 +81,7 @@ interface Props {
   defaultSelection?: string;
   scrollType?: Align
   hasParentContainer?: boolean
+  wraparound?: boolean
 }
 
 const ControllerForm = ({
