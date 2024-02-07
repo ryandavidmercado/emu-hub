@@ -81,6 +81,7 @@ interface Props {
   defaultSelection?: string;
   scrollType?: Align
   hasParentContainer?: boolean
+  wraparound?: boolean
 }
 
 const ControllerForm = ({
@@ -93,6 +94,7 @@ const ControllerForm = ({
   defaultSelection,
   scrollType,
   hasParentContainer = true,
+  wraparound = true
 }: Props) => {
   const defaultIndex = entries.findIndex(e => e.id === defaultSelection);
   const [localActiveIndex, localSetActiveIndex] = useState(defaultIndex > -1 ? defaultIndex : 0);
@@ -145,12 +147,23 @@ const ControllerForm = ({
   }
 
   const prevInput = useCallback(() => {
-    setActiveIndex((i) => Math.max(i - 1, 0))
-  }, [])
+    setActiveIndex((i) => {
+      if(i === 0) {
+        return wraparound ? entries.length - 1 : i;
+      }
+
+      return i - 1;
+    })
+  }, [wraparound, entries.length])
 
   const nextInput = useCallback(() => {
-    setActiveIndex((i) => Math.min(i + 1, entries.length - 1))
-  }, [])
+    setActiveIndex((i) => {
+      if(i === entries.length - 1) {
+        return wraparound ? 0 : i;
+      }
+      return i + 1;
+    })
+  }, [wraparound, entries.length])
 
   useOnInput((input) => {
     switch (input) {

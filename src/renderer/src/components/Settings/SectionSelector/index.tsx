@@ -18,9 +18,13 @@ const SectionSelector = ({ activeSection, setActiveSection, sections, isActive, 
   useOnInput((input) => {
     switch(input) {
       case Input.UP:
-        return setActiveSection(active => Math.max(active - 1, 0))
+        return setActiveSection(active =>
+          active === 0 ? sections.length - 1 : active - 1
+        )
       case Input.DOWN:
-        return setActiveSection(active => Math.min(active + 1, sections.length - 1))
+        return setActiveSection(active =>
+          active === sections.length - 1 ? 0 : active + 1
+        )
     }
   }, {
     disabled: !isActive,

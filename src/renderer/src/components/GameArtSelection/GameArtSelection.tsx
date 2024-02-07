@@ -110,10 +110,10 @@ const GameArtSelction = ({ game, onExit }: Props) => {
         onExit?.();
         break;
       case Input.DOWN:
-        setActiveSelector(i => Math.min(i + 1, 2));
+        setActiveSelector(i => i === 2 ? 0 : i + 1);
         break;
       case Input.UP:
-        setActiveSelector(i => Math.max(i - 1, 0));
+        setActiveSelector(i => i === 0 ? 2 : i -  1);
         break;
       case Input.LEFT:
         const activeContentIndex = activeContent.findIndex(c => c.active);

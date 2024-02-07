@@ -1,4 +1,4 @@
-export type Emulator = {
+export interface Emulator {
   id: string
   name: string
   arg?: string
@@ -6,10 +6,17 @@ export type Emulator = {
   launchCommands?: {
     [ext: string]: string
   }
-} & ({
-  core: string
-} | {
-  flatpak: string
-} | {
-  bin: string
-})
+  location: {
+    core: string
+  } | {
+    bin: string
+  } | {
+    darwin?: { name: string }
+    linux?: {
+      flatpak?: string,
+      appImage?: string,
+      binName?: string,
+      snap?: string
+    }
+  }
+}
