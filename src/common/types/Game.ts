@@ -1,6 +1,6 @@
 export interface GameMedia {
-  mediaType: string,
-  url: string,
+  mediaType: string
+  url: string
   format: string
 }
 
@@ -28,8 +28,8 @@ export type Game = {
   added?: string
   crc?: string
   romsize?: string
-  showcaseDisplayType?: "screenshot" | "fanart",
-  gamePageDisplayType?: "screenshot" | "fanart",
-  gameTileDisplayType?: "screenshot" | "fanart" | "poster"
-  emulator?: string;
+  showcaseDisplayType?: 'screenshot' | 'fanart'
+  gamePageDisplayType?: 'screenshot' | 'fanart'
+  gameTileDisplayType?: 'screenshot' | 'fanart' | 'poster'
+  emulator?: string
 } & MediaTypes

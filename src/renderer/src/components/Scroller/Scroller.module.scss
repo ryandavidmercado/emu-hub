@@ -1,4 +1,4 @@
-@import "@renderer/scss/colors.scss";
+@import '@renderer/scss/colors.scss';
 
 .container {
   width: 100%;
@@ -6,7 +6,7 @@
   flex-direction: column;
   padding: 0 10px;
 
-  transition: filter .3s ease;
+  transition: filter 0.3s ease;
 
   &.inActive {
     filter: brightness(70%) opacity(50%);

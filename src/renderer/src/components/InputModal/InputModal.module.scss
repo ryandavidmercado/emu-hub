@@ -1,8 +1,12 @@
-@import "@renderer/scss/colors";
+@import '@renderer/scss/colors';
 
 @keyframes blink {
-  from { opacity: 1; }
-  to { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 .inputModal {
@@ -24,7 +28,7 @@
 
   .inputCaret {
     animation-name: blink;
-    animation-duration: .8s;
+    animation-duration: 0.8s;
     animation-timing-function: ease-in-out;
     animation-direction: alternate;
     animation-iteration-count: infinite;

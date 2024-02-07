@@ -1,86 +1,83 @@
-import { Game, System } from "@common/types";
-import path from "path";
-import ShortUniqueId from "short-unique-id";
-import { MainPaths } from "@common/types/Paths";
-import { readdir, stat } from "fs/promises";
-import { nameMappers } from "@common/features/nameMappers";
+import { Game, System } from '@common/types'
+import path from 'path'
+import ShortUniqueId from 'short-unique-id'
+import { MainPaths } from '@common/types/Paths'
+import { readdir, stat } from 'fs/promises'
+import { nameMappers } from '@common/features/nameMappers'
 
-const uid = new ShortUniqueId();
+const uid = new ShortUniqueId()
 
-const scanRoms = async (
-  paths: MainPaths,
-  currentSystems: System[],
-  currentGames: Game[]
-) => {
-  const getGameLookupKey = (romname: string, systemId: string, rompath: string[] = []) => `${romname}-${systemId}-${rompath.join("_")}`
+const scanRoms = async (paths: MainPaths, currentSystems: System[], currentGames: Game[]) => {
+  const getGameLookupKey = (romname: string, systemId: string, rompath: string[] = []) =>
+    `${romname}-${systemId}-${rompath.join('_')}`
   const gameLookupMap: Record<string, Game> = currentGames.reduce((acc, game) => {
-    const key = getGameLookupKey(game.romname, game.system, game.rompath);
-    acc[key] = game;
-    return acc;
+    const key = getGameLookupKey(game.romname, game.system, game.rompath)
+    acc[key] = game
+    return acc
   }, {})
 
-  const { ROMs: ROM_PATH } = paths;
+  const { ROMs: ROM_PATH } = paths
 
-  const addedDate = new Date().toUTCString();
-  const newGames: Game[] = [];
-  const romsDir = await readdir(ROM_PATH);
+  const addedDate = new Date().toUTCString()
+  const newGames: Game[] = []
+  const romsDir = await readdir(ROM_PATH)
 
   const scanFolder = async (systemConfig: System, pathTokens: string[] = []) => {
-    const systemRomDir = systemConfig.romdir || path.join(ROM_PATH, systemConfig.id);
+    const systemRomDir = systemConfig.romdir || path.join(ROM_PATH, systemConfig.id)
 
-    const dir = path.join(systemRomDir, ...pathTokens);
-    let contents: string[];
+    const dir = path.join(systemRomDir, ...pathTokens)
+    let contents: string[]
 
     try {
-      contents = await readdir(dir);
-    } catch(e) {
-      console.error(`Failed to read ${systemConfig.name} directory at "${dir}"`);
-      return;
+      contents = await readdir(dir)
+    } catch (e) {
+      console.error(`Failed to read ${systemConfig.name} directory at "${dir}"`)
+      return
     }
 
     // handle multi-part games by filtering out other tracks/discs
-    contents = contents.filter(entry => !entry.match(/\((Track|Disc) [^1]\)/));
-    if(!contents.length) return;
-    if(contents.includes('.eh-ignore')) return;
+    contents = contents.filter((entry) => !entry.match(/\((Track|Disc) [^1]\)/))
+    if (!contents.length) return
+    if (contents.includes('.eh-ignore')) return
 
-    const extnames = systemConfig.fileExtensions;
+    const extnames = systemConfig.fileExtensions
 
     for (const entry of contents) {
-      const entryPath = path.join(dir, entry);
-      const entryExt = path.extname(entry);
-      const entryStat = await stat(entryPath);
+      const entryPath = path.join(dir, entry)
+      const entryExt = path.extname(entry)
+      const entryStat = await stat(entryPath)
 
-      const isValidExt = extnames.includes(entryExt.toLowerCase());
+      const isValidExt = extnames.includes(entryExt.toLowerCase())
 
       if (entryStat.isDirectory() && !isValidExt) {
-        await scanFolder(systemConfig, [...pathTokens, entry]);
-        continue;
+        await scanFolder(systemConfig, [...pathTokens, entry])
+        continue
       }
 
-      if (!isValidExt) continue;
+      if (!isValidExt) continue
 
-      const lookupKey = getGameLookupKey(entry, systemConfig.id, pathTokens);
-      const gameConfigEntry = gameLookupMap[lookupKey];
+      const lookupKey = getGameLookupKey(entry, systemConfig.id, pathTokens)
+      const gameConfigEntry = gameLookupMap[lookupKey]
 
-      if(gameConfigEntry) {
-        newGames.push(gameConfigEntry);
-        continue;
+      if (gameConfigEntry) {
+        newGames.push(gameConfigEntry)
+        continue
       }
 
       const name = (() => {
-        const defaultName = path.basename(entry, entryExt);
+        const defaultName = path.basename(entry, entryExt)
 
-        const nameConfig = systemConfig.defaultNames?.[entryExt.toLowerCase()];
-        if(!nameConfig) return defaultName;
+        const nameConfig = systemConfig.defaultNames?.[entryExt.toLowerCase()]
+        if (!nameConfig) return defaultName
 
-        let name: string;
-        switch(nameConfig.type) {
-          case "pathToken":
-            name = pathTokens.at(nameConfig.token) ?? defaultName;
+        let name: string
+        switch (nameConfig.type) {
+          case 'pathToken':
+            name = pathTokens.at(nameConfig.token) ?? defaultName
         }
 
-        if(nameConfig.map) name = nameMappers[nameConfig.map](name);
-        return name;
+        if (nameConfig.map) name = nameMappers[nameConfig.map](name)
+        return name
       })()
 
       newGames.push({
@@ -94,16 +91,16 @@ const scanRoms = async (
     }
   }
 
-  const scanQueue: Promise<void>[] = [];
+  const scanQueue: Promise<void>[] = []
   for (const system of romsDir) {
-    const systemConfig = currentSystems.find(config => config.id === system);
-    if (!systemConfig) continue;
+    const systemConfig = currentSystems.find((config) => config.id === system)
+    if (!systemConfig) continue
 
     scanQueue.push(scanFolder(systemConfig))
   }
 
-  await Promise.allSettled(scanQueue);
-  return newGames;
+  await Promise.allSettled(scanQueue)
+  return newGames
 }
 
-export default scanRoms;
+export default scanRoms

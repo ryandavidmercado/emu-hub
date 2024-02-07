@@ -7,12 +7,9 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()]
   },
   preload: {
-    plugins: [externalizeDepsPlugin({ exclude: [
-      "mime",
-      "buffer-to-data-url",
-      "unzipper",
-      "change-case"
-    ]})],
+    plugins: [
+      externalizeDepsPlugin({ exclude: ['mime', 'buffer-to-data-url', 'unzipper', 'change-case'] })
+    ],
     resolve: {
       alias: {
         '@common': resolve('src/common')
@@ -27,5 +24,5 @@ export default defineConfig({
       }
     },
     plugins: [react()]
-  },
+  }
 })

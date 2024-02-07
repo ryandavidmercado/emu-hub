@@ -5,4 +5,4 @@ export const InputPriority = {
   SETTINGS_MODAL_OPEN_CLOSE: 29,
   GENERAL_MODAL: 30,
   INPUT_MODAL: 99
-} as const;
+} as const

@@ -1,5 +1,5 @@
-import { ColorSchemeId } from "@renderer/colors/colorSchemes";
-import { objConfigAtom } from "./util/objConfigAtom";
+import { ColorSchemeId } from '@renderer/colors/colorSchemes'
+import { objConfigAtom } from './util/objConfigAtom'
 
 interface UIConfig {
   grid: {
@@ -12,8 +12,8 @@ const defaultConfig: UIConfig = {
   grid: {
     columnCount: 3
   },
-  colorScheme: "default"
+  colorScheme: 'default'
 }
 
-const uiConfigAtom = objConfigAtom({ defaults: defaultConfig, storageKey: 'ui' });
-export default uiConfigAtom;
+const uiConfigAtom = objConfigAtom({ defaults: defaultConfig, storageKey: 'ui' })
+export default uiConfigAtom

@@ -1,4 +1,4 @@
-@import "@renderer/scss/util";
+@import '@renderer/scss/util';
 
 .label {
   padding-bottom: 10px;
@@ -16,7 +16,7 @@
 }
 
 .grid {
-  @include hide-scrollbar
+  @include hide-scrollbar;
 }
 
 .container {

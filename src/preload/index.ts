@@ -1,19 +1,19 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import configStorage from './util/configStorage'
-import path from 'path';
-import launchGame from './util/launchGame';
-import scanRoms from './util/scanRoms';
-import loadSystemStore from './util/loadSystemStore';
-import downloadGame from './util/downloadGame';
-import getRomFileInfo from './util/getRomFileInfo';
-import downloadGameMedia from './util/downloadGameMedia';
-import loadMedia from './util/loadMedia';
-import removeGameFiles from './util/removeGameFiles';
-import os from "os"
-import initRomDir from './util/initRomDir';
+import path from 'path'
+import launchGame from './util/launchGame'
+import scanRoms from './util/scanRoms'
+import loadSystemStore from './util/loadSystemStore'
+import downloadGame from './util/downloadGame'
+import getRomFileInfo from './util/getRomFileInfo'
+import downloadGameMedia from './util/downloadGameMedia'
+import loadMedia from './util/loadMedia'
+import removeGameFiles from './util/removeGameFiles'
+import os from 'os'
+import initRomDir from './util/initRomDir'
 
-import { accessSync, constants as fsConstants } from 'fs';
+import { accessSync, constants as fsConstants } from 'fs'
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
@@ -23,7 +23,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('configStorage', configStorage)
     contextBridge.exposeInMainWorld('launchGame', launchGame)
     contextBridge.exposeInMainWorld('path', path),
-    contextBridge.exposeInMainWorld('scanRoms', scanRoms)
+      contextBridge.exposeInMainWorld('scanRoms', scanRoms)
     contextBridge.exposeInMainWorld('loadSystemStore', loadSystemStore)
     contextBridge.exposeInMainWorld('downloadGame', downloadGame)
     contextBridge.exposeInMainWorld('downloadGameMedia', downloadGameMedia)
@@ -33,13 +33,19 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('platform', os.platform())
     contextBridge.exposeInMainWorld('homedir', os.homedir())
     contextBridge.exposeInMainWorld('initRomDir', initRomDir)
-    contextBridge.exposeInMainWorld('restart', () => { ipcRenderer.invoke('restart') })
-    contextBridge.exposeInMainWorld('quit', () => { ipcRenderer.invoke('quit') })
+    contextBridge.exposeInMainWorld('restart', () => {
+      ipcRenderer.invoke('restart')
+    })
+    contextBridge.exposeInMainWorld('quit', () => {
+      ipcRenderer.invoke('quit')
+    })
     contextBridge.exposeInMainWorld('checkDir', (dir: string) => {
       try {
-        accessSync(dir, fsConstants.R_OK | fsConstants.W_OK);
-        return true;
-      } catch { return false; }
+        accessSync(dir, fsConstants.R_OK | fsConstants.W_OK)
+        return true
+      } catch {
+        return false
+      }
     })
   } catch (error) {
     console.error(error)

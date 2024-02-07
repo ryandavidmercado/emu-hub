@@ -1,4 +1,4 @@
-@import "@renderer/scss/colors";
+@import '@renderer/scss/colors';
 
 .container {
   width: 650px;
@@ -24,15 +24,21 @@
       border-radius: 20px;
       border: 1px solid white;
 
-      transition: color .1s ease, background-color .1s ease;
+      transition:
+        color 0.1s ease,
+        background-color 0.1s ease;
 
       &.active {
         background-color: $confirm;
         color: var(--background-dark);
         border: 1px solid transparent;
 
-        &.default { background-color: var(--primary); }
-        &.confirm { background-color: $confirm; }
+        &.default {
+          background-color: var(--primary);
+        }
+        &.confirm {
+          background-color: $confirm;
+        }
       }
     }
   }

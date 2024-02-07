@@ -1,168 +1,172 @@
-import { mergeWith } from "lodash"
-import { merger } from "./util/merger"
+import { mergeWith } from 'lodash'
+import { merger } from './util/merger'
 
 const defaultEmulators = [
   {
-    "id": "mesen_libretro",
-    "location": { "core": "mesen_libretro" },
-    "name": "Mesen"
+    id: 'mesen_libretro',
+    location: { core: 'mesen_libretro' },
+    name: 'Mesen'
   },
   {
-    "id": "nestopia_libretro",
-    "location": { "core": "nestopia_libretro" },
-    "name": "Nestopia UE"
+    id: 'nestopia_libretro',
+    location: { core: 'nestopia_libretro' },
+    name: 'Nestopia UE'
   },
   {
-    "id": "mupen64plus_next_libretro",
-    "name": "Mupen64Plus-Next",
-    "location": { "core": "mupen64plus_next_libretro" }
+    id: 'mupen64plus_next_libretro',
+    name: 'Mupen64Plus-Next',
+    location: { core: 'mupen64plus_next_libretro' }
   },
   {
-    "id": "parallel_n64_libretro",
-    "location": { "core": "parallel_n64_libretro" },
-    "name": "ParaLLEl N64"
+    id: 'parallel_n64_libretro',
+    location: { core: 'parallel_n64_libretro' },
+    name: 'ParaLLEl N64'
   },
   {
-    "id": "sameboy_libretro",
-    "location": { "core": "sameboy_libretro" },
-    "name": "SameBoy"
+    id: 'sameboy_libretro',
+    location: { core: 'sameboy_libretro' },
+    name: 'SameBoy'
   },
   {
-    "id": "mgba_libretro",
-    "location": { "core": "mgba_libretro" },
-    "name": "mGBA"
+    id: 'mgba_libretro',
+    location: { core: 'mgba_libretro' },
+    name: 'mGBA'
   },
   {
-    "id": "melonds_libretro",
-    "location": { "core": "melonds_libretro" },
-    "name": "MelonDS"
+    id: 'melonds_libretro',
+    location: { core: 'melonds_libretro' },
+    name: 'MelonDS'
   },
   {
-    "id": "genesis_plus_gx_libretro",
-    "location": { "core": "genesis_plus_gx_libretro" },
-    "name": "Genesis Plus GX"
+    id: 'genesis_plus_gx_libretro',
+    location: { core: 'genesis_plus_gx_libretro' },
+    name: 'Genesis Plus GX'
   },
   {
-    "id": "bsnes_libretro",
-    "location": { "core": "bsnes_libretro" },
-    "name": "bsnes"
+    id: 'bsnes_libretro',
+    location: { core: 'bsnes_libretro' },
+    name: 'bsnes'
   },
   {
-    "id": "flycast_libretro",
-    "location": { "core": "flycast_libretro" },
-    "name": "Flycast"
+    id: 'flycast_libretro',
+    location: { core: 'flycast_libretro' },
+    name: 'Flycast'
   },
   {
-    "id": "mednafen_saturn_libretro",
-    "location": { "core": "mednafen_saturn_libretro" },
-    "name": "Beetle Saturn"
+    id: 'mednafen_saturn_libretro',
+    location: { core: 'mednafen_saturn_libretro' },
+    name: 'Beetle Saturn'
   },
   {
-    "id": "duckstation",
-    "name": "DuckStation",
-    "arg": "-fullscreen -batch --",
-    "location": {
-      "linux": {
-        "flatpak": "org.duckstation.DuckStation"
+    id: 'duckstation',
+    name: 'DuckStation',
+    arg: '-fullscreen -batch --',
+    location: {
+      linux: {
+        flatpak: 'org.duckstation.DuckStation'
       },
-      "darwin": {
-        "name": "DuckStation"
+      darwin: {
+        name: 'DuckStation'
       }
     }
   },
   {
-    "id": "ppsspp",
-    "name": "PPSSPP",
-    "arg": "--fullscreen",
-    "location": {
-      "linux": {
-        "flatpak": "org.ppsspp.PPSSPP"
+    id: 'ppsspp',
+    name: 'PPSSPP',
+    arg: '--fullscreen',
+    location: {
+      linux: {
+        flatpak: 'org.ppsspp.PPSSPP'
       },
-      "darwin": {
-        "name": "PPSSPPSDL"
+      darwin: {
+        name: 'PPSSPPSDL'
       }
     }
   },
   {
-    "id": "pcsx2",
-    "name": "PCSX2",
-    "arg": "-fullscreen -nogui --",
-    "location": {
-      "linux": {
-        "appImage": "pcsx2"
+    id: 'pcsx2',
+    name: 'PCSX2',
+    arg: '-fullscreen -nogui --',
+    location: {
+      linux: {
+        appImage: 'pcsx2'
       },
-      "darwin": {
-        "name": "PCSX2"
+      darwin: {
+        name: 'PCSX2'
       }
     }
   },
   {
-    "id": "cemu",
-    "name": "Cemu",
-    "arg": "-g",
-    "location": {
-      "linux": {
-        "appImage": "Cemu"
+    id: 'cemu',
+    name: 'Cemu',
+    arg: '-g',
+    location: {
+      linux: {
+        appImage: 'Cemu'
       },
-      "darwin": {
-        "name": "Cemu"
+      darwin: {
+        name: 'Cemu'
       }
     }
   },
   {
-    "id": "yuzu",
-    "name": "Yuzu",
-    "arg": "-g",
-    "location": {
-      "linux": {
-        "appImage": "yuzu"
-      },
-    }
-  },
-  {
-    "id": "dolphin",
-    "name": "Dolphin",
-    "location": {
-      "linux": {
-        "flatpak": "org.DolphinEmu.dolphin-emu"
-      },
-      "darwin": {
-        "name": "Dolphin"
+    id: 'yuzu',
+    name: 'Yuzu',
+    arg: '-g',
+    location: {
+      linux: {
+        appImage: 'yuzu'
       }
     }
   },
   {
-    "id": "vita3k",
-    "name": "Vita3K",
-    "location": {
-      "darwin": {
-        "name": "Vita3K"
+    id: 'dolphin',
+    name: 'Dolphin',
+    location: {
+      linux: {
+        flatpak: 'org.DolphinEmu.dolphin-emu'
       },
-      "linux": {
-        "binName": "Vita3K"
+      darwin: {
+        name: 'Dolphin'
+      }
+    }
+  },
+  {
+    id: 'vita3k',
+    name: 'Vita3K',
+    location: {
+      darwin: {
+        name: 'Vita3K'
+      },
+      linux: {
+        binName: 'Vita3K'
       }
     },
-    "launchCommands": {
-      ".bin": "%EMUPATH% --fullscreen -r %ROMDIRNAME%",
-      ".psvita": "%EMUPATH% --fullscreen -r %ROMTEXTCONTENT%"
+    launchCommands: {
+      '.bin': '%EMUPATH% --fullscreen -r %ROMDIRNAME%',
+      '.psvita': '%EMUPATH% --fullscreen -r %ROMTEXTCONTENT%'
     }
   },
   {
-    "id": "rpcs3",
-    "name": "RPCS3",
-    "location": {
-      "darwin": {
-        "name": "RPCS3"
+    id: 'rpcs3',
+    name: 'RPCS3',
+    location: {
+      darwin: {
+        name: 'RPCS3'
       },
-      "linux": {
-        "flatpak": "net.rpcs3.RPCS3",
-        "appImage": "rpcs3"
+      linux: {
+        flatpak: 'net.rpcs3.RPCS3',
+        appImage: 'rpcs3'
       }
     }
   }
 ]
 
-const mergedEmulators = mergeWith(defaultEmulators, window.configStorage.getItem('emulators', []), merger);
-window.configStorage.setItem('emulators', mergedEmulators);
+const mergedEmulators = mergeWith(
+  defaultEmulators,
+  window.configStorage.getItem('emulators', []),
+  merger
+)
+window.configStorage.setItem('emulators', mergedEmulators)
 
-export default defaultEmulators;
+export default defaultEmulators

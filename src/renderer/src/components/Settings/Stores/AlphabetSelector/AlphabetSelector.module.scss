@@ -1,4 +1,4 @@
-@import "@renderer/scss/colors";
+@import '@renderer/scss/colors';
 
 .container {
   position: absolute;
@@ -15,9 +15,9 @@
 .selectorWrapper {
   height: 100%;
   width: 100px;
-  background: rgba(0, 0, 0, .6);
+  background: rgba(0, 0, 0, 0.6);
   color: hsl(0, 0%, 70%);
-  transition: translate .2s ease;
+  transition: translate 0.2s ease;
 
   font-family: Figtree Variable;
   font-size: 1.3rem;
@@ -42,10 +42,12 @@
 }
 
 .alphabetEntry {
-  transition: color .1s ease, transform .1s ease;
+  transition:
+    color 0.1s ease,
+    transform 0.1s ease;
 
   &.active {
     color: var(--primary);
-    transform: scale(1.5)
+    transform: scale(1.5);
   }
 }

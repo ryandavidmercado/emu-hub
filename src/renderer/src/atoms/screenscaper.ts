@@ -1,11 +1,11 @@
-import { objConfigAtom } from "./util/objConfigAtom";
+import { objConfigAtom } from './util/objConfigAtom'
 
 const screenScraperAtom = objConfigAtom({
   storageKey: 'screenscraper-credentials',
   defaults: {
-    username: "",
-    password: ""
+    username: '',
+    password: ''
   }
 })
 
-export default screenScraperAtom;
+export default screenScraperAtom
