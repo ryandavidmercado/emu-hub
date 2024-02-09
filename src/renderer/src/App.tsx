@@ -12,8 +12,9 @@ import { InputModal } from './components/InputModal/InputModal'
 import ConfirmationModal from './components/ConfirmationModal/ConfirmationModal'
 import Init from './pages/Init/Init'
 import { SearchView } from './pages/SearchView/SearchView'
-import SearchHeader from './components/SearchHeader/SearchHeader'
+import NavHeader from './components/NavHeader/NavHeader'
 import { useColorChangeListener } from './colors/useChangeListener'
+import { AllGames } from './pages/AllGames'
 
 function App() {
   const { parentRef, waveHeight } = useWaveHeight(0.3)
@@ -24,7 +25,7 @@ function App() {
   return (
     <div className="App" ref={parentRef}>
       <HashRouter>
-        <SearchHeader />
+        <NavHeader />
         <AppRoutes />
       </HashRouter>
       {waveHeight && (
@@ -67,6 +68,10 @@ const appRoutes = [
   {
     path: '/system/:systemId',
     element: <SystemView />
+  },
+  {
+    path: '/games/all',
+    element: <AllGames />
   }
 ]
 

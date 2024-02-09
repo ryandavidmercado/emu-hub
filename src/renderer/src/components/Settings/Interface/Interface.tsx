@@ -19,7 +19,7 @@ const Interface = ({ inputPriority, isActive, onExit }: SectionProps) => {
       sublabel: 'Number of columns to display in system view and search results.',
       defaultValue: uiConfig.grid.columnCount,
       min: 2,
-      max: 4,
+      max: 5,
       onNumber: (num) => {
         updateUiConfig((config) => {
           config.grid.columnCount = num
