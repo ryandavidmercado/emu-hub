@@ -28,15 +28,18 @@
 
   color: var(--background-dark);
   border-radius: 1rem;
-  width: 35vw;
+  max-width: 450px;
 
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem;
+  box-shadow: 0px 3px 3px rgba(0, 0, 0, .5);
 
   .icon {
-    font-size: 2rem;
+    font-size: 1.5rem;
+    display: block;
+    flex-shrink: 0;
   }
 
   &.error {

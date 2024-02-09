@@ -21,7 +21,7 @@
 }
 
 .elem {
-  height: clamp(120px, 12vh, 300px);
+  height: clamp(120px, 12vh, 180px);
   filter: brightness(85%);
   transition: all 0.15s ease;
   border-radius: 3px;
@@ -40,7 +40,7 @@
 
   &.square {
     aspect-ratio: 1 / 1;
-    height: clamp(150px, 15vh, 300px);
+    height: clamp(150px, 15vh, 180px);
 
     .foreground {
       padding: 10%;
