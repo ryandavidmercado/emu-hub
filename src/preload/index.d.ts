@@ -32,5 +32,6 @@ declare global {
     initRomDir: typeof initRomDir
     restart: () => void
     quit: () => void
+    focusApp: () => void
   }
 }

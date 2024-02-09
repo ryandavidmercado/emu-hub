@@ -39,6 +39,9 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('quit', () => {
       ipcRenderer.invoke('quit')
     })
+    contextBridge.exposeInMainWorld('focusApp', () => {
+      ipcRenderer.invoke('focusApp')
+    })
     contextBridge.exposeInMainWorld('checkDir', (dir: string) => {
       try {
         accessSync(dir, fsConstants.R_OK | fsConstants.W_OK)

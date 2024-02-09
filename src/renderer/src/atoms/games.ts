@@ -96,6 +96,7 @@ const launchGameAtom = atom(null, async (get, set, gameId: string) => {
   })
 
   return window.launchGame(game, emulator, system)
+    .then(() => { window.focusApp() })
 })
 
 const forSystemAtom = atomFamily((systemId: string, sortType = 'alphabetical') =>

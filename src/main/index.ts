@@ -28,6 +28,10 @@ function createWindow(): void {
     app.quit()
   })
 
+  ipcMain.handle('focusApp', () => {
+    app.focus({ steal: true })
+  })
+
   mainWindow.on('ready-to-show', () => {
     mainWindow.maximize()
     mainWindow.show()
