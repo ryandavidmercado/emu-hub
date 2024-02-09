@@ -34,7 +34,6 @@
   overflow: hidden;
   align-items: center;
   justify-content: center;
-  gap: 1.2rem;
 }
 
 .left {
@@ -71,6 +70,10 @@
   justify-content: center;
   gap: 0.8rem;
   padding: 0 4rem;
+
+  @media screen and (max-width: 1050px) {
+    padding: 0 1rem;
+  }
 }
 
 .imgLeft {

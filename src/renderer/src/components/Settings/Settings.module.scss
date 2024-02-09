@@ -14,14 +14,19 @@
 }
 
 .body {
-  width: 80%;
-  height: 80%;
+  width: min(80vw, 1400px);
+  height: min(80vh, 1000px);
   background-color: var(--background);
   border-radius: 20px;
   box-shadow: 5px 0px 5px rgba(0, 0, 0, 0.4);
 
   display: flex;
   overflow: hidden;
+
+  @media screen and (max-width: 1050px) {
+    width: 95%;
+    height: 95%;
+  }
 }
 
 .left {
