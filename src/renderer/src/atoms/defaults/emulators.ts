@@ -63,6 +63,7 @@ const defaultEmulators = [
     arg: '-fullscreen -batch --',
     location: {
       linux: {
+        appImage: 'DuckStation',
         flatpak: 'org.duckstation.DuckStation'
       },
       darwin: {
@@ -89,7 +90,8 @@ const defaultEmulators = [
     arg: '-fullscreen -nogui --',
     location: {
       linux: {
-        appImage: 'pcsx2'
+        appImage: 'pcsx2',
+        flatpak: 'net.pcsx2.PCSX2'
       },
       darwin: {
         name: 'PCSX2'
@@ -102,7 +104,8 @@ const defaultEmulators = [
     arg: '-g',
     location: {
       linux: {
-        appImage: 'Cemu'
+        appImage: 'Cemu',
+        flatpak: 'info.cemu.Cemu'
       },
       darwin: {
         name: 'Cemu'
@@ -115,7 +118,8 @@ const defaultEmulators = [
     arg: '-g',
     location: {
       linux: {
-        appImage: 'yuzu'
+        appImage: 'yuzu',
+        flatpak: 'org.yuzu_emu.yuzu'
       }
     }
   },
@@ -124,7 +128,7 @@ const defaultEmulators = [
     name: 'Dolphin',
     location: {
       linux: {
-        flatpak: 'org.DolphinEmu.dolphin-emu'
+        flatpak: 'org.DolphinEmu.dolphin-emu',
       },
       darwin: {
         name: 'Dolphin'

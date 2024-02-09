@@ -2,7 +2,7 @@ import { Emulator } from '@common/types'
 import os from 'os'
 import { readdir, stat, readFile } from 'fs/promises'
 import path from 'path'
-import { FLATPAK_PATHS, LINUX_APPLICATION_PATHS, SNAP_PATHS } from './const'
+import { LINUX_APPLICATION_PATHS, SNAP_PATHS } from './const'
 import { loadConfig } from './configStorage'
 import { MainPaths } from '@common/types/Paths'
 import { existsSync, statSync } from 'fs'
@@ -119,8 +119,10 @@ async function findLinuxEmulator(emulator: Emulator) {
 
   if (emulator.location.linux.binName) {
     // see if we're linked in PATH
-    const { stdout } = await exec(`which ${emulator.location.linux.binName}`);
-    if(stdout) return emulator.location.linux.binName;
+    try {
+      const { stdout } = await exec(`which ${emulator.location.linux.binName}`);
+      if(stdout) return stdout;
+    } catch {}
 
     const matcher = new RegExp(`^${escapeRegExp(emulator.location.linux.binName)}$`)
 
@@ -154,23 +156,10 @@ async function findLinuxEmulator(emulator: Emulator) {
   }
 
   if (emulator.location.linux.flatpak) {
-    const matcher = new RegExp(
-      `^${escapeRegExp(emulator.location.linux.flatpak)}(?:\.desktop){0,1}$`
-    )
-
-    for (const flatpakPath of FLATPAK_PATHS) {
-      let dirContents: string[]
-      try {
-        dirContents = await readdir(flatpakPath)
-      } catch {
-        continue
-      }
-
-      const match = dirContents.find((entry) => entry.match(matcher))
-      if (!match) continue
-
-      return path.join(flatpakPath, match)
-    }
+    try {
+      const { stderr } = await exec(`flatpak info ${emulator.location.linux.flatpak}`);
+      if(!stderr) return `flatpak run ${emulator.location.linux.flatpak}`
+    } catch {}
   }
 
   if (emulator.location.linux.snap) {
