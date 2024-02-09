@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, rmSync } from 'fs'
+import { readFileSync, writeFileSync, rmSync, mkdirSync } from 'fs'
 import YAML from 'yaml'
 import path from 'path'
 import os from 'os'
@@ -12,6 +12,7 @@ const configFilePath = (configType: string) => path.join(CONFIG_PATH, `${configT
 const saveConfig = <T>(configType: string, value: T) => {
   const yaml = YAML.stringify(value)
 
+  mkdirSync(CONFIG_PATH, { recursive: true });
   writeFileSync(configFilePath(configType), yaml, { encoding: 'utf8' })
 }
 

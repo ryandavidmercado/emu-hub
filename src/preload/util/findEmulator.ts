@@ -6,6 +6,10 @@ import { FLATPAK_PATHS, LINUX_APPLICATION_PATHS, SNAP_PATHS } from './const'
 import { loadConfig } from './configStorage'
 import { MainPaths } from '@common/types/Paths'
 import { existsSync, statSync } from 'fs'
+import { exec as execCb } from "child_process";
+import { promisify } from "util"
+
+const exec = promisify(execCb);
 
 const platform = os.platform()
 
@@ -18,7 +22,8 @@ const findRaPath = async (): Promise<string> => {
     location: {
       linux: {
         flatpak: 'org.libretro.RetroArch',
-        appImage: 'RetroArch'
+        appImage: 'RetroArch',
+        binName: 'retroarch'
       },
       darwin: {
         name: 'RetroArch'
@@ -42,7 +47,7 @@ const findEmulator = async (emulator: Emulator): Promise<string> => {
       return await findDarwinEmulator(emulator)
     }
     case 'linux': {
-      return await findLinuxEmulator(emulator)
+      return await parseDesktopFile(await findLinuxEmulator(emulator))
     }
   }
 
@@ -113,6 +118,10 @@ async function findLinuxEmulator(emulator: Emulator) {
   }
 
   if (emulator.location.linux.binName) {
+    // see if we're linked in PATH
+    const { stdout } = await exec(`which ${emulator.location.linux.binName}`);
+    if(stdout) return emulator.location.linux.binName;
+
     const matcher = new RegExp(`^${escapeRegExp(emulator.location.linux.binName)}$`)
 
     for (const applicationPath of LINUX_APPLICATION_PATHS) {
@@ -160,22 +169,6 @@ async function findLinuxEmulator(emulator: Emulator) {
       const match = dirContents.find((entry) => entry.match(matcher))
       if (!match) continue
 
-      // super simple .desktop parse; we just use the exec string
-      if (path.extname(match) === '.desktop') {
-        const execMatcher = /^Exec=(.*)$/m
-        const filePath = path.join(flatpakPath, match)
-
-        try {
-          const file = await readFile(filePath, { encoding: 'utf8' })
-          const execString = file.match(execMatcher)?.[1]
-          if (!execString) continue
-
-          return execString
-        } catch {
-          continue
-        }
-      }
-
       return path.join(flatpakPath, match)
     }
   }
@@ -193,6 +186,19 @@ async function findLinuxEmulator(emulator: Emulator) {
     type: 'emu-not-found',
     data: emulator.name
   }
+}
+
+async function parseDesktopFile(filePath: string): Promise<string> {
+  // super simple .desktop parse; we just use the Exec field
+  if(path.extname(filePath).toLowerCase() !== '.desktop') return filePath;
+
+  const execMatcher = /^Exec=(.*)$/m
+
+  const file = await readFile(filePath, { encoding: 'utf8' })
+  const execString = file.match(execMatcher)?.[1]
+  if (!execString) throw 'desktop-could-not-parse'
+
+  return execString;
 }
 
 function escapeRegExp(string) {
