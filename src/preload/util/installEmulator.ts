@@ -15,7 +15,7 @@ const installEmulator = (emulator: Emulator, type: "flatpak") => {
         throw "Can't install flatpak for an emulator without a flatpak ID!"
       }
 
-      return exec(`flatpak install ${emulator.location.linux.flatpak} -y`);
+      return exec(`flatpak install ${emulator.location.linux.flatpak} -y --noninteractive --system`);
     }
   }
 }
