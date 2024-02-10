@@ -44,6 +44,7 @@ const Init = () => {
 
     if (gamesLength > 0) {
       navigate('/home', { replace: true })
+      return;
     }
 
     const selection = await getSelection({
@@ -98,10 +99,10 @@ const Init = () => {
 
         break
       }
-      default:
-        'store'
+      case 'store': {
         eventHandler.emit('settings-jump-to-section', 2)
         break
+      }
     }
 
     const unbind = eventHandler.on('settings-close', () => {
