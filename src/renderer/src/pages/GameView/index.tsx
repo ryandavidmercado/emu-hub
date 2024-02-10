@@ -32,6 +32,7 @@ import ScrapeModal from '@renderer/components/ScrapeModal/ScrapeModal'
 import EmuNotFound from '@renderer/components/EmuNotFoundModal/EmuNotFound'
 import { Emulator } from '@common/types'
 import systems from '@renderer/atoms/systems'
+import { runningGameAtom } from '@renderer/atoms/runningGame'
 
 const uid = new ShortUniqueId()
 
@@ -41,6 +42,9 @@ const GameView = ({ gameId }: { gameId?: string }) => {
 
   const [, launchGame] = useAtom(games.launch)
   const [emuNotFoundOpen, setEmuNotFoundOpen] = useState(false)
+
+  const [runningGame] = useAtom(runningGameAtom);
+  const isInGame = Boolean(runningGame.game);
 
   useEffect(() => {
     updateGame({
@@ -56,7 +60,6 @@ const GameView = ({ gameId }: { gameId?: string }) => {
   const [windowFocused] = useAtom(focusAtom)
 
   const [activeSection, setActiveSection] = useState<'game' | 'tabs'>('game')
-  const [isInGame, setIsInGame] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
   const [collectionModalOpen, setCollectionModalOpen] = useState(false)
@@ -100,7 +103,7 @@ const GameView = ({ gameId }: { gameId?: string }) => {
       }
     },
     {
-      disabled: collectionModalOpen
+      disabled: collectionModalOpen || isInGame
     }
   )
 
@@ -146,8 +149,8 @@ const GameView = ({ gameId }: { gameId?: string }) => {
                     type: 'info'
                   })
 
-                  setIsInGame(true)
                   launchGame(game.id)
+                    .then((res) => res.execInstance)
                     .catch((e) => {
                       removeNotification(notifId);
                       if(e.type === "emu-not-found") {
@@ -159,9 +162,6 @@ const GameView = ({ gameId }: { gameId?: string }) => {
                           type: 'error'
                         });
                       }
-                    })
-                    .finally(() => {
-                      setIsInGame(false)
                     })
                 },
                 disabled: isInGame || !canPlay

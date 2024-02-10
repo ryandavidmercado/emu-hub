@@ -15,12 +15,30 @@ import { SearchView } from './pages/SearchView/SearchView'
 import NavHeader from './components/NavHeader/NavHeader'
 import { useColorChangeListener } from './colors/useChangeListener'
 import { AllGames } from './pages/AllGames'
+import { useEffect } from 'react'
+import { eventHandler } from '@renderer/eventHandler'
+import { exitGameAtom } from './atoms/runningGame'
+import { useAtom } from 'jotai'
 
 function App() {
   const { parentRef, waveHeight } = useWaveHeight(0.3)
   const windowFocused = useWindowFocus()
 
+  const [, exitGame] = useAtom(exitGameAtom)
+
   useColorChangeListener()
+
+  useEffect(() => {
+    const unbind = eventHandler.on('combo', (e) => {
+      switch(e.id) {
+        case "quit-game":
+          exitGame()
+          break
+      }
+    })
+
+    return () => { unbind() }
+  }, [exitGame])
 
   return (
     <div className="App" ref={parentRef}>

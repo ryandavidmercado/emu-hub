@@ -1,7 +1,7 @@
 export interface Emulator {
   id: string
   name: string
-  arg?: string
+  args?: string[]
   launchCommand?: string
   launchCommands?: {
     [ext: string]: string

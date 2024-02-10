@@ -14,17 +14,25 @@ const exec = promisify(execCb);
 
 const platform = os.platform()
 
-const findRaPath = async (): Promise<string> => {
+const findRaPath = async (): Promise<{ bin: string, args?: string[] }> => {
   const { RetroArch: RA_PATHS } = loadConfig('paths', {}) as MainPaths | { RetroArch: undefined }
-  return RA_PATHS?.bin ?? (await findEmulator(raEmulatorEntry))
+
+  if(RA_PATHS?.bin) {
+    return { bin: RA_PATHS.bin }
+  }
+
+  return await findEmulator(raEmulatorEntry)
 }
 
-const findEmulator = async (emulator: Emulator): Promise<string> => {
-  if ('bin' in emulator.location) return emulator.location.bin
+const findEmulator = async (emulator: Emulator): Promise<{ bin: string, args?: string[] }> => {
+  if ('bin' in emulator.location) return { bin: emulator.location.bin }
   if ('core' in emulator.location) {
     const raPath = await findRaPath()
 
-    return `${raPath} -L ${emulator.location.core}`
+    return {
+      bin: raPath.bin,
+      args: [...(raPath.args ?? []), '-L', emulator.location.core]
+    }
   }
 
   switch (platform) {
@@ -32,7 +40,7 @@ const findEmulator = async (emulator: Emulator): Promise<string> => {
       return await findDarwinEmulator(emulator)
     }
     case 'linux': {
-      return await parseDesktopFile(await findLinuxEmulator(emulator))
+      return await findLinuxEmulator(emulator)
     }
   }
 
@@ -69,7 +77,7 @@ async function findDarwinEmulator(emulator: Emulator) {
       data: emulator
     }
 
-  return path.join(emuMacOSDir, binName)
+  return { bin: path.join(emuMacOSDir, binName) }
 }
 
 async function findLinuxEmulator(emulator: Emulator) {
@@ -96,7 +104,7 @@ async function findLinuxEmulator(emulator: Emulator) {
         const entryStat = await stat(entryPath)
 
         if (!entryStat.isDirectory() && entry.match(matcher)) {
-          return path.join(applicationPath, entry)
+          return { bin: path.join(applicationPath, entry) }
         }
       }
     }
@@ -106,7 +114,7 @@ async function findLinuxEmulator(emulator: Emulator) {
     // see if we're linked in PATH
     try {
       const { stdout } = await exec(`which ${emulator.location.linux.binName}`)
-      if(stdout) return stdout
+      if(stdout) return { bin: stdout }
     } catch {}
 
     const matcher = new RegExp(`^${escapeRegExp(emulator.location.linux.binName)}$`)
@@ -124,7 +132,7 @@ async function findLinuxEmulator(emulator: Emulator) {
         const entryStat = await stat(entryPath)
 
         if (!entryStat.isDirectory()) {
-          if (entry.match(matcher)) return path.join(applicationPath, entry)
+          if (entry.match(matcher)) return { bin: await parseDesktopFile(path.join(applicationPath, entry)) }
         } else {
           // we can scan for binNames one layer deep; don't go deeper to keep this quick
           const entryContents = await readdir(entryPath)
@@ -134,7 +142,7 @@ async function findLinuxEmulator(emulator: Emulator) {
               !statSync(path.join(entryPath, entryContent)).isDirectory()
           )
 
-          if (match) return path.join(entryPath, match)
+          if (match) return { bin: await parseDesktopFile(path.join(entryPath, match)) }
         }
       }
     }
@@ -143,7 +151,10 @@ async function findLinuxEmulator(emulator: Emulator) {
   if (emulator.location.linux.flatpak) {
     try {
       const { stdout } = await exec(`flatpak info ${emulator.location.linux.flatpak}`)
-      if(stdout) return `flatpak run ${emulator.location.linux.flatpak}`
+      if(stdout) return {
+        bin: 'flatpak',
+        args: ['run', emulator.location.linux.flatpak]
+      }
     } catch(e) {
       console.log(e)
     }
@@ -154,7 +165,7 @@ async function findLinuxEmulator(emulator: Emulator) {
       const emuPath = path.join(snapPath, emulator.location.linux.snap)
 
       if (!existsSync(emuPath)) continue
-      return emuPath
+      return { bin: emuPath }
     }
   }
 

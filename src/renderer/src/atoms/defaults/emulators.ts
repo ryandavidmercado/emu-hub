@@ -60,7 +60,7 @@ const defaultEmulators = [
   {
     id: 'duckstation',
     name: 'DuckStation',
-    arg: '-fullscreen -batch --',
+    args: ['-fullscreen', '-batch', '--'],
     location: {
       linux: {
         appImage: 'DuckStation',
@@ -74,7 +74,7 @@ const defaultEmulators = [
   {
     id: 'ppsspp',
     name: 'PPSSPP',
-    arg: '--fullscreen',
+    args: ['--fullscreen'],
     location: {
       linux: {
         flatpak: 'org.ppsspp.PPSSPP'
@@ -87,7 +87,7 @@ const defaultEmulators = [
   {
     id: 'pcsx2',
     name: 'PCSX2',
-    arg: '-fullscreen -nogui --',
+    args: ['-fullscreen', '-nogui', '--'],
     location: {
       linux: {
         appImage: 'pcsx2',
@@ -101,7 +101,7 @@ const defaultEmulators = [
   {
     id: 'cemu',
     name: 'Cemu',
-    arg: '-g',
+    args: ['-g'],
     location: {
       linux: {
         appImage: 'Cemu',
@@ -115,7 +115,7 @@ const defaultEmulators = [
   {
     id: 'yuzu',
     name: 'Yuzu',
-    arg: '-g',
+    args: ['-g'],
     location: {
       linux: {
         appImage: 'yuzu',
@@ -134,7 +134,7 @@ const defaultEmulators = [
         name: 'Dolphin'
       }
     },
-    arg: `--config "Dolphin.Display.Fullscreen=True" --batch -e`
+    args: ['--config', 'Dolphin.Display.Fullscreen=True', '--batch', '-e']
   },
   {
     id: 'vita3k',

@@ -1,19 +1,22 @@
 import path from 'path'
 import { Game, Emulator, System } from '@common/types'
-import { exec as execCb } from 'child_process'
-import { promisify } from 'util'
+import { spawn } from 'child_process'
 import { loadConfig } from './configStorage'
 import { MainPaths } from '@common/types/Paths'
 import { readFileSync } from 'fs'
 import findEmulator from './findEmulator'
 
-const exec = promisify(execCb)
+type ExtractPromiseType<T> = T extends Promise<infer U> ? U : never;
 
-const parseLaunchCommand = (command: string, emulatorLocation: string, romLocation: string) => {
+const parseLaunchCommand = (
+  command: string,
+  emulatorLocation: ExtractPromiseType<ReturnType<typeof findEmulator>>,
+  romLocation: string
+) => {
   const templateMap = {
     /*  NOTE: Emulator path for RetroArch cores pre-includes the core launch command
         ex: /path/to/RetroArch.AppImage -L /path/to/ra-cores/relevant_core.dylib */
-    '%EMUPATH%': () => emulatorLocation, // ex: /home/Applications/CoolEmu.AppImage
+    '%EMUPATH%': () => emulatorLocation.bin, // ex: /home/Applications/CoolEmu.AppImage
     '%ROMPATH%': () => romLocation, // ex: /path/to/roms/someSystem/someParentDir/myRom.rom
     '%ROMDIR%': () => path.dirname(romLocation), // ex: /path/to/roms/someSystem/someParentDir
     '%ROMDIRNAME%': () => path.basename(path.dirname(romLocation)), // ex: someParentDir
@@ -23,14 +26,32 @@ const parseLaunchCommand = (command: string, emulatorLocation: string, romLocati
     '%ROMTEXTCONTENT%': () => readFileSync(romLocation, { encoding: 'utf8' }) // ex: rom is text file with contents "Hello" -> this returns "Hello"
   } as const
 
-  return Object.keys(templateMap).reduce((command, templateKey) => {
+  const [bin, ...args] = command.split(" ");
+
+  const injectTemplateValues = (command: string) => Object.keys(templateMap).reduce((command, templateKey) => {
     if (!command.includes(templateKey)) return command
     return command.replaceAll(templateKey, templateMap[templateKey]())
   }, command)
+
+  return {
+    bin: injectTemplateValues(bin),
+    args: [
+      ...(
+        bin.includes('%EMUPATH%')
+          ? emulatorLocation.args ?? []
+          : []
+      ),
+      ...args.map(injectTemplateValues)
+    ]
+  }
 }
 
 const launchGame = async (game: Game, emulator: Emulator, system: System) => {
-  const bin = await findEmulator(emulator)
+  const emulatorLocation = await findEmulator(emulator);
+  console.log(emulatorLocation);
+
+  let { bin, args: emuArgs } = emulatorLocation;
+
   const { ROMs: ROM_PATH } = loadConfig(
     'paths',
     {} /* we don't need to supply a default; jotai initializes this config on boot */
@@ -42,29 +63,56 @@ const launchGame = async (game: Game, emulator: Emulator, system: System) => {
   let args: string[]
 
   if ('core' in emulator.location) {
-    args = [`"${romLocation}"`, '-f']
+    args = [romLocation, '-f']
   } else if ('flatpak' in emulator) {
-    args = [emulator.arg, `"${romLocation}"`].filter(Boolean) as string[]
+    args = [...(emulator.args ?? []), romLocation]
   } else {
-    args = [emulator.arg, `"${romLocation}"`].filter(Boolean) as string[]
+    args = [...(emulator.args ?? []), romLocation]
   }
 
   const launchCommand =
     emulator.launchCommands?.[path.extname(game.romname)] ?? emulator.launchCommand
 
-  const execString = launchCommand
-    ? parseLaunchCommand(launchCommand, bin, romLocation)
-    : `${bin} ${args.join(' ')}`
+  let finalBin: string, finalArgs: string[];
+  if(launchCommand) {
+    const parsedLaunch = parseLaunchCommand(launchCommand, emulatorLocation, romLocation);
+    finalBin = parsedLaunch.bin;
+    finalArgs = parsedLaunch.args;
+  } else {
+    finalBin = bin;
+    finalArgs = [...(emuArgs ?? []), ...args]
+  }
 
-  console.log(`Launching ${game.name ?? game.romname} with command: ${execString}`)
-  return exec(execString)
-    .catch((e) => {
-      if('core' in emulator.location && !e.data) {
-        throw { type: 'emu-not-found', data: emulator }
+  const abortController = new AbortController()
+
+  console.log({ finalBin, finalArgs })
+
+  const spawnedProcess = spawn(finalBin, finalArgs, { signal: abortController.signal, detached: true })
+  const execInstance = new Promise<void>((resolve, reject) => {
+    spawnedProcess.on('close', (status) => {
+      console.log(status);
+      if(status !== 1) resolve();
+
+      if ('core' in emulator.location) {
+        reject({ type: 'emu-not-found', data: emulator })
       }
-
-      throw e;
     })
+
+    spawnedProcess.on('error', (e) => {
+      reject(e)
+    })
+  })
+
+  const abort = () => {
+    if(!spawnedProcess.pid) return;
+    process.kill(-spawnedProcess.pid, 'SIGKILL')
+  }
+
+  return {
+    execInstance,
+    abort,
+    game
+  }
 }
 
 export default launchGame
