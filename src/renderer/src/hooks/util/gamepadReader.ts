@@ -34,6 +34,8 @@ const gamepadReader = (cb: Cb) => {
   }
 
   const handleInput = (input: Input, pressed: boolean, controllerId: string) => {
+    const isFocused = document.hasFocus();
+
     if (!pressed) {
       pressedButtons[controllerId].delete(input)
       return
@@ -41,18 +43,14 @@ const gamepadReader = (cb: Cb) => {
 
     if (pressedButtons[controllerId].has(input)) return
 
-    cb(input, 'gamepad')
+    if(isFocused) cb(input, 'gamepad')
     pressedButtons[controllerId].add(input)
 
-    if (DIRECTION_BUTTONS.has(input)) directionRepeatHandler(input, controllerId)
+    if (DIRECTION_BUTTONS.has(input) && isFocused) directionRepeatHandler(input, controllerId)
   }
 
   const handleGamepads = () => {
     const gamepads = navigator.getGamepads()
-    if (document.hasFocus() === false) {
-      requestAnimationFrame(handleGamepads)
-      return
-    }
 
     for (const gamepad of gamepads) {
       if (!gamepad) continue
