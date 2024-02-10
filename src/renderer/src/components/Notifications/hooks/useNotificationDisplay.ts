@@ -4,7 +4,7 @@ import { Notification } from '@renderer/atoms/notifications'
 
 export const notificationsAtom = atom<Notification[]>([])
 
-const useNotificationDisplay = (timeout = 4) => {
+const useNotificationDisplay = (timeout = 3) => {
   const [notifications, setNotifications] = useAtom(notificationsAtom)
 
   useEffect(() => {

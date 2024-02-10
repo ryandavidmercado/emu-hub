@@ -3,7 +3,7 @@ import path from 'path'
 import ShortUniqueId from 'short-unique-id'
 import { MainPaths } from '@common/types/Paths'
 import { readdir, stat } from 'fs/promises'
-import { nameMappers } from '@common/features/nameMappers'
+import { nameMappers } from '@common/features/nameMapping'
 
 const uid = new ShortUniqueId()
 

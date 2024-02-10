@@ -29,12 +29,18 @@ import ShortUniqueId from 'short-unique-id'
 import GameSettingsModal from '@renderer/components/GameSettingsModal/GameSettingsModal'
 import MediaImage from '@renderer/components/MediaImage/MediaImage'
 import ScrapeModal from '@renderer/components/ScrapeModal/ScrapeModal'
+import EmuNotFound from '@renderer/components/EmuNotFoundModal/EmuNotFound'
+import { Emulator } from '@common/types'
+import systems from '@renderer/atoms/systems'
 
 const uid = new ShortUniqueId()
 
 const GameView = ({ gameId }: { gameId?: string }) => {
   const [game, updateGame] = useAtom(games.single(gameId ?? ''))
+  const [gameSystem] = useAtom(systems.single(game?.system ?? ''))
+
   const [, launchGame] = useAtom(games.launch)
+  const [emuNotFoundOpen, setEmuNotFoundOpen] = useState(false)
 
   useEffect(() => {
     updateGame({
@@ -43,8 +49,9 @@ const GameView = ({ gameId }: { gameId?: string }) => {
   }, [])
 
   const [notificationsList] = useAtom(notifications.list)
+
   const [, addNotification] = useAtom(notifications.add)
-  const [, updateNotification] = useAtom(notifications.update)
+  const [, removeNotification] = useAtom(notifications.remove)
 
   const [windowFocused] = useAtom(focusAtom)
 
@@ -53,11 +60,19 @@ const GameView = ({ gameId }: { gameId?: string }) => {
   const containerRef = useRef<HTMLDivElement>(null)
 
   const [collectionModalOpen, setCollectionModalOpen] = useState(false)
+
   const [gameSettingsModalOpen, setGameSettingsModalOpen] = useState(false)
+  const [failedLaunchEmulator, setFailedLaunchEmulator] = useState<Emulator>()
+
   const [scrapeModalOpen, setScrapeModalOpen] = useState(false)
+  const selectedEmulator = game.emulator ?? gameSystem?.emulators?.[0]
 
   const canScrape = !notificationsList.some(
     (notif) => notif.id.startsWith(`scrape-${game?.id}`) && notif.type === 'download'
+  )
+
+  const canPlay = !notificationsList.some(
+    (notif) => notif.id === `install-emu-${selectedEmulator}`
   )
 
   const onGameSection = () => {
@@ -133,18 +148,23 @@ const GameView = ({ gameId }: { gameId?: string }) => {
 
                   setIsInGame(true)
                   launchGame(game.id)
-                    .catch(() => {
-                      updateNotification({
-                        id: notifId,
-                        text: `Failed to launch ${game.name ?? game.romname}`,
-                        type: 'error'
-                      })
+                    .catch((e) => {
+                      removeNotification(notifId);
+                      if(e.type === "emu-not-found") {
+                        setFailedLaunchEmulator(e.data as Emulator);
+                        setEmuNotFoundOpen(true);
+                      } else {
+                        addNotification({
+                          text: `Failed to launch ${game.name ?? game.romname}`,
+                          type: 'error'
+                        });
+                      }
                     })
                     .finally(() => {
                       setIsInGame(false)
                     })
                 },
-                disabled: isInGame
+                disabled: isInGame || !canPlay
               },
               {
                 id: 'add-to-collection',
@@ -229,6 +249,13 @@ const GameView = ({ gameId }: { gameId?: string }) => {
         game={game}
       />
       <ScrapeModal open={scrapeModalOpen} setOpen={setScrapeModalOpen} game={game} />
+      {failedLaunchEmulator &&
+        <EmuNotFound
+          open={emuNotFoundOpen}
+          setOpen={setEmuNotFoundOpen}
+          emulator={failedLaunchEmulator}
+        />
+      }
     </motion.div>
   )
 }

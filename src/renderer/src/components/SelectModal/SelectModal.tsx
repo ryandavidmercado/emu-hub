@@ -9,16 +9,16 @@ import { InputPriority } from '@renderer/const/inputPriorities'
 
 const eventHandler = createNanoEvents()
 
-interface Option {
+export interface SelectModalOption {
   id: string
   label: string
   colorScheme?: 'warning' | 'caution' | 'confirm' | 'default'
 }
 
-export interface Options {
+export interface SelectModalOptions {
   text: string | ReactNode
   defaultSelected?: number
-  options: Option[]
+  options: SelectModalOption[]
   canClose?: boolean
 }
 
@@ -26,7 +26,7 @@ export const useSelect = () => {
   const [open, setOpen] = useState(false)
   const [text, setText] = useState<string | ReactNode>('')
   const [selected, setSelected] = useState(0)
-  const [options, setOptions] = useState<Option[]>([])
+  const [options, setOptions] = useState<SelectModalOption[]>([])
   const [canClose, setCanClose] = useState(false)
 
   return {
@@ -35,7 +35,7 @@ export const useSelect = () => {
       defaultSelected,
       options,
       canClose = true
-    }: Options): Promise<string | null> => {
+    }: SelectModalOptions): Promise<string | null> => {
       setOptions(options)
       setCanClose(canClose)
       setText(text)
@@ -63,8 +63,9 @@ export interface SelectModalProps {
   text: string | ReactNode
   selected: number
   setSelected: Dispatch<SetStateAction<number>>
-  options: Option[]
+  options: SelectModalOption[]
   canClose: boolean
+  onResponse?: (id: string | null) => void
 }
 
 const ConfirmationModal = ({
@@ -74,17 +75,20 @@ const ConfirmationModal = ({
   setSelected,
   options,
   canClose,
-  className
+  className,
+  onResponse
 }: SelectModalProps & { className?: string }) => {
   useOnInput(
     (input) => {
       switch (input) {
         case Input.A:
           eventHandler.emit('selection-response', options[selected].id)
+          onResponse?.(options[selected].id)
           break
         case Input.B:
           if (!canClose) break
           eventHandler.emit('selection-response', null)
+          onResponse?.(null)
           break
         case Input.LEFT:
           setSelected((s) => Math.max(s - 1, 0))

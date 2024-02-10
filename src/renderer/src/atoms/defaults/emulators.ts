@@ -133,7 +133,8 @@ const defaultEmulators = [
       darwin: {
         name: 'Dolphin'
       }
-    }
+    },
+    arg: `--config "Dolphin.Display.Fullscreen=True" --batch -e`
   },
   {
     id: 'vita3k',

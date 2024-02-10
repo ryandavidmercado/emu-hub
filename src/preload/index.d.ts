@@ -2,6 +2,7 @@ import { ElectronAPI } from '@electron-toolkit/preload'
 import type { ConfigStorage } from './util/configStorage'
 import { PromiseWithChild } from 'child_process'
 import { PlatformPath } from 'path'
+
 import launchGame from './util/launchGame'
 import scanRoms from './util/scanRoms'
 import downloadGame from './util/downloadGame'
@@ -11,6 +12,7 @@ import loadSystemStore from './util/loadSystemStore'
 import loadMedia from './util/loadMedia'
 import removeGameFiles from './util/removeGameFiles'
 import initRomDir from './util/initRomDir'
+import { installEmulator } from './util/installEmulator'
 
 declare global {
   interface Window {
@@ -33,5 +35,7 @@ declare global {
     restart: () => void
     quit: () => void
     focusApp: () => void
+    hasFlatpak: boolean
+    installEmulator: typeof installEmulator
   }
 }

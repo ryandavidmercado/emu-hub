@@ -12,8 +12,10 @@ import loadMedia from './util/loadMedia'
 import removeGameFiles from './util/removeGameFiles'
 import os from 'os'
 import initRomDir from './util/initRomDir'
+import { hasFlatpak } from './util/systemHasFlatpak';
 
 import { accessSync, constants as fsConstants } from 'fs'
+import { installEmulator } from './util/installEmulator'
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
@@ -50,6 +52,8 @@ if (process.contextIsolated) {
         return false
       }
     })
+    contextBridge.exposeInMainWorld('hasFlatpak', hasFlatpak)
+    contextBridge.exposeInMainWorld('installEmulator', installEmulator)
   } catch (error) {
     console.error(error)
   }

@@ -8,6 +8,7 @@ import { MainPaths } from '@common/types/Paths'
 import { existsSync, statSync } from 'fs'
 import { exec as execCb } from "child_process";
 import { promisify } from "util"
+import { raEmulatorEntry } from '@common/features/RetroArch'
 
 const exec = promisify(execCb);
 
@@ -15,22 +16,6 @@ const platform = os.platform()
 
 const findRaPath = async (): Promise<string> => {
   const { RetroArch: RA_PATHS } = loadConfig('paths', {}) as MainPaths | { RetroArch: undefined }
-
-  const raEmulatorEntry = {
-    name: 'RetroArch',
-    id: 'retroarch',
-    location: {
-      linux: {
-        flatpak: 'org.libretro.RetroArch',
-        appImage: 'RetroArch',
-        binName: 'retroarch'
-      },
-      darwin: {
-        name: 'RetroArch'
-      }
-    }
-  } as Emulator
-
   return RA_PATHS?.bin ?? (await findEmulator(raEmulatorEntry))
 }
 
@@ -61,7 +46,7 @@ async function findDarwinEmulator(emulator: Emulator) {
   if (!('darwin' in emulator.location) || !emulator.location.darwin) {
     throw {
       type: 'emu-os-compat',
-      data: emulator.name
+      data: emulator
     }
   }
 
@@ -72,7 +57,7 @@ async function findDarwinEmulator(emulator: Emulator) {
   if (!emuDir)
     throw {
       type: 'emu-not-found',
-      data: emulator.name
+      data: emulator
     }
 
   const emuMacOSDir = path.join('/', 'Applications', emuDir, 'Contents', 'MacOS')
@@ -81,7 +66,7 @@ async function findDarwinEmulator(emulator: Emulator) {
   if (!binName)
     throw {
       type: 'emu-not-found',
-      data: emulator.name
+      data: emulator
     }
 
   return path.join(emuMacOSDir, binName)
@@ -91,7 +76,7 @@ async function findLinuxEmulator(emulator: Emulator) {
   if (!('linux' in emulator.location) || !emulator.location.linux) {
     throw {
       type: 'emu-os-compat',
-      data: emulator.name
+      data: emulator
     }
   }
 
@@ -173,7 +158,7 @@ async function findLinuxEmulator(emulator: Emulator) {
 
   throw {
     type: 'emu-not-found',
-    data: emulator.name
+    data: emulator
   }
 }
 

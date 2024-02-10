@@ -58,6 +58,13 @@ const launchGame = async (game: Game, emulator: Emulator, system: System) => {
 
   console.log(`Launching ${game.name ?? game.romname} with command: ${execString}`)
   return exec(execString)
+    .catch((e) => {
+      if('core' in emulator.location && !e.data) {
+        throw { type: 'emu-not-found', data: emulator }
+      }
+
+      throw e;
+    })
 }
 
 export default launchGame

@@ -1,5 +1,5 @@
 import { NameMapper } from '@common/types/NameMapper'
-import { vitaMap, ps3Map } from './nameMapping/maps'
+import { vitaMap, ps3Map } from './maps'
 
 const nameMaps: Record<NameMapper, Record<string, string>> = {
   vita: vitaMap,
