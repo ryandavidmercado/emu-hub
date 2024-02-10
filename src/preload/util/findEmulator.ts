@@ -105,8 +105,8 @@ async function findLinuxEmulator(emulator: Emulator) {
   if (emulator.location.linux.binName) {
     // see if we're linked in PATH
     try {
-      const { stdout } = await exec(`which ${emulator.location.linux.binName}`);
-      if(stdout) return stdout;
+      const { stdout } = await exec(`which ${emulator.location.linux.binName}`)
+      if(stdout) return stdout
     } catch {}
 
     const matcher = new RegExp(`^${escapeRegExp(emulator.location.linux.binName)}$`)
@@ -142,9 +142,11 @@ async function findLinuxEmulator(emulator: Emulator) {
 
   if (emulator.location.linux.flatpak) {
     try {
-      const { stderr } = await exec(`flatpak info ${emulator.location.linux.flatpak}`);
-      if(!stderr) return `flatpak run ${emulator.location.linux.flatpak}`
-    } catch {}
+      const { stdout } = await exec(`flatpak info ${emulator.location.linux.flatpak}`)
+      if(stdout) return `flatpak run ${emulator.location.linux.flatpak}`
+    } catch(e) {
+      console.log(e)
+    }
   }
 
   if (emulator.location.linux.snap) {
