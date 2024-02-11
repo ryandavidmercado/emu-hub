@@ -60,7 +60,7 @@ const defaultEmulators = [
   {
     id: 'duckstation',
     name: 'DuckStation',
-    args: ['-fullscreen', '-batch', '--'],
+    args: ['-fullscreen', '-nogui', '--'],
     location: {
       linux: {
         appImage: 'DuckStation',
@@ -147,6 +147,7 @@ const defaultEmulators = [
         binName: 'Vita3K'
       }
     },
+    killSignal: "SIGKILL",
     launchCommands: {
       '.bin': '%EMUPATH% --fullscreen -r %ROMDIRNAME%',
       '.psvita': '%EMUPATH% --fullscreen -r %ROMTEXTCONTENT%'

@@ -5,7 +5,8 @@ export interface Emulator {
   launchCommand?: string
   launchCommands?: {
     [ext: string]: string
-  }
+  },
+  killSignal?: string
   location:
     | {
         core: string

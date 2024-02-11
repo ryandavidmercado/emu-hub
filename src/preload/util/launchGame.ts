@@ -83,11 +83,9 @@ const launchGame = async (game: Game, emulator: Emulator, system: System) => {
     finalArgs = [...(emuArgs ?? []), ...args]
   }
 
-  const abortController = new AbortController()
+  console.log(`Launching ${game.name} with command: ${finalBin} ${finalArgs.join(" ")}`)
 
-  console.log({ finalBin, finalArgs })
-
-  const spawnedProcess = spawn(finalBin, finalArgs, { signal: abortController.signal, detached: true })
+  const spawnedProcess = spawn(finalBin, finalArgs, { stdio: "ignore", detached: true })
   const execInstance = new Promise<void>((resolve, reject) => {
     spawnedProcess.on('close', (status) => {
       console.log(status);
@@ -105,7 +103,7 @@ const launchGame = async (game: Game, emulator: Emulator, system: System) => {
 
   const abort = () => {
     if(!spawnedProcess.pid) return;
-    process.kill(-spawnedProcess.pid, 'SIGKILL')
+    process.kill(-spawnedProcess.pid, emulator.killSignal || 'SIGTERM')
   }
 
   return {
