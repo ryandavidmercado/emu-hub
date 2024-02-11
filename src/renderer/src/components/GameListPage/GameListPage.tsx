@@ -9,19 +9,22 @@ import { ISortByObjectSorter, sort } from 'fast-sort'
 interface Props {
   games: Game[]
   label?: string
+  disableSort?: boolean
 }
 
 type SortType = "name"
 type SortOrder = "desc" | "asc"
 
-export const GameListPage = ({ games, label }: Props) => {
+export const GameListPage = ({ games, label, disableSort }: Props) => {
   const [sortType] = useState<SortType>("name");
   const [sortOrder] = useState<SortOrder>("asc");
 
   const sortedGames = useMemo(() => (
-    sort(games).by(
-      { [sortOrder]: (g: Game) => g.name } as unknown as ISortByObjectSorter<Game>
-    )
+    disableSort
+      ? games
+      : sort(games).by(
+          { [sortOrder]: (g: Game) => g.name } as unknown as ISortByObjectSorter<Game>
+        )
   ), [games, sortType, sortOrder]);
 
   const [activeGame, setActiveGame] = useState(sortedGames[0]);

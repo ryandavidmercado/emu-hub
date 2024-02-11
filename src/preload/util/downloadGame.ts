@@ -7,12 +7,12 @@ import ShortUniqueId from 'short-unique-id'
 import { createReadStream } from 'fs'
 import { readdir, rm, rmdir, rename } from 'fs/promises'
 import unzipper from 'unzipper'
-import { MainPaths } from '@common/types/Paths'
+import { AppConfig } from '@common/types/AppConfig'
 
 const uid = new ShortUniqueId()
 
-const downloadGame = async (system: System, url: string, paths: MainPaths) => {
-  const systemPath = system.romdir || path.join(paths.ROMs, system.id)
+const downloadGame = async (system: System, url: string, paths: AppConfig['paths']) => {
+  const systemPath = system.romdir || path.join(paths.roms, system.id)
 
   const romname = decodeURIComponent(path.basename(url))
   const name = path

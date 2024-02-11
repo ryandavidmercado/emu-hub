@@ -6,7 +6,7 @@ import { atom, useAtom } from 'jotai'
 import { useOnInput } from '@renderer/hooks'
 import { Input } from '@renderer/enums'
 import { atomFamily } from 'jotai/utils'
-import uiConfigAtom from '@renderer/atoms/ui'
+import { appConfigAtom } from '@renderer/atoms/appConfig'
 import Label from '../Label/Label'
 import css from './GridScroller.module.scss'
 import { Game } from '@common/types/Game'
@@ -24,9 +24,11 @@ const GameCell = ({ columnIndex, rowIndex, style, data }) => {
   const [activeCell] = useAtom(activeCellAtom(data.instanceId))
   const [
     {
-      grid: { columnCount }
+      ui: {
+        grid: { columnCount }
+      }
     }
-  ] = useAtom(uiConfigAtom)
+  ] = useAtom(appConfigAtom)
 
   const isActive = activeCell.row === rowIndex && activeCell.column === columnIndex
 
@@ -53,9 +55,12 @@ const GridScroller = <T extends Game | System>({
 
   const [
     {
-      grid: { columnCount }
+      ui: {
+        grid: { columnCount }
+      }
     }
-  ] = useAtom(uiConfigAtom)
+  ] = useAtom(appConfigAtom)
+
   const rowCount = Math.ceil(elems.length / columnCount)
 
   const itemData = useMemo(() => ({ elems, instanceId }), [elems])

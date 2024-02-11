@@ -4,21 +4,21 @@ import { readdir, stat, readFile } from 'fs/promises'
 import path from 'path'
 import { LINUX_APPLICATION_PATHS, SNAP_PATHS } from './const'
 import { loadConfig } from './configStorage'
-import { MainPaths } from '@common/types/Paths'
 import { existsSync, statSync } from 'fs'
 import { exec as execCb } from "child_process";
 import { promisify } from "util"
 import { raEmulatorEntry } from '@common/features/RetroArch'
+import { AppConfig } from '@common/types/AppConfig'
 
 const exec = promisify(execCb);
 
 const platform = os.platform()
 
 const findRaPath = async (): Promise<{ bin: string, args?: string[] }> => {
-  const { RetroArch: RA_PATHS } = loadConfig('paths', {}) as MainPaths | { RetroArch: undefined }
+  const { paths: { RetroArch: configRaPath }} = loadConfig('config', {}) as AppConfig
 
-  if(RA_PATHS?.bin) {
-    return { bin: RA_PATHS.bin }
+  if(configRaPath) {
+    return { bin: configRaPath }
   }
 
   return await findEmulator(raEmulatorEntry)

@@ -1,13 +1,13 @@
-import uiConfigAtom from '@renderer/atoms/ui'
 import { useAtom } from 'jotai'
 import { useEffect } from 'react'
 import { colorSchemes, defaultSaturation, modifiableColors } from './colorSchemes'
+import { appConfigAtom } from '@renderer/atoms/appConfig'
 
 export const useColorChangeListener = () => {
-  const [uiConfig] = useAtom(uiConfigAtom)
+  const [appConfig] = useAtom(appConfigAtom)
 
   useEffect(() => {
-    let colorSchemeId = uiConfig.colorScheme
+    let colorSchemeId = appConfig.ui.colorScheme
     let colorScheme = colorSchemes.find((scheme) => scheme.id === colorSchemeId)
 
     if (!colorScheme) {
@@ -37,5 +37,5 @@ export const useColorChangeListener = () => {
         `hsl(${values.hue}, ${values.saturation}%, ${values.lightness}%)`
       )
     }
-  }, [uiConfig.colorScheme])
+  }, [appConfig.ui.colorScheme])
 }

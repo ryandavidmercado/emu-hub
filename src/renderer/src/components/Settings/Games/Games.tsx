@@ -7,14 +7,14 @@ import MultiPageControllerForm, {
   MultiFormPage
 } from '@renderer/components/ControllerForm/MultiPage'
 import notifications from '@renderer/atoms/notifications'
-import screenScraperAtom from '@renderer/atoms/screenscaper'
+import { appConfigAtom } from '@renderer/atoms/appConfig'
 import { IoCloudDownload } from 'react-icons/io5'
 import { scrapers } from '@renderer/const/scrapers'
 
 const General = ({ isActive, onExit, inputPriority }: SectionProps) => {
   const [, scanRoms] = useAtom(games.scan)
   const [, addNotification] = useAtom(notifications.add)
-  const [ssCredentials, setSsCrendentials] = useAtom(screenScraperAtom)
+  const [appConfig, updateAppConfig] = useAtom(appConfigAtom)
 
   const [includeWithMedia, setIncludeWithMedia] = useState(false)
   const [, scrapeAllGames] = useAtom(games.scrapeAll)
@@ -111,26 +111,28 @@ const General = ({ isActive, onExit, inputPriority }: SectionProps) => {
           id: 'ss-username',
           type: 'input',
           label: 'ScreenScraper Username',
-          sublabel: ssCredentials.username ? `Current: ${ssCredentials.username}` : undefined,
-          defaultValue: ssCredentials.username,
+          sublabel: appConfig.credentials.screenscraper.username
+            ? `Current: ${appConfig.credentials.screenscraper.username}`
+            : undefined,
+          defaultValue: appConfig.credentials.screenscraper.username,
           onInput: (input) => {
-            setSsCrendentials((cred) => ({ ...cred, username: input }))
+            updateAppConfig((config) => { config.credentials.screenscraper.username = input })
           }
         },
         {
           id: 'ss-password',
           type: 'input',
           label: 'ScreenScraper Password',
-          sublabel: ssCredentials.password
-            ? `Current: ${ssCredentials.password
+          sublabel: appConfig.credentials.screenscraper.password
+            ? `Current: ${appConfig.credentials.screenscraper.password
                 .split('')
                 .map(() => '*')
                 .join('')}`
             : undefined,
-          defaultValue: ssCredentials.password,
+          defaultValue: appConfig.credentials.screenscraper.password,
           isPassword: true,
           onInput: (input) => {
-            setSsCrendentials((cred) => ({ ...cred, password: input }))
+            updateAppConfig((config) => { config.credentials.screenscraper.password = input })
           }
         }
       ]

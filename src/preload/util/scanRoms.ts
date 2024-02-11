@@ -1,13 +1,13 @@
 import { Game, System } from '@common/types'
 import path from 'path'
 import ShortUniqueId from 'short-unique-id'
-import { MainPaths } from '@common/types/Paths'
 import { readdir, stat } from 'fs/promises'
 import { nameMappers } from '@common/features/nameMapping'
+import { AppConfig } from '@common/types'
 
 const uid = new ShortUniqueId()
 
-const scanRoms = async (paths: MainPaths, currentSystems: System[], currentGames: Game[]) => {
+const scanRoms = async (paths: AppConfig['paths'], currentSystems: System[], currentGames: Game[]) => {
   const getGameLookupKey = (romname: string, systemId: string, rompath: string[] = []) =>
     `${romname}-${systemId}-${rompath.join('_')}`
   const gameLookupMap: Record<string, Game> = currentGames.reduce((acc, game) => {
@@ -16,14 +16,14 @@ const scanRoms = async (paths: MainPaths, currentSystems: System[], currentGames
     return acc
   }, {})
 
-  const { ROMs: ROM_PATH } = paths
+  const { roms: romPath } = paths
 
   const addedDate = new Date().toUTCString()
   const newGames: Game[] = []
-  const romsDir = await readdir(ROM_PATH)
+  const romsDir = await readdir(romPath)
 
   const scanFolder = async (systemConfig: System, pathTokens: string[] = []) => {
-    const systemRomDir = systemConfig.romdir || path.join(ROM_PATH, systemConfig.id)
+    const systemRomDir = systemConfig.romdir || path.join(romPath, systemConfig.id)
 
     const dir = path.join(systemRomDir, ...pathTokens)
     let contents: string[]

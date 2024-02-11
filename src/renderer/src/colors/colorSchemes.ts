@@ -1,5 +1,3 @@
-export type ColorSchemeId = 'default' | 'burgendy'
-
 interface ColorScheme {
   id: string
   label: string

@@ -1,13 +1,12 @@
 import { atom } from 'jotai'
 import { mainAtoms as systemMainAtoms } from './systems'
-import pathsAtom from './paths'
+import { appConfigAtom } from './appConfig'
 import { Game, MediaTypes, StoreEntry } from '@common/types'
 import emulators from './emulators'
 import { arrayConfigAtoms } from './util/arrayConfigAtom'
 import { atomFamily } from 'jotai/utils'
 import notifications from './notifications'
 import { ScreenScraper } from '@renderer/apiWrappers/ScreenScraper'
-import screenScraperAtom from './screenscaper'
 import deepEqual from 'fast-deep-equal'
 import uFuzzy from '@leeoniya/ufuzzy'
 import { IGDB } from '@renderer/apiWrappers/IGDB'
@@ -17,7 +16,7 @@ const mainAtoms = arrayConfigAtoms<Game>({ storageKey: 'games' })
 
 const scanGamesAtom = atom(null, async (get, set) => {
   const newGames = await window.scanRoms(
-    get(pathsAtom),
+    get(appConfigAtom).paths,
     get(systemMainAtoms.lists.all),
     get(mainAtoms.lists.all)
   )
@@ -134,7 +133,7 @@ const downloadGameAtom = atom(
     })
 
     try {
-      let downloadedGame = await window.downloadGame(system, href, get(pathsAtom))
+      let downloadedGame = await window.downloadGame(system, href, get(appConfigAtom).paths)
       downloadedGame = {
         ...downloadedGame,
         description,
@@ -184,7 +183,7 @@ const scrapeGameAtom = atom(
     set,
     { gameId, extraText, scraper = 'screenscraper', scrapeBy = 'rom' }: ScrapeSettings
   ) => {
-    const ssCreds = get(screenScraperAtom)
+    const ssCreds = get(appConfigAtom).credentials.screenscraper
 
     const game = get(mainAtoms.single(gameId))
     if (!game) throw new Error(`Tried to scrape undefined game: ${gameId}`)

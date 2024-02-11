@@ -2,9 +2,9 @@ import path from 'path'
 import { Game, Emulator, System } from '@common/types'
 import { spawn } from 'child_process'
 import { loadConfig } from './configStorage'
-import { MainPaths } from '@common/types/Paths'
 import { readFileSync } from 'fs'
 import findEmulator from './findEmulator'
+import { AppConfig } from '@common/types/AppConfig'
 
 type ExtractPromiseType<T> = T extends Promise<infer U> ? U : never;
 
@@ -52,12 +52,12 @@ const launchGame = async (game: Game, emulator: Emulator, system: System) => {
 
   let { bin, args: emuArgs } = emulatorLocation;
 
-  const { ROMs: ROM_PATH } = loadConfig(
-    'paths',
+  const { paths: { roms: romPath } } = loadConfig(
+    'config',
     {} /* we don't need to supply a default; jotai initializes this config on boot */
-  ) as MainPaths
+  ) as AppConfig
 
-  const systemDir = system.romdir ?? path.join(ROM_PATH, system.id)
+  const systemDir = system.romdir ?? path.join(romPath, system.id)
   const romLocation = path.join(systemDir, ...(game.rompath ?? []), game.romname)
 
   let args: string[]

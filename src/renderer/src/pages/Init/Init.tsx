@@ -1,6 +1,6 @@
 // @ts-ignore
 import games from '@renderer/atoms/games'
-import pathAtom from '@renderer/atoms/paths'
+import { appConfigAtom } from '@renderer/atoms/appConfig'
 import systemsAtoms from '@renderer/atoms/systems'
 import { useAtom } from 'jotai'
 import { useEffect } from 'react'
@@ -12,14 +12,14 @@ import { eventHandler } from '@renderer/eventHandler'
 import { useOnInput } from '@renderer/hooks'
 import { settingsOpenAtom } from '@renderer/components/Settings'
 import { useInputModal } from '@renderer/components/InputModal/InputModal'
-import { MainPaths } from '@common/types/Paths'
 import notifications from '@renderer/atoms/notifications'
 import { InputPriority } from '@renderer/const/inputPriorities'
+import { AppConfig } from '@common/types/AppConfig'
 
 let isInitializing = false
 
 const Init = () => {
-  const [configuredPaths, setPaths] = useAtom(pathAtom)
+  const [appConfig, updateAppConfig] = useAtom(appConfigAtom)
   const [systems] = useAtom(systemsAtoms.lists.all)
   const [, addNotification] = useAtom(notifications.add)
 
@@ -38,7 +38,7 @@ const Init = () => {
     disabled: modalProps.open || settingsOpen
   })
 
-  const main = async (paths: MainPaths) => {
+  const main = async (paths: AppConfig['paths']) => {
     await window.initRomDir(paths, systems)
     const gamesLength = await scanRoms()
 
@@ -52,7 +52,7 @@ const Init = () => {
         <div className={css.welcome}>
           <h1>Welcome to EmuHub!</h1>
           <div>Your ROMs directory has been populated at:</div>
-          <div className={css.dir}>{paths.ROMs}</div>
+          <div className={css.dir}>{paths.roms}</div>
           <div>You can either:</div>
           <ul>
             <li>Load up some ROMs in this directory and restart EmuHub</li>
@@ -75,7 +75,7 @@ const Init = () => {
         break
       case 'change': {
         const input = await getInput({
-          defaultValue: paths.ROMs,
+          defaultValue: paths.roms,
           shiftOnOpen: false
         })
 
@@ -92,9 +92,9 @@ const Init = () => {
           return main(paths)
         }
 
-        const newPaths: MainPaths = { ...paths, ROMs: input }
-        setPaths(newPaths)
+        updateAppConfig(config => { config.paths.roms = input })
 
+        const newPaths: AppConfig["paths"] = { ...paths, roms: input }
         main(newPaths)
 
         break
@@ -114,7 +114,7 @@ const Init = () => {
   useEffect(() => {
     if (!isInitializing) {
       isInitializing = true
-      main(configuredPaths)
+      main(appConfig.paths)
     }
   }, [])
 

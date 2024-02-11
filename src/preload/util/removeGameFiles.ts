@@ -2,15 +2,15 @@ import path from 'path'
 import { Game } from '@common/types'
 import { rmSync } from 'fs'
 import { loadConfig } from './configStorage'
-import { MainPaths } from '@common/types/Paths'
+import { AppConfig } from '@common/types'
 
 const removeGameFiles = (game: Game) => {
-  const { ROMs: ROM_PATH } = loadConfig(
-    'paths',
+  const { paths: { roms: configRomPath }} = loadConfig(
+    'config',
     {} /* we don't need to supply a default; jotai initializes this config on boot */
-  ) as MainPaths
+  ) as AppConfig 
 
-  const romPath = path.join(ROM_PATH, game.system, ...(game.rompath ?? []), game.romname)
+  const romPath = path.join(configRomPath, game.system, ...(game.rompath ?? []), game.romname)
   const mediaPaths = [game.hero, game.screenshot, game.poster].filter(Boolean) as string[]
 
   rmSync(romPath, { recursive: true })

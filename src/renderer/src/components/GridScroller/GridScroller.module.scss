@@ -5,11 +5,6 @@
   padding-left: 10px;
 }
 
-.tileWrapper {
-  display: flex;
-  align-items: center;
-}
-
 .tile {
   height: unset;
   width: 100%;
@@ -17,6 +12,7 @@
 
 .grid {
   @include hide-scrollbar;
+  scroll-behavior: smooth;
 }
 
 .container {

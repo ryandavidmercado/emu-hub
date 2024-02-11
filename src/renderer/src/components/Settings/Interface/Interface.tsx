@@ -5,11 +5,12 @@ import { SectionProps } from '..'
 import { useOnInput } from '@renderer/hooks'
 import { Input } from '@renderer/enums'
 import { useAtom } from 'jotai'
-import uiConfigAtom from '@renderer/atoms/ui'
-import { ColorSchemeId, colorSchemes } from '@renderer/colors/colorSchemes'
+import { appConfigAtom } from '@renderer/atoms/appConfig'
+import { colorSchemes } from '@renderer/colors/colorSchemes'
+import { ColorSchemeId } from '@common/types'
 
 const Interface = ({ inputPriority, isActive, onExit }: SectionProps) => {
-  const [uiConfig, updateUiConfig] = useAtom(uiConfigAtom)
+  const [appConfig, updateAppConfig] = useAtom(appConfigAtom)
 
   const entries: ControllerFormEntry[] = [
     {
@@ -17,12 +18,12 @@ const Interface = ({ inputPriority, isActive, onExit }: SectionProps) => {
       type: 'number',
       label: 'Grid Columns',
       sublabel: 'Number of columns to display in system view and search results.',
-      defaultValue: uiConfig.grid.columnCount,
+      defaultValue: appConfig.ui.grid.columnCount,
       min: 2,
       max: 5,
       onNumber: (num) => {
-        updateUiConfig((config) => {
-          config.grid.columnCount = num
+        updateAppConfig((config) => {
+          config.ui.grid.columnCount = num
         })
       }
     },
@@ -30,14 +31,14 @@ const Interface = ({ inputPriority, isActive, onExit }: SectionProps) => {
       id: 'color-scheme',
       type: 'selector',
       label: 'Color Scheme',
-      value: uiConfig.colorScheme ?? 'default',
+      value: appConfig.ui.colorScheme ?? 'default',
       options: colorSchemes.map((scheme) => ({
         id: scheme.id,
         label: scheme.label
       })),
       onSelect: (scheme) => {
-        updateUiConfig((config) => {
-          config.colorScheme = scheme as ColorSchemeId
+        updateAppConfig((config) => {
+          config.ui.colorScheme = scheme as ColorSchemeId
         })
       },
       wraparound: true
