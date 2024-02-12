@@ -31,7 +31,7 @@ const recentlyPlayedAtom = atom((get) => {
   return games
     .filter((game) => game.lastPlayed)
     .sort((a, b) => new Date(b.lastPlayed!).valueOf() - new Date(a.lastPlayed!).valueOf())
-    .slice(0, 8)
+    .slice(0, 10)
 })
 
 const recentlyAddedAtom = atom((get) => {
@@ -44,7 +44,7 @@ const recentlyAddedAtom = atom((get) => {
         new Date().getTime() - new Date(game.added!).getTime() < 86400000
     )
     .sort((a, b) => new Date(b.added!).valueOf() - new Date(a.added!).valueOf())
-    .slice(0, 8)
+    .slice(0, 10)
 })
 
 interface RecentlyViewedFilters {
@@ -69,7 +69,7 @@ const recentlyViewedAtom = atomFamily(
           return true
         })
         .sort((a, b) => new Date(b.lastViewed!).valueOf() - new Date(a.lastViewed!).valueOf())
-        .slice(0, 8)
+        .slice(0, 10)
     }),
   deepEqual
 )
