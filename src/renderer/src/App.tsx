@@ -34,9 +34,12 @@ function App() {
   useEffect(() => {
     const unbind = eventHandler.on('combo', (e) => {
       switch(e.id) {
-        case "quit-game":
-          exitGame()
+        case "quit-game": {
+          if(appConfig.game.enableQuitShortcut) {
+            exitGame()
+          };
           break
+        }
       }
     })
 

@@ -18,6 +18,9 @@ const defaults: AppConfig = {
       username: '',
       password: ''
     }
+  },
+  game: {
+    enableQuitShortcut: true
   }
 }
 

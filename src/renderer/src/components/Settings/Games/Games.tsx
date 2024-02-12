@@ -10,6 +10,7 @@ import notifications from '@renderer/atoms/notifications'
 import { appConfigAtom } from '@renderer/atoms/appConfig'
 import { IoCloudDownload } from 'react-icons/io5'
 import { scrapers } from '@renderer/const/scrapers'
+import { ControllerFormEntry } from '@renderer/components/ControllerForm/ControllerForm'
 
 const General = ({ isActive, onExit, inputPriority }: SectionProps) => {
   const [, scanRoms] = useAtom(games.scan)
@@ -41,12 +42,21 @@ const General = ({ isActive, onExit, inputPriority }: SectionProps) => {
           type: 'action',
           Icon: GrScan
         },
+        // electron doesn't get background gamepad input on MacOS
+        window.platform !== "darwin" && {
+          id: 'enable-quit',
+          label: "Enable Quit Game Shortcut",
+          sublabel: "Hold LT + RT + UP + Y while in-game to exit back to EmuHub.",
+          type: 'toggle',
+          enabled: appConfig.game.enableQuitShortcut,
+          setEnabled: (e: boolean) => { updateAppConfig((config) => { config.game.enableQuitShortcut = e })}
+        },
         {
           id: 'scrape',
           label: 'Scrape Games',
           type: 'navigate'
         }
-      ]
+      ].filter(Boolean) as ControllerFormEntry[]
     },
     {
       id: 'scrape',

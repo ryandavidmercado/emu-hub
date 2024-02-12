@@ -17,5 +17,8 @@ export interface AppConfig {
       username: string
       password: string
     }
+  },
+  game: {
+    enableQuitShortcut: boolean
   }
 }
