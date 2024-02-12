@@ -14,20 +14,6 @@ const Interface = ({ inputPriority, isActive, onExit }: SectionProps) => {
 
   const entries: ControllerFormEntry[] = [
     {
-      id: 'column-count',
-      type: 'number',
-      label: 'Grid Columns',
-      sublabel: 'Number of columns to display in system view and search results.',
-      defaultValue: appConfig.ui.grid.columnCount,
-      min: 2,
-      max: 5,
-      onNumber: (num) => {
-        updateAppConfig((config) => {
-          config.ui.grid.columnCount = num
-        })
-      }
-    },
-    {
       id: 'color-scheme',
       type: 'selector',
       label: 'Color Scheme',
@@ -42,6 +28,20 @@ const Interface = ({ inputPriority, isActive, onExit }: SectionProps) => {
         })
       },
       wraparound: true
+    },
+    {
+      id: 'column-count',
+      type: 'number',
+      label: 'Game Grid Columns',
+      sublabel: 'Number of columns to display in game grids (search, all games, etc).',
+      defaultValue: appConfig.ui.grid.columnCount,
+      min: 2,
+      max: 5,
+      onNumber: (num) => {
+        updateAppConfig((config) => {
+          config.ui.grid.columnCount = num
+        })
+      }
     }
   ]
 
