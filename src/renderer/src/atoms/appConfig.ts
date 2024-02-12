@@ -7,7 +7,8 @@ const defaults: AppConfig = {
     grid: {
       columnCount: 3
    },
-    colorScheme: "default"
+    colorScheme: "default",
+    controllerHints: true
   },
   paths: {
     roms: window.path.join(window.homedir, 'Documents', 'EmuHub', 'roms')

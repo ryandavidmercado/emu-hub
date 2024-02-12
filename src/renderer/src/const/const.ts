@@ -19,3 +19,5 @@ export const displayTypeMap = {
     poster: 'Poster'
   }
 } as const
+
+export const hintsHeight = "7vh"

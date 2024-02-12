@@ -66,7 +66,11 @@ const ConfirmationModal = () => {
     },
     {
       priority: InputPriority.INPUT_MODAL,
-      disabled: !open
+      disabled: !open,
+      hints: [
+        { input: Input.B, text: "Cancel" },
+        { input: Input.A, text: "Select" }
+      ]
     }
   )
 

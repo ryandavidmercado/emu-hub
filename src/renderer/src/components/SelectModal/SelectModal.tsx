@@ -1,6 +1,6 @@
 import { Unsubscribe, createNanoEvents } from 'nanoevents'
 import Modal from '../Modal/Modal'
-import { useOnInput } from '@renderer/hooks'
+import { ControllerHint, useOnInput } from '@renderer/hooks'
 import { Input } from '@renderer/enums'
 import css from './SelectModal.module.scss'
 import classNames from 'classnames'
@@ -100,7 +100,12 @@ const ConfirmationModal = ({
     },
     {
       priority: InputPriority.INPUT_MODAL,
-      disabled: !open
+      disabled: !open,
+      hints: [
+        { input: "DPADLR", text: "Change Selection" },
+        { input: Input.A, text: "Select" },
+        canClose && { input: Input.B, text: "Close" }
+      ].filter(Boolean) as ControllerHint[]
     }
   )
 

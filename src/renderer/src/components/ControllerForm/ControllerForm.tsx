@@ -30,7 +30,7 @@ export type FormTypes =
   | {
       type: 'toggle'
       enabled: boolean
-      setEnabled: Dispatch<SetStateAction<boolean>>
+      setEnabled: (e: boolean) => void
       useDisableStyling?: boolean
     }
   | {
@@ -126,7 +126,7 @@ const ControllerForm = ({
         activeEntry.onSelect(activeEntry.id)
         break
       case 'toggle':
-        activeEntry.setEnabled((e) => !e)
+        activeEntry.setEnabled(!activeEntry.enabled)
         break
       case 'input':
         if (activeEntry.hideFormWhileActive) setHiddenForInput(true)
@@ -186,7 +186,10 @@ const ControllerForm = ({
     },
     {
       disabled: !isActive,
-      priority: inputPriority
+      priority: inputPriority,
+      hints: [
+        { input: Input.A, text: "Select" }
+      ]
     }
   )
 
@@ -405,7 +408,11 @@ const Selector = ({
     },
     {
       disabled: !active,
-      priority: inputPriority
+      priority: inputPriority,
+      hints: [
+        { input: "DPADLR", text: 'Change Selection' },
+        { input: Input.A, text: 'Select' }
+      ]
     }
   )
 
@@ -468,7 +475,11 @@ const NumberDisplay = ({
     },
     {
       disabled: !active,
-      priority: inputPriority
+      priority: inputPriority,
+      hints: [
+        { input: "DPADLR", text: 'Change Selection' },
+        { input: Input.A, text: 'Select' }
+      ]
     }
   )
 

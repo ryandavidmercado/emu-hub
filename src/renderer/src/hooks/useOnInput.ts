@@ -1,6 +1,9 @@
 import { useEffect, useId } from 'react'
 import { Input } from '../enums'
 import gamepadReader from './util/gamepadReader'
+import { atom } from 'jotai'
+import { jotaiStore } from '@renderer/atoms/store/store'
+import { InputLabel } from '@common/types/Input'
 
 type Callback = (input: Input) => void
 
@@ -19,6 +22,11 @@ const kbKeyMap: Partial<Record<KeyboardEvent['key'], Input>> = {
   Tab: Input.SELECT
 }
 
+export interface ControllerHint {
+  input: InputLabel
+  text: string
+}
+
 interface Subscriber {
   id: string
   priority: number
@@ -26,11 +34,15 @@ interface Subscriber {
   cb: Callback
   enforcePriority: boolean
   disableForDevice?: 'keyboard' | 'gamepad'
+  hints?: ControllerHint[]
 }
 
-let subscribers: Subscriber[] = []
+export const controllerHintsAtom = atom<ControllerHint[]>([])
+export const inputSubscribersAtom = atom<Subscriber[]>([]);
 
 const passInputToSubscribers = (input: Input, source: 'keyboard' | 'gamepad') => {
+  const subscribers = jotaiStore.get(inputSubscribersAtom);
+
   const maxPriority = subscribers.reduce((acc, sub) => {
     return Math.max(sub.enforcePriority ? sub.priority : 0, acc)
   }, 0)
@@ -57,6 +69,7 @@ interface PrioritySettings {
   disabled?: boolean
   enforcePriority?: boolean
   disableForDevice?: 'keyboard' | 'gamepad'
+  hints?: ControllerHint[]
 }
 
 export const useOnInput = (cb: Callback, prioritySettings?: PrioritySettings) => {
@@ -67,31 +80,37 @@ export const useOnInput = (cb: Callback, prioritySettings?: PrioritySettings) =>
     enforcePriority = true,
     disableForDevice
   } = prioritySettings ?? {}
+
   const id = useId()
 
   useEffect(() => {
-    if (disabled) {
-      subscribers = subscribers.filter((sub) => sub.id !== id)
-      return
-    }
+    // we create a dependency loop if we get our setters from the useAtom hook
+    // we bypass this by talking to the store directly
+    jotaiStore.set(inputSubscribersAtom, (subscribers) => {
+      if(disabled) return subscribers.filter((sub) => sub.id !== id)
 
-    const currentSubscriber = subscribers.find((sub) => sub.id === id)
-    if (!currentSubscriber) {
-      subscribers.push({
-        priority,
-        cb,
-        id,
-        bypass,
-        enforcePriority,
-        disableForDevice
+      const currentSubscriber = subscribers.find((sub) => sub.id === id)
+      if(!currentSubscriber) return [
+        ...subscribers,
+        {
+          priority,
+          cb,
+          id,
+          bypass,
+          enforcePriority,
+          disableForDevice,
+          hints: prioritySettings?.hints
+        }
+      ];
+
+      return subscribers.map(subscriber => {
+        if(subscriber.id !== id) return subscriber;
+        return { ...subscriber, priority, cb, hints: prioritySettings?.hints }
       })
-    } else {
-      currentSubscriber.priority = priority
-      currentSubscriber.cb = cb
-    }
+    })
 
     return () => {
-      subscribers = subscribers.filter((sub) => sub.id !== id)
+      jotaiStore.set(inputSubscribersAtom, (subscribers => subscribers.filter((sub) => sub.id !== id)))
     }
-  }, [cb, priority, disabled])
+  }, [cb, priority, disabled, prioritySettings?.hints])
 }

@@ -30,6 +30,13 @@ const Interface = ({ inputPriority, isActive, onExit }: SectionProps) => {
       wraparound: true
     },
     {
+      id: 'show-controller-hint',
+      type: 'toggle',
+      label: 'Enable Controller Hints',
+      enabled: appConfig.ui.controllerHints,
+      setEnabled: (e) => { updateAppConfig((config) => { config.ui.controllerHints = e })}
+    },
+    {
       id: 'column-count',
       type: 'number',
       label: 'Game Grid Columns',

@@ -74,6 +74,9 @@ export const Scroller = <T extends Game | System>({
     )
   })
 
+  const activeElem = elems[activeIndex];
+  const isSystem = getIsSystem(activeElem);
+
   useOnInput(
     (input) => {
       const handlePrev = () => {
@@ -103,13 +106,15 @@ export const Scroller = <T extends Game | System>({
       }
     },
     {
-      disabled: !isActive || disableInput
+      disabled: !isActive || disableInput,
+      hints: [
+        { input: Input.A, text: `Select ${isSystem ? 'System' : 'Game'}` }
+      ]
     }
   )
 
   useKeepVisible(activeRef, 35, ScrollType.HORIZONTAL, isActive)
 
-  const activeElem = elems[activeIndex]
 
   return (
     <div

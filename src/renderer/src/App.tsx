@@ -19,12 +19,15 @@ import { useEffect } from 'react'
 import { eventHandler } from '@renderer/eventHandler'
 import { exitGameAtom } from './atoms/runningGame'
 import { useAtom } from 'jotai'
+import { appConfigAtom } from './atoms/appConfig'
+import ControllerHints from './components/ControllerHints/ControllerHints'
 
 function App() {
   const { parentRef, waveHeight } = useWaveHeight(0.3)
   const windowFocused = useWindowFocus()
 
   const [, exitGame] = useAtom(exitGameAtom)
+  const [appConfig] = useAtom(appConfigAtom);
 
   useColorChangeListener()
 
@@ -45,6 +48,7 @@ function App() {
       <HashRouter>
         <NavHeader />
         <AppRoutes />
+        {appConfig.ui.controllerHints && <ControllerHints />}
       </HashRouter>
       {waveHeight && (
         <Wave

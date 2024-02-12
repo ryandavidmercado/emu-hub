@@ -140,6 +140,22 @@ export const InputModal = () => {
           module.right()
           break
         }
+        case Input.X: {
+          setInput((i) => i.slice(0, -1))
+          break
+        }
+        case Input.Y: {
+          setInput((i) => i + ' ')
+          break
+        }
+        case Input.LT: {
+          setIsShift(s => !s)
+          break
+        }
+        case Input.RT: {
+          setIsCaps(c => !c)
+          break
+        }
         case Input.START:
           eventHandler.emit('input-modal-submit', modalInput)
           break
@@ -147,7 +163,15 @@ export const InputModal = () => {
     },
     {
       disabled: !open,
-      priority: InputPriority.INPUT_MODAL
+      priority: InputPriority.INPUT_MODAL,
+      hints: [
+        { input: Input.B, text: 'Cancel' },
+        { input: Input.X, text: 'Backspace' },
+        { input: Input.Y, text: 'Space' },
+        { input: Input.START, text: 'Submit' },
+        { input: Input.LT, text: 'Shift' },
+        { input: Input.RT, text: 'Caps Lock' }
+      ]
       // disableForDevice: "keyboard"
     }
   )

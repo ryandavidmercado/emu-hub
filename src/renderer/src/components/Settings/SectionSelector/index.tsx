@@ -54,13 +54,6 @@ const SectionButton = ({ section, active }: SectionButtonProps) => {
   const Icon = active ? section.IconActive : section.Icon
   return (
     <div
-      // animate={{
-      //   backgroundColor: active ? "hsla(40, 100%, 50%, 100%)" : "hsla(0, 0%, 0%, 0%)",
-      //   // backgroundColor: active ? "hsla(0, 0%, 100%, 100%)" : "hsla(0, 0%, 0%, 0%)",
-      //   color: active ? "hsl(200, 15%, 20%)" : "hsl(200, 0%, 100%)"
-      //   // color: active ? "hsl(200, 15%, 20%)" : "hsl(200, 0%, 100%)"
-      // }}
-      // transition={{ duration: .15 }}
       className={classNames(css.sectionButton, active && css.active)}
     >
       <Icon />

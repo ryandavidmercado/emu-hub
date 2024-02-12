@@ -72,7 +72,10 @@ const MultiPageControllerForm = ({
     },
     {
       disabled: !active,
-      priority: inputPriority
+      priority: inputPriority,
+      hints: [
+        { input: Input.B, text: "Back" },
+      ]
     }
   )
 
