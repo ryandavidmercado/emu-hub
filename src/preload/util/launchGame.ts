@@ -23,7 +23,7 @@ const parseLaunchCommand = (
     '%ROMNAME%': () => path.parse(romLocation).base, // ex: myRom.rom
     '%ROMNAMENOEXT%': () => path.parse(romLocation).name, // ex: myRom
     '%ROMEXT%': () => path.parse(romLocation).ext, // .rom
-    '%ROMTEXTCONTENT%': () => readFileSync(romLocation, { encoding: 'utf8' }) // ex: rom is text file with contents "Hello" -> this returns "Hello"
+    '%ROMTEXTCONTENT%': () => readFileSync(romLocation, { encoding: 'utf8' }).trim() // ex: rom is text file with contents "Hello" -> this returns "Hello"
   } as const
 
   const [bin, ...args] = command.split(" ");
@@ -48,8 +48,6 @@ const parseLaunchCommand = (
 
 const launchGame = async (game: Game, emulator: Emulator, system: System) => {
   const emulatorLocation = await findEmulator(emulator);
-  console.log(emulatorLocation);
-
   let { bin, args: emuArgs } = emulatorLocation;
 
   const { paths: { roms: romPath } } = loadConfig(
@@ -85,10 +83,10 @@ const launchGame = async (game: Game, emulator: Emulator, system: System) => {
 
   console.log(`Launching ${game.name} with command: ${finalBin} ${finalArgs.join(" ")}`)
 
-  const spawnedProcess = spawn(finalBin, finalArgs, { stdio: "ignore", detached: true })
+  const spawnedProcess = spawn(finalBin, finalArgs, { detached: true })
+
   const execInstance = new Promise<void>((resolve, reject) => {
     spawnedProcess.on('close', (status) => {
-      console.log(status);
       if(status !== 1) resolve();
 
       if ('core' in emulator.location) {
