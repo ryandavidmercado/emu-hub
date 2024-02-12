@@ -1,5 +1,5 @@
 import { Input } from '@renderer/enums'
-import { useOnInput } from '@renderer/hooks'
+import { ControllerHint, useOnInput } from '@renderer/hooks'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 import css from './Settings.module.scss'
 import SectionSelector from './SectionSelector'
@@ -111,7 +111,10 @@ const Settings = () => {
     },
     {
       priority: InputPriority.SETTINGS_MODAL_OPEN_CLOSE,
-      enforcePriority: false
+      enforcePriority: false,
+      hints: [
+        !open && { input: Input.START, text: "Settings Menu" }
+      ].filter(Boolean) as ControllerHint[]
     }
   )
 
@@ -136,7 +139,12 @@ const Settings = () => {
     },
     {
       priority: InputPriority.SETTINGS_MODAL,
-      disabled: !open
+      disabled: !open,
+      hints: [
+        activeSide === "left" && { input: Input.B, text: "Close Settings" },
+        activeSide === "left" && { input: Input.A, text: "Select Section" },
+        activeSide === "right" && { input: Input.B, text: "Back" }
+      ].filter(Boolean) as ControllerHint[]
     }
   )
 

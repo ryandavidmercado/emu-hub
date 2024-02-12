@@ -102,7 +102,10 @@ const NavHeader = () => {
     },
     {
       enforcePriority: false,
-      priority: InputPriority.HEADER_BAR_OPEN_CLOSE
+      priority: InputPriority.HEADER_BAR_OPEN_CLOSE,
+      hints: [
+        { input: Input.SELECT, text: 'Navigation Menu' }
+      ]
     }
   )
 
@@ -139,7 +142,11 @@ const NavHeader = () => {
     },
     {
       disabled: !active,
-      priority: InputPriority.HEADER_BAR
+      priority: InputPriority.HEADER_BAR,
+      hints: [
+        { input: Input.A, text: 'Select' },
+        { input: Input.B, text: 'Close Navigation' }
+      ]
     }
   )
 

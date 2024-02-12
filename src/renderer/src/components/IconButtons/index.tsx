@@ -41,7 +41,12 @@ const IconButtons = ({ className, buttons, isActive, onExitDown }: Props) => {
           onExitDown?.()
       }
     },
-    { disabled: !isActive }
+    {
+      disabled: !isActive,
+      hints: [
+        { input: Input.A, text: 'Select' }
+      ]
+    }
   )
 
   const buttonElements = buttons.map((button, i) => (

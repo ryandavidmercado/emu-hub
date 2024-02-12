@@ -19,12 +19,15 @@ import { useEffect } from 'react'
 import { eventHandler } from '@renderer/eventHandler'
 import { exitGameAtom } from './atoms/runningGame'
 import { useAtom } from 'jotai'
+import { appConfigAtom } from './atoms/appConfig'
+import ControllerHints from './components/ControllerHints/ControllerHints'
 
 function App() {
   const { parentRef, waveHeight } = useWaveHeight(0.3)
   const windowFocused = useWindowFocus()
 
   const [, exitGame] = useAtom(exitGameAtom)
+  const [appConfig] = useAtom(appConfigAtom);
 
   useColorChangeListener()
 
@@ -62,6 +65,7 @@ function App() {
       <InputModal />
       <ConfirmationModal />
       <Notifications />
+      {appConfig.ui.controllerHints && <ControllerHints />}
     </div>
   )
 }
@@ -94,6 +98,9 @@ const appRoutes = [
 ]
 
 const AppRoutes = () => {
+  const [appConfig] = useAtom(appConfigAtom);
+  const showControllerHint = appConfig.ui.controllerHints;
+
   return (
     <AnimatePresence>
       <Routes>
@@ -108,6 +115,9 @@ const AppRoutes = () => {
                 animate={{ opacity: 1, transition: { duration: 0.15 } }}
                 exit={{ opacity: 0, transition: { duration: 5 } }}
                 key={route.path}
+                style={{
+                  height: showControllerHint ? "95vh" : "100%"
+                }}
               >
                 {route.element}
               </motion.div>

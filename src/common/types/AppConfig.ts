@@ -5,7 +5,8 @@ export interface AppConfig {
     grid: {
       columnCount: number
     }
-    colorScheme: ColorSchemeId
+    colorScheme: ColorSchemeId,
+    controllerHints: boolean
   }
   paths: {
     RetroArch?: string
