@@ -80,7 +80,7 @@ const defaultSystems = [
       }
     ],
     fileExtensions: ['.gb', '.zip'],
-    emulators: ['sameboy_libretro']
+    emulators: ['sameboy_libretro', 'gambatte_libretro', 'mgba_libretro']
   },
   {
     id: 'gbc',
@@ -97,7 +97,7 @@ const defaultSystems = [
       }
     ],
     fileExtensions: ['.gbc', '.zip'],
-    emulators: ['sameboy_libretro']
+    emulators: ['sameboy_libretro', 'gambatte_libretro', 'mgba_libretro']
   },
   {
     id: 'gba',

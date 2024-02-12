@@ -25,6 +25,11 @@ const defaultEmulators = [
     name: 'SameBoy'
   },
   {
+    id: 'gambatte_libretro',
+    location: { core: 'gambatte_libretro' },
+    name: 'Gambatte'
+  },
+  {
     id: 'mgba_libretro',
     location: { core: 'mgba_libretro' },
     name: 'mGBA'
