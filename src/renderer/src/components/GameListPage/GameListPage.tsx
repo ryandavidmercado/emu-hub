@@ -5,6 +5,9 @@ import VerticalGameInfo from '@renderer/components/VerticalGameInfo'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ISortByObjectSorter, sort } from 'fast-sort'
+import { useAtom } from 'jotai'
+import { appConfigAtom } from '@renderer/atoms/appConfig'
+import { hintsHeight } from '@renderer/const/const'
 
 interface Props {
   games: Game[]
@@ -19,6 +22,9 @@ export const GameListPage = ({ games, label, disableSort }: Props) => {
   const [sortType] = useState<SortType>("name");
   const [sortOrder] = useState<SortOrder>("asc");
 
+  const [appConfig] = useAtom(appConfigAtom)
+  const { ui: { controllerHints }} = appConfig
+
   const sortedGames = useMemo(() => (
     disableSort
       ? games
@@ -32,8 +38,18 @@ export const GameListPage = ({ games, label, disableSort }: Props) => {
   const navigate = useNavigate()
 
   return (
-    <div className={css.container}>
-      <div className={css.left}>
+    <div
+      className={css.container}
+      style={{
+        paddingBottom: controllerHints ? hintsHeight : undefined
+      }}
+    >
+      <div
+        className={css.left}
+        style={{
+          paddingBottom: controllerHints ? 0 : undefined
+        }}
+      >
         <GridScroller
           elems={sortedGames}
           label={label}

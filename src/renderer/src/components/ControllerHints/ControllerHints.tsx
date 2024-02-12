@@ -3,6 +3,28 @@ import { useAtom } from "jotai"
 import css from "./ControllerHints.module.scss"
 import { motion } from "framer-motion";
 import MediaImage from "../MediaImage/MediaImage";
+import { Input } from "@renderer/enums";
+import { hintsHeight } from "@renderer/const/const";
+
+const sortOrder = [
+  Input.UP,
+  Input.DOWN,
+  Input.LEFT,
+  Input.RIGHT,
+  "DPAD",
+  "DPADLR",
+  "DPADUD",
+  Input.B,
+  Input.A,
+  Input.X,
+  Input.Y,
+  Input.LB,
+  Input.RB,
+  Input.LT,
+  Input.RT,
+  Input.SELECT,
+  Input.START,
+] as const
 
 const ControllerHints = () => {
   const [subscribers] = useAtom(inputSubscribersAtom);
@@ -20,7 +42,7 @@ const ControllerHints = () => {
       if (acc.some(accHint => accHint.input === hint.input)) return acc;
       return [...acc, hint]
     }, [] as ControllerHint[])
-    .toSorted((a, b) => a!.input.localeCompare(b!.input)) as ControllerHint[]
+    .toSorted((a, b) => sortOrder.indexOf(a.input) - sortOrder.indexOf(b.input)) as ControllerHint[]
 
   if (hints.length === 1 && hints[0].text === 'Settings Menu') {
     hints = []
@@ -30,9 +52,12 @@ const ControllerHints = () => {
     <div
       className={css.hints}
       style={{
-        height: "5vh",
-        backgroundColor: "var(--background-dark)",
-        position: "relative",
+        height: hintsHeight,
+        backgroundColor: "rgba(0, 0, 0, .6)",
+        backdropFilter: "blur(30px)",
+        position: "fixed",
+        bottom: 0,
+        width: "100%",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -50,14 +75,14 @@ const ControllerHints = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          gap: "1rem",
+          gap: "1.2rem",
         }}
       >
         {hints.map((hint, i) => (
           <div
             key={i}
             style={{
-              gap: ".5rem",
+              gap: ".6rem",
               display: "flex",
               alignItems: "center"
             }}

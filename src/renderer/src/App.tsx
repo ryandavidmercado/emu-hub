@@ -98,9 +98,6 @@ const appRoutes = [
 ]
 
 const AppRoutes = () => {
-  const [appConfig] = useAtom(appConfigAtom);
-  const showControllerHint = appConfig.ui.controllerHints;
-
   return (
     <AnimatePresence>
       <Routes>
@@ -115,9 +112,6 @@ const AppRoutes = () => {
                 animate={{ opacity: 1, transition: { duration: 0.15 } }}
                 exit={{ opacity: 0, transition: { duration: 5 } }}
                 key={route.path}
-                style={{
-                  height: showControllerHint ? "95vh" : "100%"
-                }}
               >
                 {route.element}
               </motion.div>

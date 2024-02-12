@@ -33,6 +33,8 @@ import EmuNotFound from '@renderer/components/EmuNotFoundModal/EmuNotFound'
 import { Emulator } from '@common/types'
 import systems from '@renderer/atoms/systems'
 import { runningGameAtom } from '@renderer/atoms/runningGame'
+import { appConfigAtom } from '@renderer/atoms/appConfig'
+import { hintsHeight } from '@renderer/const/const'
 
 const uid = new ShortUniqueId()
 
@@ -43,8 +45,11 @@ const GameView = ({ gameId }: { gameId?: string }) => {
   const [, launchGame] = useAtom(games.launch)
   const [emuNotFoundOpen, setEmuNotFoundOpen] = useState(false)
 
-  const [runningGame] = useAtom(runningGameAtom);
-  const isInGame = Boolean(runningGame.game);
+  const [runningGame] = useAtom(runningGameAtom)
+  const isInGame = Boolean(runningGame.game)
+
+  const [appConfig] = useAtom(appConfigAtom)
+  const { ui: { controllerHints } } = appConfig
 
   useEffect(() => {
     updateGame({
@@ -214,6 +219,9 @@ const GameView = ({ gameId }: { gameId?: string }) => {
                 activeSection !== 'game' && css.hidden,
                 !windowFocused && css.noAnimate
               )}
+              style={{
+                bottom: controllerHints ? `calc(${hintsHeight} + .5rem)` : '.5rem'
+              }}
             />
           )}
         </div>

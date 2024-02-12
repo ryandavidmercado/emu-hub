@@ -14,3 +14,5 @@ export enum Input {
   LT = 'LT',
   RT = 'RT'
 }
+
+export type InputLabel = Input | "DPAD" | "DPADLR" | "DPADUD"

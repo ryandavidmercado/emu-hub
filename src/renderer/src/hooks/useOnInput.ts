@@ -3,6 +3,7 @@ import { Input } from '../enums'
 import gamepadReader from './util/gamepadReader'
 import { atom } from 'jotai'
 import { jotaiStore } from '@renderer/atoms/store/store'
+import { InputLabel } from '@common/types/Input'
 
 type Callback = (input: Input) => void
 
@@ -22,8 +23,8 @@ const kbKeyMap: Partial<Record<KeyboardEvent['key'], Input>> = {
 }
 
 export interface ControllerHint {
-  input: Input | "DPAD",
-  text: string,
+  input: InputLabel
+  text: string
 }
 
 interface Subscriber {

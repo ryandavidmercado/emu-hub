@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import { useMemo, useState } from 'react'
 import css from './TabSelector.module.scss'
-import { useOnInput } from '@renderer/hooks'
+import { ControllerHint, useOnInput } from '@renderer/hooks'
 import { Input } from '@renderer/enums'
 import { Game } from '@common/types/Game'
 
@@ -49,11 +49,16 @@ const TabSelector = ({ tabsClassName, tabs: unfilteredTabs, disabled, onExitUp }
         case Input.UP:
           return onExitUp?.()
         case Input.DOWN:
+        case Input.A:
           if (tabs[activeTab].canSelect) setActiveSection('content')
       }
     },
     {
-      disabled: disabled || activeSection !== 'tabs'
+      disabled: disabled || activeSection !== 'tabs',
+      hints: [
+        tabs[activeTab].canSelect && { input: Input.DOWN, text: tabs[activeTab].label },
+        tabs.length > 1 && { input: "DPADLR", text: "Select Section" }
+      ].filter(Boolean) as ControllerHint[]
     }
   )
 

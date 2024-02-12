@@ -1,4 +1,4 @@
-import { Input } from "./Input"
+import { InputLabel } from "./Input"
 
 export type InternalMediaType = 'system'
 export type MediaImageData =
@@ -10,6 +10,6 @@ export type MediaImageData =
   | {
       resourceCollection: 'input'
       resourceId: 'base'
-      resourceType: Input | "DPAD"
+      resourceType: InputLabel
     }
   | string

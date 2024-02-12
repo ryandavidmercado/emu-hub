@@ -408,7 +408,11 @@ const Selector = ({
     },
     {
       disabled: !active,
-      priority: inputPriority
+      priority: inputPriority,
+      hints: [
+        { input: "DPADLR", text: 'Change Selection' },
+        { input: Input.A, text: 'Select' }
+      ]
     }
   )
 
@@ -471,7 +475,11 @@ const NumberDisplay = ({
     },
     {
       disabled: !active,
-      priority: inputPriority
+      priority: inputPriority,
+      hints: [
+        { input: "DPADLR", text: 'Change Selection' },
+        { input: Input.A, text: 'Select' }
+      ]
     }
   )
 
