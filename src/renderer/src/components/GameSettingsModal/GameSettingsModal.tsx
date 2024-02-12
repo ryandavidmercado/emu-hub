@@ -28,9 +28,9 @@ const GameSettingsModal = ({ game, open, setOpen }: Props) => {
 
   const [inGameArtSelection, setInGameArtSelection] = useState(false)
 
-  const emulatorsList = (gameSystem.emulators ?? []).map(getEmulator).map((emu) => ({
-    id: emu.id,
-    label: emu.name
+  const emulatorsList = (gameSystem?.emulators ?? []).map(getEmulator).map((emu) => ({
+    id: emu?.id,
+    label: emu?.name
   }))
 
   const selectedEmulator = game.emulator ?? emulatorsList[0]?.id

@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import configStorage from './util/configStorage'
+import configStorage, { writeDefaultConfig } from './util/configStorage'
 import path from 'path'
 import launchGame from './util/launchGame'
 import scanRoms from './util/scanRoms'
@@ -25,7 +25,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('configStorage', configStorage)
     contextBridge.exposeInMainWorld('launchGame', launchGame)
     contextBridge.exposeInMainWorld('path', path),
-      contextBridge.exposeInMainWorld('scanRoms', scanRoms)
+    contextBridge.exposeInMainWorld('scanRoms', scanRoms)
     contextBridge.exposeInMainWorld('loadSystemStore', loadSystemStore)
     contextBridge.exposeInMainWorld('downloadGame', downloadGame)
     contextBridge.exposeInMainWorld('downloadGameMedia', downloadGameMedia)
@@ -54,6 +54,7 @@ if (process.contextIsolated) {
     })
     contextBridge.exposeInMainWorld('hasFlatpak', hasFlatpak)
     contextBridge.exposeInMainWorld('installEmulator', installEmulator)
+    contextBridge.exposeInMainWorld('writeDefaultConfig', writeDefaultConfig)
   } catch (error) {
     console.error(error)
   }

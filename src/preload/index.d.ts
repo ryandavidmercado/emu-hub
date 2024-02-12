@@ -1,5 +1,5 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
-import type { ConfigStorage } from './util/configStorage'
+import type { ConfigStorage, writeDefaultConfig } from './util/configStorage'
 import { PromiseWithChild } from 'child_process'
 import { PlatformPath } from 'path'
 
@@ -37,5 +37,6 @@ declare global {
     focusApp: () => void
     hasFlatpak: boolean
     installEmulator: typeof installEmulator
+    writeDefaultConfig: typeof writeDefaultConfig
   }
 }

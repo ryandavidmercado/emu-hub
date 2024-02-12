@@ -1,56 +1,110 @@
 import { atomFamily, atomWithStorage } from 'jotai/utils'
-import { withImmer } from 'jotai-immer'
 import { atom } from 'jotai'
 import ShortUniqueId from 'short-unique-id'
 import { PartialBy } from '@renderer/types/util'
-
-interface ArrayConfigOptions<T> {
-  storageKey: string
-  default?: T[]
-}
+import deepmerge from 'deepmerge'
 
 const uid = new ShortUniqueId()
 
+type ArrOverride = "overwrite" | "mergeById" | "combine"
+type ArrOverrides = {
+  [key: string]: ArrOverride
+}
+
+const prepareIdArrMerge = <T extends { id: string }>(defaults: T[], user: (Partial<T> & { id: string })[]) => {
+  const ids = new Set([...defaults.map(d => d.id), ...user.map(d => d.id)]);
+
+  const getLookup = (entries: (Partial<T> & { id: string })[]) => {
+    return entries.reduce((acc, entry) => ({
+      ...acc,
+      [entry.id]: entry
+    }), {} as Record<string, (Partial<T> & { id: string })>)
+  }
+
+  const defaultsLookup = getLookup(defaults);
+  const userLookup = getLookup(user);
+
+  return { ids, defaultsLookup, userLookup }
+}
+
+const merger = <T extends { id: string }>(defaults: T[], user: (Partial<T> & { id: string })[], arrOverrides: ArrOverrides) => {
+  const { ids, defaultsLookup, userLookup } = prepareIdArrMerge(defaults, user);
+
+  const arrMergers = {
+    overwrite: (_defaultEntry: any[], userEntry: any[]) => userEntry,
+    mergeById: (defaultEntry: any[], userEntry: any[]) => {
+      const { ids, defaultsLookup, userLookup } = prepareIdArrMerge(defaultEntry, userEntry)
+      return [...ids].map(id => deepmerge(defaultsLookup[id] ?? {}, userLookup[id] ?? {}))
+    },
+    combine: (defaultEntry: any[], userEntry: any[]) => [...new Set([...defaultEntry, ...userEntry])]
+  } as const
+
+  const merged = [...ids].map(id => {
+    return deepmerge(defaultsLookup[id] ?? {}, userLookup[id] ?? {}, {
+      customMerge: (key) => {
+        if (key in arrOverrides) return arrMergers[arrOverrides[key]]
+        return undefined;
+      }
+    })
+  })
+
+  return merged as T[];
+}
+
+interface ArrayConfigOptions<T> {
+  storageKey: string
+  default?: T[],
+  splitUserEntries?: {
+    arrOverrides: ArrOverrides
+  }
+}
+
 export const arrayConfigAtoms = <T extends { id: string }>(options: ArrayConfigOptions<T>) => {
-  const all = atomWithStorage<T[]>(
+  const userEntriesAtom = atomWithStorage<(Partial<T> & { id: string })[]>(
     options.storageKey,
-    options.default ?? ([] as T[]),
+    ((options.splitUserEntries ? [] : options.default) ?? []) as (Partial<T> & { id: string })[],
     window.configStorage,
     { getOnInit: true }
   )
 
-  const lookup = atom((get) => {
-    const entries = get(all)
-    return entries.reduce<Record<string, T & { index: number }>>(
-      (acc, entry, i) => ({
-        ...acc,
-        [entry.id]: {
-          ...entry,
-          index: i
-        }
-      }),
-      {}
-    )
-  })
+  if(options.splitUserEntries) {
+    window.writeDefaultConfig(options.storageKey, options.default ?? [])
+  }
 
-  const immerized = withImmer(all)
+  const all = atom(
+    (get) => {
+      const userEntries = get(userEntriesAtom);
+      if (!options.splitUserEntries) return userEntries as T[];
+
+      return merger(options.default ?? [], userEntries, options.splitUserEntries.arrOverrides) as T[]
+    },
+    (_, set, newEntries: T[]) => {
+      set(userEntriesAtom, newEntries)
+    }
+  )
+
+  const lookup = atom(
+    (get) => {
+      return get(all).reduce((acc, entry) => ({ ...acc, [entry.id]: entry }), {} as Record<string, T>)
+    }
+  )
 
   const single = atomFamily((id: string) =>
     atom(
       (get) => {
-        const lookupData = get(lookup)
-        return lookupData[id]
+        return get(lookup)[id] as T | undefined;
       },
-      (get, set, update: Partial<Omit<T, 'id'>>) => {
-        const entryIndex = get(lookup)[id]?.index
-        if (typeof entryIndex !== 'number') {
-          throw `Tried to update invalid ${options.storageKey} ID!`
-        }
+      (_, set, update: Partial<Omit<T, 'id'>>) => {
+        set(userEntriesAtom, (userEntries): (Partial<T> & { id: string })[] => {
+          const draftEntryIndex = userEntries.findIndex(e => e.id === id);
 
-        set(immerized, (draft) => {
-          draft[entryIndex] = {
-            ...draft[entryIndex],
-            ...update
+          if(draftEntryIndex !== -1) {
+            return userEntries.map(e => {
+              if(e.id !== id) return e;
+              return { ...e, ...update }
+            })
+          } else {
+            return [...userEntries, { ...update, id } as Partial<T> & { id: string }]
           }
         })
       }
@@ -63,7 +117,7 @@ export const arrayConfigAtoms = <T extends { id: string }>(options: ArrayConfigO
     const currentEntry = get(single(newElem.id ?? ''))
     if (currentEntry) return
 
-    set(all, (elems) => [
+    set(userEntriesAtom, (elems) => [
       ...elems,
       {
         ...newElem,
@@ -73,14 +127,12 @@ export const arrayConfigAtoms = <T extends { id: string }>(options: ArrayConfigO
   })
 
   const remove = atom(null, (_, set, id: string) => {
-    set(all, (elems) => elems.filter((elem) => elem.id !== id))
+    set(userEntriesAtom, (elems) => elems.filter((elem) => elem.id !== id))
   })
 
   return {
     lists: {
       all,
-      lookup,
-      immerized
     },
     single,
     curriedSingle,

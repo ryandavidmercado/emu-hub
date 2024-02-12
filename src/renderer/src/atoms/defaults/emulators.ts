@@ -1,6 +1,3 @@
-import { mergeWith } from 'lodash'
-import { merger } from './util/merger'
-
 const defaultEmulators = [
   {
     id: 'mesen_libretro',
@@ -167,12 +164,5 @@ const defaultEmulators = [
     }
   }
 ]
-
-const mergedEmulators = mergeWith(
-  defaultEmulators,
-  window.configStorage.getItem('emulators', []),
-  merger
-)
-window.configStorage.setItem('emulators', mergedEmulators)
 
 export default defaultEmulators

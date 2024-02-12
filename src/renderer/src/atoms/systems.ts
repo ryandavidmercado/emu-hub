@@ -9,7 +9,14 @@ import defaultSystems from './defaults/systems'
 
 export const mainAtoms = arrayConfigAtoms<System>({
   storageKey: 'systems',
-  default: defaultSystems
+  default: defaultSystems,
+  splitUserEntries: {
+    arrOverrides: {
+      fileExtensions: "combine",
+      emulators: "combine",
+      stores: "mergeById",
+    }
+  }
 })
 
 interface GetStoreParms {

@@ -1,7 +1,5 @@
 import { System } from '@common/types'
 import defaultEmulators from './emulators'
-import { mergeWith } from 'lodash'
-import { merger } from './util/merger'
 
 const emulatorIds = new Set(defaultEmulators.map((emu) => emu.id))
 
@@ -260,8 +258,5 @@ const parsedSystems: System[] = defaultSystems
     }
   })
   .filter(Boolean) as System[]
-
-const mergedSystems = mergeWith(parsedSystems, window.configStorage.getItem('systems', []), merger)
-window.configStorage.setItem('systems', mergedSystems)
 
 export default parsedSystems

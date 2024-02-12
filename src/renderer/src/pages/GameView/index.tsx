@@ -68,7 +68,7 @@ const GameView = ({ gameId }: { gameId?: string }) => {
   const [failedLaunchEmulator, setFailedLaunchEmulator] = useState<Emulator>()
 
   const [scrapeModalOpen, setScrapeModalOpen] = useState(false)
-  const selectedEmulator = game.emulator ?? gameSystem?.emulators?.[0]
+  const selectedEmulator = game?.emulator ?? gameSystem?.emulators?.[0]
 
   const canScrape = !notificationsList.some(
     (notif) => notif.id.startsWith(`scrape-${game?.id}`) && notif.type === 'download'

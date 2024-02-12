@@ -19,9 +19,11 @@ const LINUX_APPLICATION_PATHS = [
   path.join(os.homedir(), '.bin')
 ]
 
-for (const path of [EMUHUB_PATH, CONFIG_PATH, ASSETS_PATH, GAME_ASSETS_PATH]) {
+const ROMS_PATH = path.join(HOME_PATH, "Documents", "EmuHub", "roms");
+
+for (const path of [EMUHUB_PATH, CONFIG_PATH, ASSETS_PATH, GAME_ASSETS_PATH, ROMS_PATH]) {
   if (!existsSync(path)) {
-    mkdirSync(path)
+    mkdirSync(path, { recursive: true })
   }
 }
 
