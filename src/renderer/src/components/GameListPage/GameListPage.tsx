@@ -8,6 +8,8 @@ import { ISortByObjectSorter, sort } from 'fast-sort'
 import { useAtom } from 'jotai'
 import { appConfigAtom } from '@renderer/atoms/appConfig'
 import { hintsHeight } from '@renderer/const/const'
+import { useOnInput } from '@renderer/hooks/useOnInput'
+import { Input } from '@renderer/enums'
 
 interface Props {
   games: Game[]
@@ -34,8 +36,14 @@ export const GameListPage = ({ games, label, disableSort }: Props) => {
   ), [games, sortType, sortOrder]);
 
   const [activeGame, setActiveGame] = useState(sortedGames[0]);
-
   const navigate = useNavigate()
+
+  // easier to drop the hint here than to include in every GameListPage route
+  useOnInput(() => {}, {
+    hints: [
+      { input: Input.B, text: "Back" }
+    ]
+  })
 
   return (
     <div

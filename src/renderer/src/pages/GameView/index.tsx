@@ -110,8 +110,8 @@ const GameView = ({ gameId }: { gameId?: string }) => {
     {
       disabled: collectionModalOpen || isInGame,
       hints: [
-        activeSection === "game" && { input: Input.DOWN, text: 'Game Info' },
-        activeSection === "tabs" && { input: Input.B, text: 'Game View' }
+        activeSection === "game" && game?.description && { input: Input.DOWN, text: 'Game Info' },
+        { input: Input.B, text: activeSection === 'tabs' ? 'Game View' : 'Back' },
       ].filter(Boolean) as ControllerHint[]
     }
   )

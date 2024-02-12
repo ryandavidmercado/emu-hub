@@ -8,12 +8,25 @@ import { MdDownloadForOffline } from 'react-icons/md'
 import { AnimatePresence, motion } from 'framer-motion'
 import classNames from 'classnames'
 import { FaCheckCircle, FaExclamationCircle } from 'react-icons/fa'
+import { useAtom } from 'jotai'
+import { appConfigAtom } from '@renderer/atoms/appConfig'
+import { hintsHeight } from '@renderer/const/const'
 
 const Notifications = () => {
+  const [appConfig] = useAtom(appConfigAtom)
+  const { ui: { controllerHints }} = appConfig
+
   const notifications = useNotificationDisplay()
 
   return createPortal(
-    <motion.div layout className={css.notificationsOverlay}>
+    <motion.div
+      className={css.notificationsOverlay}
+      layout
+      style={{
+        padding: '2rem',
+        paddingBottom: controllerHints ? `calc(2rem + ${hintsHeight})` : '2rem'
+      }}
+    >
       <AnimatePresence>
         {notifications.map((notification) => (
           <NotificationDisplay notification={notification} key={notification.id} />

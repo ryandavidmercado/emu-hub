@@ -48,6 +48,7 @@ function App() {
       <HashRouter>
         <NavHeader />
         <AppRoutes />
+        {appConfig.ui.controllerHints && <ControllerHints />}
       </HashRouter>
       {waveHeight && (
         <Wave
@@ -65,7 +66,6 @@ function App() {
       <InputModal />
       <ConfirmationModal />
       <Notifications />
-      {appConfig.ui.controllerHints && <ControllerHints />}
     </div>
   )
 }
