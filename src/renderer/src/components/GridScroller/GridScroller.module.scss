@@ -11,8 +11,12 @@
 }
 
 .grid {
-  @include hide-scrollbar;
   scroll-behavior: smooth;
+}
+
+.hideScrollbar {
+  @include hide-scrollbar;
+  overflow-y: hidden;
 }
 
 .container {

@@ -1,7 +1,6 @@
 import { ScrollerProps } from '../Scroller'
-import { useId, useMemo } from 'react'
-import AutoSizer from 'react-virtualized-auto-sizer'
-import { FixedSizeGrid as Grid } from 'react-window'
+import { forwardRef, useEffect, useId, useMemo, useRef } from 'react'
+import { VirtuosoGrid, VirtuosoGridHandle } from "react-virtuoso"
 import { atom, useAtom } from 'jotai'
 import { useOnInput } from '@renderer/hooks'
 import { Input } from '@renderer/enums'
@@ -10,7 +9,6 @@ import { appConfigAtom } from '@renderer/atoms/appConfig'
 import Label from '../Label/Label'
 import css from './GridScroller.module.scss'
 import { Game } from '@common/types/Game'
-import { System } from '@common/types/System'
 import GameTile from '../MediaTile/Presets/GameTile'
 
 const activeCellAtom = atomFamily((_id: string) =>
@@ -20,37 +18,13 @@ const activeCellAtom = atomFamily((_id: string) =>
   })
 )
 
-const GameCell = ({ columnIndex, rowIndex, style, data }) => {
-  const [activeCell] = useAtom(activeCellAtom(data.instanceId))
-  const [
-    {
-      ui: {
-        grid: { columnCount }
-      }
-    }
-  ] = useAtom(appConfigAtom)
-
-  const isActive = activeCell.row === rowIndex && activeCell.column === columnIndex
-
-  const index = rowIndex * columnCount + columnIndex
-  const gameData = data.elems[index] as Game
-
-  if (!gameData) return null
-
-  return (
-    <div className={css.tileWrapper} style={style}>
-      <GameTile active={isActive} swapTransform className={css.tile} game={gameData} />
-    </div>
-  )
-}
-
-const GridScroller = <T extends Game | System>({
+const GridScroller = ({
   isActive = true,
   elems,
   label,
   onSelect,
   onHighlight
-}: ScrollerProps<T>) => {
+}: ScrollerProps<Game>) => {
   const instanceId = useId()
 
   const [
@@ -62,14 +36,17 @@ const GridScroller = <T extends Game | System>({
   ] = useAtom(appConfigAtom)
 
   const rowCount = Math.ceil(elems.length / columnCount)
+  const scrollerRef = useRef<VirtuosoGridHandle>(null)
 
-  const itemData = useMemo(() => ({ elems, instanceId }), [elems])
   const [activeCell, setActiveCell] = useAtom(activeCellAtom(instanceId))
 
+  const activeIndex = useMemo(() => {
+    return activeCell.row * columnCount + activeCell.column;
+  }, [activeCell, columnCount])
+
   const activeElem = useMemo(() => {
-    const index = activeCell.row * columnCount + activeCell.column
-    return elems[index]
-  }, [activeCell, elems])
+    return elems[activeIndex]
+  }, [activeIndex, elems])
 
   useOnInput((input) => {
     const newCell = { ...activeCell }
@@ -107,6 +84,34 @@ const GridScroller = <T extends Game | System>({
     setActiveCell(newCell)
   })
 
+  const gridComponents = useMemo(() => {
+    return {
+      List: forwardRef<HTMLDivElement>(({ style, children, ...props }: any, ref) => {
+        return (
+          <div
+            style={{
+              ...style,
+              display: "grid",
+              gridTemplateColumns: `repeat(${columnCount}, 1fr)`
+            }}
+            {...props}
+            ref={ref}
+          >
+            {children}
+          </div>
+        )
+      })
+    }
+  }, [columnCount])
+
+  useEffect(() => {
+    scrollerRef.current?.scrollToIndex({
+      index: activeIndex,
+      behavior: "smooth",
+      align: 'center'
+    })
+  }, [activeIndex])
+
   return (
     <div className={css.container}>
       {label && (
@@ -117,32 +122,20 @@ const GridScroller = <T extends Game | System>({
         />
       )}
       <div className={css.gridWrapper}>
-        <AutoSizer>
-          {({ height, width }) => {
-            return (
-              <Grid
-                height={height}
-                width={width}
-                className={css.grid}
-                columnCount={columnCount}
-                rowCount={rowCount}
-                itemData={itemData}
-                rowHeight={(43 / 92) * (width / columnCount)}
-                columnWidth={width / columnCount}
-                ref={(elem) => {
-                  elem?.scrollToItem({
-                    rowIndex: activeCell.row
-                  })
-                }}
-                style={{
-                  scrollBehavior: 'smooth'
-                }}
-              >
-                {GameCell}
-              </Grid>
-            )
-          }}
-        </AutoSizer>
+        <VirtuosoGrid
+          data={elems}
+          components={gridComponents}
+          itemContent={(index, game) => (
+            <GameTile
+              swapTransform
+              className={css.tile}
+              game={game}
+              active={activeIndex === index}
+            />
+          )}
+          style={{ overflowY: "hidden" }}
+          ref={scrollerRef}
+        />
       </div>
     </div>
   )
