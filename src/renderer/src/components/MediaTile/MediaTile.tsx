@@ -50,9 +50,10 @@ const MediaTile = ({
         <MediaImage
           media={media.background}
           className={classNames(css.background, media.foreground && css.withForeground)}
+          async
         />
       )}
-      {media.foreground && <MediaImage media={media.foreground} className={css.foreground} />}
+      {media.foreground && <MediaImage media={media.foreground} className={css.foreground} async />}
       {media.foregroundText && !media.foreground && !media.background && (
         <div className={css.foregroundTextWrapper}>
           <div className={css.foregroundText}>{media.foregroundText}</div>

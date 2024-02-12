@@ -9,7 +9,7 @@ import downloadGame from './util/downloadGame'
 import downloadGameMedia from './util/downloadGameMedia'
 import getRomFileInfo from './util/getRomFileInfo'
 import loadSystemStore from './util/loadSystemStore'
-import loadMedia from './util/loadMedia'
+import loadMedia, { loadMediaAsync } from './util/loadMedia'
 import removeGameFiles from './util/removeGameFiles'
 import initRomDir from './util/initRomDir'
 import { installEmulator } from './util/installEmulator'
@@ -23,6 +23,7 @@ declare global {
     path: PlatformPath
     scanRoms: typeof scanRoms
     loadMedia: typeof loadMedia
+    loadMediaAsync: typeof loadMediaAsync
     loadSystemStore: typeof loadSystemStore
     downloadGame: typeof downloadGame
     downloadGameMedia: typeof downloadGameMedia

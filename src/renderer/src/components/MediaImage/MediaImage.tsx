@@ -1,5 +1,5 @@
 import { MediaImageData } from '@common/types/InternalMediaType'
-import { CSSProperties, PropsWithChildren, useState } from 'react'
+import { CSSProperties, PropsWithChildren, useEffect, useState } from 'react'
 
 interface Props {
   className?: string
@@ -7,6 +7,7 @@ interface Props {
   onLoaded?: () => void
   media?: MediaImageData
   style?: CSSProperties
+  async?: boolean
 }
 
 const MediaImage = ({
@@ -15,9 +16,27 @@ const MediaImage = ({
   fallbackClassName,
   onLoaded,
   media,
-  style
+  style,
+  async
 }: PropsWithChildren<Props>) => {
   const [isErr, setIsErr] = useState(false)
+  const [asyncUrl, setAsyncUrl] = useState("")
+
+  useEffect(() => {
+    if(!async) return;
+
+    const getMedia = async () => {
+      try {
+        const url = await window.loadMediaAsync(media ?? '');
+        console.log(url)
+        setAsyncUrl(url);
+      } catch (e) {
+        setAsyncUrl('fail')
+      }
+    }
+
+    getMedia();
+  }, [media, async])
 
   const fallback = children ? (
     <>{children}</>
@@ -26,14 +45,17 @@ const MediaImage = ({
   )
   if (!media) return fallback
 
-  const url = window.loadMedia(media)
-  if (!url) return fallback
+  const url = async ? '' : window.loadMedia(media);
+  if(!async && !url) return fallback
+
+  if(async && !asyncUrl) return null;
+  if(async && asyncUrl === "fail") return fallback;
 
   if (isErr) return fallback
   return (
     <img
       className={className}
-      src={url}
+      src={async ? asyncUrl : url}
       style={style}
       onLoad={onLoaded}
       onError={() => {

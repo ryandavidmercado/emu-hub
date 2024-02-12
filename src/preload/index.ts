@@ -8,7 +8,7 @@ import loadSystemStore from './util/loadSystemStore'
 import downloadGame from './util/downloadGame'
 import getRomFileInfo from './util/getRomFileInfo'
 import downloadGameMedia from './util/downloadGameMedia'
-import loadMedia from './util/loadMedia'
+import loadMedia, { loadMediaAsync } from './util/loadMedia'
 import removeGameFiles from './util/removeGameFiles'
 import os from 'os'
 import initRomDir from './util/initRomDir'
@@ -31,6 +31,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('downloadGameMedia', downloadGameMedia)
     contextBridge.exposeInMainWorld('getRomFileInfo', getRomFileInfo)
     contextBridge.exposeInMainWorld('loadMedia', loadMedia)
+    contextBridge.exposeInMainWorld('loadMediaAsync', loadMediaAsync)
     contextBridge.exposeInMainWorld('removeGameFiles', removeGameFiles)
     contextBridge.exposeInMainWorld('platform', os.platform())
     contextBridge.exposeInMainWorld('homedir', os.homedir())
