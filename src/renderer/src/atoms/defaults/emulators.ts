@@ -166,7 +166,11 @@ const defaultEmulators = [
         flatpak: 'net.rpcs3.RPCS3',
         appImage: 'rpcs3'
       }
-    }
+    },
+    args: [
+      '--no-gui',
+      '--fullscreen'
+    ]
   }
 ]
 
