@@ -133,7 +133,7 @@ const downloadGameAtom = atom(
     })
 
     try {
-      let downloadedGame = await window.downloadGame(system, href, get(appConfigAtom).paths)
+      let downloadedGame = await window.downloadGame(system, href, get(appConfigAtom).paths, name)
       downloadedGame = {
         ...downloadedGame,
         description,

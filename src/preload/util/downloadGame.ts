@@ -11,11 +11,11 @@ import { AppConfig } from '@common/types/AppConfig'
 
 const uid = new ShortUniqueId()
 
-const downloadGame = async (system: System, url: string, paths: AppConfig['paths']) => {
+const downloadGame = async (system: System, url: string, paths: AppConfig['paths'], name?: string) => {
   const systemPath = system.romdir || path.join(paths.roms, system.id)
 
   const romname = decodeURIComponent(path.basename(url))
-  const name = path
+  const defaultName = path
     .basename(romname, path.extname(romname))
     .replace(/\([^\)]*\)/g, '')
     .trim()
@@ -28,7 +28,7 @@ const downloadGame = async (system: System, url: string, paths: AppConfig['paths
   if (path.extname(romname) !== '.zip' || system.fileExtensions.includes('.zip')) {
     return {
       romname,
-      name,
+      name: name ?? defaultName,
       id,
       system: system.id,
       added: new Date().toUTCString()
@@ -37,7 +37,7 @@ const downloadGame = async (system: System, url: string, paths: AppConfig['paths
 
   // zip files don't scrape particularly well; unzip them
   const zipFilePath = path.join(systemPath, romname)
-  const outputPath = path.join(systemPath, name)
+  const outputPath = path.join(systemPath, defaultName)
 
   await new Promise<void>((resolve, reject) => {
     createReadStream(zipFilePath)
@@ -64,7 +64,7 @@ const downloadGame = async (system: System, url: string, paths: AppConfig['paths
 
   await rm(zipFilePath)
 
-  let rompath: string[] | undefined = [name] // path for romfile relative to system dir
+  let rompath: string[] | undefined = [defaultName] // path for romfile relative to system dir
 
   // if we only have one file, let's take it out of the subdir
   if (unzippedDir.length === 1) {
@@ -80,7 +80,7 @@ const downloadGame = async (system: System, url: string, paths: AppConfig['paths
   return {
     romname: gameFile,
     rompath,
-    name: path
+    name: name ?? path
       .basename(gameFile, path.extname(gameFile))
       .replace(/\([^\)]*\)/g, '')
       .trim(),
