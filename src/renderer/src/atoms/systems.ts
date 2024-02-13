@@ -65,13 +65,18 @@ const systemsWithGamesAtom = atom((get) => {
   return sort(
     systems.map<SystemWithGames>((system) => {
       const gamesList = get(games.lists.system(system.id))
-      const randomScreenshot = gamesList
-        .filter((game) => game.screenshot)
-        .toSorted(() => Math.random() - 0.5)[0]?.screenshot
+
+      const randomGame = gamesList
+        .filter((game) => game.screenshot || game.hero)
+        .toSorted(() => Math.random() - 0.5)[0]
+
+      const randomImg = randomGame?.showcaseDisplayType === "fanart"
+        ? (randomGame?.hero ?? randomGame?.screenshot)
+        : (randomGame?.screenshot ?? randomGame?.hero)
 
       return {
         ...system,
-        screenshot: randomScreenshot,
+        screenshot: randomImg,
         games: gamesList
       }
     })
