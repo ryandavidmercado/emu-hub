@@ -135,7 +135,7 @@ const GridScroller = ({
           )}
           style={{ overflowY: "hidden" }}
           ref={scrollerRef}
-          overscan={{ main: 1000, reverse: 1000 }}
+          overscan={1000}
         />
       </div>
     </div>
