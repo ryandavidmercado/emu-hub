@@ -37,6 +37,7 @@
     "fast-sort": "^3.4.0",
     "fetch-retry": "^5.0.6",
     "framer-motion": "^9.0.2",
+    "fuse.js": "^7.0.0",
     "immer": "^10.0.3",
     "jotai": "^2.6.1",
     "jotai-immer": "^0.2.0",

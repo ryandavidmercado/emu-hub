@@ -1,4 +1,5 @@
 import { Game, MediaTypes, System } from '@common/types'
+import Fuse from 'fuse.js'
 import { SOFTNAME } from '@renderer/const/const'
 import fetchRetry from 'fetch-retry'
 
@@ -134,10 +135,16 @@ export class ScreenScraper {
 
     try {
       const response = await this.fetchWithParams(path, params)
-      const gameResponse = response.jeux?.[0]
+      console.log(response)
 
-      if (!gameResponse) throw 'Game not found!'
-      return await this.saveScrapeResponseToGame(gameResponse, game)
+      if (!response.jeux?.length) throw 'Game not found!'
+
+      // ScreenScraper doesn't sort search results
+      // Run a local fuzzy search against the results to get the best match
+      const localSearcher = new Fuse(response.jeux, { keys: ['noms.text'], threshold: 1 })
+      const localSearchResult = localSearcher.search(game.name ?? '')[0].item
+
+      return await this.saveScrapeResponseToGame(localSearchResult, game)
     } catch (e) {
       throw { err: e }
     }

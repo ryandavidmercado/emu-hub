@@ -1,5 +1,3 @@
-import { Emulator } from "@common/types";
-
 export const raEmulatorEntry = {
   name: 'RetroArch',
   id: 'retroarch',
@@ -12,5 +10,6 @@ export const raEmulatorEntry = {
     darwin: {
       name: 'RetroArch'
     }
-  }
-} as Emulator
+  },
+  args: ['-f']
+} as const
