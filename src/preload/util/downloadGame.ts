@@ -1,4 +1,4 @@
-import download from 'download'
+import Downloader from 'nodejs-file-downloader'
 
 import { Game, System } from '@common/types'
 
@@ -22,7 +22,13 @@ const downloadGame = async (system: System, url: string, paths: AppConfig['paths
 
   const id = uid.rnd()
 
-  await download(url, systemPath, { filename: romname })
+  const downloader = new Downloader({
+    url,
+    directory: systemPath,
+    fileName: romname
+  })
+
+  await downloader.download()
 
   // if we don't need to unzip, return early
   if (path.extname(romname) !== '.zip' || system.fileExtensions.includes('.zip')) {
@@ -50,6 +56,7 @@ const downloadGame = async (system: System, url: string, paths: AppConfig['paths
         resolve()
       })
       .on('error', (e) => {
+        console.error(e)
         reject(e)
       })
   })

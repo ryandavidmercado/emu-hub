@@ -134,6 +134,7 @@ const downloadGameAtom = atom(
 
     try {
       let downloadedGame = await window.downloadGame(system, href, get(appConfigAtom).paths, name)
+
       downloadedGame = {
         ...downloadedGame,
         description,
@@ -149,7 +150,13 @@ const downloadGameAtom = atom(
               ...data
             }))
           )
-      } catch {}
+      } catch (e) {
+          set(notifications.add, {
+          id: `${notificationId}-error`,
+          text: `Failed to download media for ${name}: ${e}`,
+          type: 'error'
+        })
+      }
 
       set(mainAtoms.add, downloadedGame)
       set(notifications.remove, notificationId)
@@ -158,11 +165,11 @@ const downloadGameAtom = atom(
         text: `Done downloading ${downloadedGame.name}!`,
         type: 'success'
       })
-    } catch {
+    } catch (e) {
       set(notifications.remove, notificationId)
       set(notifications.add, {
         id: `${notificationId}-error`,
-        text: `Failed to download ${name}`,
+        text: `Failed to download ${name}: ${e}`,
         type: 'error'
       })
     }
