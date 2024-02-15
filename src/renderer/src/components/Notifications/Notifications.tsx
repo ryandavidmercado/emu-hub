@@ -1,7 +1,6 @@
 import { createPortal } from 'react-dom'
 import css from './Notifications.module.scss'
-import { Notification } from '@renderer/atoms/notifications'
-import useNotificationDisplay from './hooks/useNotificationDisplay'
+import notifications, { Notification } from '@renderer/atoms/notifications'
 import { IconType } from 'react-icons'
 import { FaCircleInfo } from 'react-icons/fa6'
 import { MdDownloadForOffline } from 'react-icons/md'
@@ -16,7 +15,7 @@ const Notifications = () => {
   const [appConfig] = useAtom(appConfigAtom)
   const { ui: { controllerHints }} = appConfig
 
-  const notifications = useNotificationDisplay()
+  const [notificationsList] = useAtom(notifications.list)
 
   return createPortal(
     <motion.div
@@ -28,7 +27,7 @@ const Notifications = () => {
       }}
     >
       <AnimatePresence>
-        {notifications.map((notification) => (
+        {notificationsList.map((notification) => (
           <NotificationDisplay notification={notification} key={notification.id} />
         ))}
       </AnimatePresence>

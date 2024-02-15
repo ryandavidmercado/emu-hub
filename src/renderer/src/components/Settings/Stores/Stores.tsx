@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import systems from '@renderer/atoms/systems'
 import { StoreEntry } from '@common/types'
 import ControllerForm, {
@@ -8,7 +8,7 @@ import ControllerForm, {
 import Loading from 'react-loading'
 import games from '@renderer/atoms/games'
 import css from './Stores.module.scss'
-import { useOnInput } from '@renderer/hooks'
+import { ControllerHint, useOnInput } from '@renderer/hooks'
 import { Input } from '@renderer/enums/Input'
 import AlphabetSelector from './AlphabetSelector/AlphabetSelector'
 import { SectionProps } from '..'
@@ -20,6 +20,9 @@ import { AnimatePresence, motion } from 'framer-motion'
 import classNames from 'classnames'
 import { sort } from 'fast-sort'
 import MediaImage from '@renderer/components/MediaImage/MediaImage'
+import { useInputModal } from '@renderer/components/InputModal/InputModal'
+import Fuse from 'fuse.js'
+import notifications from '@renderer/atoms/notifications'
 
 type Page = 'main' | 'system' | 'store'
 
@@ -148,37 +151,21 @@ interface StoreProps {
 const Store = ({ system, store, isActive, onBack, onExit, inputPriority }: StoreProps) => {
   const [activeIndex, setActiveIndex] = useState(0)
   const [alphabetOpen, setAlphabetOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('');
 
   const [storeData] = useAtom(systems.store.get({ storeId: store ?? '', systemId: system ?? '' }))
   const [storeContents] = useAtom(systems.store.load({ storeData, systemId: system ?? '' }))
-
   const [, downloadGame] = useAtom(games.download)
+  const [, addNotification] = useAtom(notifications.add)
 
-  useOnInput(
-    (input) => {
-      switch (input) {
-        case Input.LEFT:
-          if (!alphabetOpen) return onExit()
-          setAlphabetOpen(false)
-          break
-        case Input.RIGHT:
-          setAlphabetOpen(true)
-          break
-        case Input.B:
-          if (!alphabetOpen) return onBack()
-          setAlphabetOpen(false)
-          break
-      }
-    },
-    {
-      disabled: !isActive,
-      priority: inputPriority
-    }
-  )
+  const getInput = useInputModal()
+
+  const canSearch = storeData?.type === 'html'
 
   const entries: ControllerFormEntry[] = useMemo(
-    () =>
-      ('data' in storeContents ? storeContents.data : []).map((storeEntry) => ({
+    () => {
+      const baseData = 'data' in storeContents ? storeContents.data : [];
+      const unfilteredEntries = baseData.map((storeEntry) => ({
         id: storeEntry.name,
         label: storeEntry.name,
         type: 'action',
@@ -190,9 +177,74 @@ const Store = ({ system, store, isActive, onBack, onExit, inputPriority }: Store
           downloadGame(system, storeEntry)
         },
         IconActive: IoMdDownload
-      })),
-    [storeContents]
+      }) as const)
+
+      if(!canSearch || !searchQuery) return unfilteredEntries
+
+      const searcher = new Fuse(unfilteredEntries, { threshold: .3, keys: ['label'] })
+      const results = searcher.search(searchQuery)
+
+      if(!results.length) {
+        addNotification({
+          type: 'error',
+          id: 'test',
+          text: `No results found for "${searchQuery}"!`
+        })
+
+        setSearchQuery('')
+        return unfilteredEntries
+      }
+
+      return results.map(results => results.item)
+    },
+    [storeContents, searchQuery, canSearch]
   )
+
+  useOnInput(
+    async (input) => {
+      switch (input) {
+        case Input.LEFT:
+          if (!alphabetOpen) return onExit()
+          setAlphabetOpen(false)
+          break
+        case Input.RIGHT:
+          setAlphabetOpen(true)
+          break
+        case Input.B:
+          if(alphabetOpen) return setAlphabetOpen(false)
+          if(searchQuery) return setSearchQuery('')
+
+          return onBack()
+        case Input.Y: {
+          if(!canSearch) break
+          const newQuery = await getInput({
+            label: 'Search Store',
+            shiftOnOpen: false,
+            shiftOnSpace: false
+          })
+
+          if(!newQuery) break
+          setSearchQuery(newQuery)
+
+          break
+        }
+      }
+    },
+    {
+      disabled: !isActive,
+      priority: inputPriority,
+      hints: [
+        !alphabetOpen && entries.length && { input: Input.RIGHT, text: 'Alphabet Selector' },
+        alphabetOpen && { input: Input.LEFT, text: 'Close Alphabet Selector' },
+        canSearch && { input: Input.Y, text: 'Search' },
+        canSearch && searchQuery && { input: Input.B, text: 'Clear Search' }
+      ].filter(Boolean) as ControllerHint[]
+    }
+  )
+
+  useEffect(() => {
+    setActiveIndex(0)
+  }, [searchQuery])
 
   if (storeContents.state === 'loading')
     return (
@@ -234,6 +286,7 @@ const Store = ({ system, store, isActive, onBack, onExit, inputPriority }: Store
             controlledSetActiveIndex={setActiveIndex}
             inputPriority={inputPriority}
             scrollType="center"
+            wraparound={false}
           />
           <AlphabetSelector
             entries={entries}
