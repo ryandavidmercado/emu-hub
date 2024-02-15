@@ -160,7 +160,8 @@ const Store = ({ system, store, isActive, onBack, onExit, inputPriority }: Store
 
   const getInput = useInputModal()
 
-  const canSearch = storeData?.type === 'html'
+  const canAlphabet = !searchQuery
+  const canSearch = storeData?.type === 'html' && !alphabetOpen && !searchQuery
 
   const entries: ControllerFormEntry[] = useMemo(
     () => {
@@ -177,17 +178,17 @@ const Store = ({ system, store, isActive, onBack, onExit, inputPriority }: Store
           downloadGame(system, storeEntry)
         },
         IconActive: IoMdDownload
-      }) as const)
+      }) as const).sort((a, b) => a.label.localeCompare(b.label))
 
-      if(!canSearch || !searchQuery) return unfilteredEntries
+      if(!searchQuery) return unfilteredEntries
 
-      const searcher = new Fuse(unfilteredEntries, { threshold: .3, keys: ['label'] })
+      const searcher = new Fuse(unfilteredEntries, { threshold: .3, keys: ['label'], ignoreLocation: true })
       const results = searcher.search(searchQuery)
 
       if(!results.length) {
         addNotification({
           type: 'error',
-          id: 'test',
+          id: `no-query-${searchQuery}`,
           text: `No results found for "${searchQuery}"!`
         })
 
@@ -208,6 +209,7 @@ const Store = ({ system, store, isActive, onBack, onExit, inputPriority }: Store
           setAlphabetOpen(false)
           break
         case Input.RIGHT:
+          if (!canAlphabet) break
           setAlphabetOpen(true)
           break
         case Input.B:
@@ -215,7 +217,7 @@ const Store = ({ system, store, isActive, onBack, onExit, inputPriority }: Store
           if(searchQuery) return setSearchQuery('')
 
           return onBack()
-        case Input.Y: {
+        case Input.SELECT: {
           if(!canSearch) break
           const newQuery = await getInput({
             label: 'Search Store',
@@ -234,10 +236,10 @@ const Store = ({ system, store, isActive, onBack, onExit, inputPriority }: Store
       disabled: !isActive,
       priority: inputPriority,
       hints: [
-        !alphabetOpen && entries.length && { input: Input.RIGHT, text: 'Alphabet Selector' },
+        !alphabetOpen && entries.length && canAlphabet && { input: Input.RIGHT, text: 'Alphabet Selector' },
         alphabetOpen && { input: Input.LEFT, text: 'Close Alphabet Selector' },
-        canSearch && { input: Input.Y, text: 'Search' },
-        canSearch && searchQuery && { input: Input.B, text: 'Clear Search' }
+        canSearch && entries.length && { input: Input.SELECT, text: 'Search' },
+        searchQuery && { input: Input.B, text: 'Clear Search' }
       ].filter(Boolean) as ControllerHint[]
     }
   )
