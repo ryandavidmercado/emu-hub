@@ -1,16 +1,17 @@
 .container {
   height: 100%;
-
   display: flex;
 }
 
 .left {
   flex: 4;
+  overflow: hidden;
   padding: 1rem;
 }
 
 .right {
   flex: 2.5;
+  overflow: hidden;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.2);
 }

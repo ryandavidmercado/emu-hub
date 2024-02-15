@@ -3,6 +3,9 @@
 .label {
   padding-bottom: 10px;
   padding-left: 10px;
+  overflow: hidden;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
 }
 
 .tile {
