@@ -64,7 +64,8 @@ const ControllerHints = () => {
         zIndex: 100,
         boxShadow: "0 0 15px rgba(0, 0, 0, .5)",
         fontFamily: "Figtree Variable",
-        fontSize: "1.1rem"
+        fontSize: "1.1rem",
+        fontWeight: 500
       }}
     >
       <motion.div
@@ -76,6 +77,7 @@ const ControllerHints = () => {
           alignItems: "center",
           justifyContent: "center",
           gap: "1.2rem",
+          height: "100%"
         }}
       >
         {hints.map((hint, i) => (
@@ -84,7 +86,8 @@ const ControllerHints = () => {
             style={{
               gap: ".6rem",
               display: "flex",
-              alignItems: "center"
+              alignItems: "center",
+              height: "100%"
             }}
           >
             <MediaImage

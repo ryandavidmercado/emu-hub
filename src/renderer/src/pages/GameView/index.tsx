@@ -3,7 +3,7 @@ import { Input } from '@renderer/enums'
 import { ControllerHint, focusAtom, useOnInput, useRecommendationScrollers } from '@renderer/hooks'
 import { useAtom } from 'jotai'
 import css from './GameView.module.scss'
-import IconButtons from '@renderer/components/IconButtons'
+import IconButtons, { IconButtonConfig } from '@renderer/components/IconButtons'
 
 import {
   IoCloudDownload,
@@ -13,7 +13,7 @@ import {
   IoSettings,
   IoSettingsOutline
 } from 'react-icons/io5'
-import { FaAngleDown, FaAngleUp } from 'react-icons/fa'
+import { FaAngleDown } from 'react-icons/fa'
 
 import { FaPlus } from 'react-icons/fa6'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -35,6 +35,7 @@ import systems from '@renderer/atoms/systems'
 import { runningGameAtom } from '@renderer/atoms/runningGame'
 import { appConfigAtom } from '@renderer/atoms/appConfig'
 import { hintsHeight } from '@renderer/const/const'
+import { MdNotes } from 'react-icons/md'
 
 const uid = new ShortUniqueId()
 
@@ -75,6 +76,7 @@ const GameView = ({ gameId }: { gameId?: string }) => {
   const [scrapeModalOpen, setScrapeModalOpen] = useState(false)
   const selectedEmulator = game?.emulator ?? gameSystem?.emulators?.[0]
 
+
   const canScrape = !notificationsList.some(
     (notif) => notif.id.startsWith(`scrape-${game?.id}`) && notif.type === 'download'
   )
@@ -96,6 +98,10 @@ const GameView = ({ gameId }: { gameId?: string }) => {
 
   const navigate = useNavigate()
   const recommendationScrollers = useRecommendationScrollers(game)
+
+  const hasInfo = Boolean(game?.description)
+  const hasRecommendations = Boolean(recommendationScrollers.length)
+  const hasBottom = hasInfo || hasRecommendations
 
   useOnInput(
     (input) => {
@@ -191,6 +197,13 @@ const GameView = ({ gameId }: { gameId?: string }) => {
                   disabled: isInGame,
                   colorScheme: 'confirm'
                 },
+                hasBottom && {
+                  id: 'info',
+                  Icon: MdNotes,
+                  IconActive: MdNotes,
+                  label: hasInfo ? 'Info' : 'Recommendations',
+                  onSelect: () => { setActiveSection("tabs") }
+                },
                 {
                   id: 'settings',
                   Icon: IoSettingsOutline,
@@ -211,30 +224,28 @@ const GameView = ({ gameId }: { gameId?: string }) => {
                   },
                   disabled: isInGame || !canScrape
                 }
-              ]}
+              ].filter(Boolean) as IconButtonConfig[]}
               className={css.buttons}
               isActive={activeSection === 'game' && !collectionModalOpen}
               onExitDown={onTabsSection}
             />
           </div>
-          {game.description && (
+          {hasBottom && (
             <FaAngleDown
               className={classNames(
                 css.indicatorDown,
                 activeSection !== 'game' && css.hidden,
                 !windowFocused && css.noAnimate
               )}
+              size="1.25em"
               style={{
                 bottom: controllerHints ? `calc(${hintsHeight} + .5rem)` : '.5rem'
               }}
             />
           )}
         </div>
-        {game.description && (
+        {hasBottom && (
           <div className={classNames(css.tabsContainer, activeSection !== 'tabs' && css.inactive)}>
-            <div className={css.indicatorUpWrapper}>
-              <FaAngleUp className={classNames(css.indicatorUp, !windowFocused && css.noAnimate)} />
-            </div>
             <TabSelector
               tabsClassName={css.tabs}
               disabled={activeSection !== 'tabs'}
@@ -245,7 +256,8 @@ const GameView = ({ gameId }: { gameId?: string }) => {
                   id: 'info',
                   label: 'Info',
                   Content: GameInfo,
-                  className: css.description
+                  className: css.description,
+                  isInvalid: !hasInfo
                 },
                 {
                   game,
@@ -254,7 +266,7 @@ const GameView = ({ gameId }: { gameId?: string }) => {
                   Content: Recommendations,
                   canSelect: true,
                   className: css.recommendations,
-                  isInvalid: !recommendationScrollers.length
+                  isInvalid: !hasRecommendations
                 }
               ]}
             />

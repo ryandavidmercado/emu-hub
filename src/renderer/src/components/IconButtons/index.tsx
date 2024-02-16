@@ -8,7 +8,7 @@ import Label from '../Label/Label'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ColorScheme } from '../ControllerForm/ControllerForm'
 
-interface Button {
+export interface IconButtonConfig {
   id: string
   Icon?: IconType
   IconActive?: IconType
@@ -23,7 +23,7 @@ interface Button {
 
 interface Props {
   className?: string
-  buttons: Button[]
+  buttons: IconButtonConfig[]
   isActive?: boolean
   onExitDown?: () => void
 }
@@ -69,7 +69,7 @@ const IconButtons = ({ className, buttons, isActive, onExitDown }: Props) => {
 interface ButtonProps {
   isActive?: boolean
   label?: string
-  button: Button
+  button: IconButtonConfig
   isParentActive?: boolean
 }
 
