@@ -97,6 +97,7 @@ const recommendedAtom = atomFamily((options?: RecommendedOptions) => atom((get) 
         label: labelMap[recommendationType]
       }))
       .filter(recs => recs.games?.length)
+      .sort((a, b) => 0.5 - (.5 * (pseudoRandom(a.label), pseudoRandom(b.label))))
 
     return recommendations
   }
