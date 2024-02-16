@@ -13,6 +13,22 @@ import { IGDB } from '@renderer/apiWrappers/IGDB'
 import { runningGameAtom } from './runningGame'
 
 const mainAtoms = arrayConfigAtoms<Game>({ storageKey: 'games' })
+const PseudoRandom = () => {
+  let map = {}
+  return {
+    pseudoRandom: (input: string | number) => {
+      if(map[input]) return map[input];
+
+      const newRandom = Math.random()
+      map[input] = newRandom
+
+      return newRandom
+    },
+    resetPseudoRandom: () => map = {}
+  }
+}
+
+const { pseudoRandom, resetPseudoRandom } = PseudoRandom()
 
 const scanGamesAtom = atom(null, async (get, set) => {
   const newGames = await window.scanRoms(
@@ -51,6 +67,52 @@ interface RecentlyViewedFilters {
   played?: boolean
   added?: boolean
 }
+
+interface RecommendedOptions {
+  baseGame?: Game
+  excludedRecentlyPlayed?: boolean
+}
+
+const recommendedAtom = atomFamily((options?: RecommendedOptions) => atom((get) => {
+  const getAllRecommendations = (game: Game) => {
+    const recentlyPlayed = get(recentlyPlayedAtom)
+    const recommendationTypes = ['genre', 'developer', 'publisher'] as const
+    const getRecommendations = (type: (typeof recommendationTypes)[number]) => get(byAttributeAtom({
+      limit: 10,
+      attribute: type,
+      excludeId: options?.excludedRecentlyPlayed ? [game.id, ...recentlyPlayed.map(g => g.id)] : game.id,
+      value: game[type],
+      shuffle: false
+    }))
+
+    const labelMap = {
+      'genre': `Recommended (Genre: ${game.genre})`,
+      'developer': `Recommended (Developed by ${game.developer})`,
+      'publisher': `Recommended (Published by ${game.publisher})`
+    }
+
+    const recommendations = recommendationTypes
+      .map(recommendationType => ({
+        games: getRecommendations(recommendationType),
+        label: labelMap[recommendationType]
+      }))
+      .filter(recs => recs.games?.length)
+
+    return recommendations
+  }
+
+  if(options?.baseGame) return getAllRecommendations(options?.baseGame)
+  const baseCandidates = get(recentlyPlayedAtom)
+    .filter(game => game.genre || game.developer || game.publisher)
+    .toSorted((a, b) => 0.5 - (.5 * (pseudoRandom(a.id) + pseudoRandom(b.id))))
+
+  for(let game of baseCandidates) {
+    const recommendations = getAllRecommendations(game);
+    if(recommendations.length) return recommendations
+  }
+
+  return []
+}), deepEqual)
 
 const recentlyViewedAtom = atomFamily(
   (filter: RecentlyViewedFilters) =>
@@ -98,6 +160,7 @@ const launchGameAtom = atom(null, async (get, set, gameId: string) => {
   const launchedGame = await window.launchGame(game, emulator, system);
   set(runningGameAtom, launchedGame)
 
+  resetPseudoRandom()
   return launchedGame
 })
 
@@ -151,7 +214,7 @@ const downloadGameAtom = atom(
             }))
           )
       } catch (e) {
-          set(notifications.add, {
+        set(notifications.add, {
           id: `${notificationId}-error`,
           text: `Failed to download media for ${name}: ${e}`,
           type: 'error'
@@ -275,7 +338,8 @@ type ByAttributeProp = {
   attribute: keyof Game
   value?: string
   limit?: number
-  excludeId?: string
+  excludeId?: string | string[]
+  shuffle?: boolean
 }
 
 const byAttributeAtom = atomFamily(
@@ -283,13 +347,17 @@ const byAttributeAtom = atomFamily(
     atom((get) => {
       if (!config.value) return []
       const games = get(mainAtoms.lists.all)
-      const byAttribute = games.filter(
-        (game) => game[config.attribute] === config.value && game.id !== config.excludeId
-      )
+      const byAttribute = games.filter((game) => {
+        if(game[config.attribute] !== config.value) return false
+
+        if(!config.excludeId) return true
+        if(typeof config.excludeId === "string") return game.id !== config.excludeId
+        return !config.excludeId.includes(game.id)
+      })
 
       if (!config.limit) return byAttribute
 
-      const shuffled = byAttribute.toSorted(() => 0.5 - Math.random())
+      const shuffled = config.shuffle ? byAttribute.toSorted(() => 0.5 - Math.random()) : byAttribute
       return shuffled.slice(0, config.limit)
     }),
   deepEqual
@@ -331,7 +399,8 @@ export default {
     recentlyAdded: recentlyAddedAtom,
     system: forSystemAtom,
     byAttribute: byAttributeAtom,
-    search: searchAtom
+    search: searchAtom,
+    recommended: recommendedAtom
   },
   launch: launchGameAtom,
   scan: scanGamesAtom,

@@ -17,12 +17,11 @@ export const Home = () => {
   const [scrollerIndex, setScrollerIndex] = useState(0)
 
   const [systemsList] = useAtom(systems.lists.onlyWithGames)
-  const [recentlyViewedGamesList] = useAtom(
-    games.lists.recentlyViewed({ added: true, played: true })
-  )
   const [recentlyPlayedGamesList] = useAtom(games.lists.recentlyPlayed)
   const [recentlyAddedGamesList] = useAtom(games.lists.recentlyAdded)
   const [collectionsList] = useAtom(collections.lists.withGames)
+
+  const [recommendations] = useAtom(games.lists.recommended({ excludedRecentlyPlayed: true }))
 
   const [currentContent, setCurrentContent] = useState<
     { type: 'game'; data: Game } | { type: 'system'; data: SystemWithGames }
@@ -62,6 +61,13 @@ export const Home = () => {
         onSelect: onGameSelect
       } as ScrollerConfig<Game>,
       {
+        id: 'recommended-games',
+        elems: recommendations[0]?.games ?? [],
+        label: recommendations[0]?.label,
+        onHighlight: onGameHighlight,
+        onSelect: onGameSelect
+      } as ScrollerConfig<Game>,
+      {
         id: 'recently-added',
         elems: recentlyAddedGamesList,
         label: 'Recently Added',
@@ -84,13 +90,6 @@ export const Home = () => {
         },
         contentType: 'system'
       } as ScrollerConfig<SystemWithGames>,
-      {
-        id: 'recently-viewed',
-        elems: recentlyViewedGamesList,
-        label: 'Recently Viewed',
-        onHighlight: onGameHighlight,
-        onSelect: onGameSelect
-      } as ScrollerConfig<Game>,
       ...(collectionsList.map((collection) => ({
         id: `collection-${collection.id}`,
         elems: collection.games,
@@ -104,8 +103,8 @@ export const Home = () => {
       recentlyPlayedGamesList,
       recentlyAddedGamesList,
       systemsList,
-      recentlyViewedGamesList,
-      collectionsList
+      collectionsList,
+      recommendations
     ]
   )
 
