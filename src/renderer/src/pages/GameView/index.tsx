@@ -185,7 +185,7 @@ const GameView = ({ gameId }: { gameId?: string }) => {
                         }
                       })
                   },
-                  disabled: isInGame || !canPlay
+                  disabled: !canPlay
                 },
                 {
                   id: 'add-to-collection',
@@ -194,7 +194,6 @@ const GameView = ({ gameId }: { gameId?: string }) => {
                   onSelect: () => {
                     setCollectionModalOpen(true)
                   },
-                  disabled: isInGame,
                   colorScheme: 'confirm'
                 },
                 hasBottom && {
@@ -212,7 +211,6 @@ const GameView = ({ gameId }: { gameId?: string }) => {
                   onSelect: () => {
                     setGameSettingsModalOpen(true)
                   },
-                  disabled: isInGame
                 },
                 {
                   id: 'scrape',
@@ -222,11 +220,11 @@ const GameView = ({ gameId }: { gameId?: string }) => {
                   onSelect: () => {
                     setScrapeModalOpen(true)
                   },
-                  disabled: isInGame || !canScrape
+                  disabled: !canScrape
                 }
               ].filter(Boolean) as IconButtonConfig[]}
               className={css.buttons}
-              isActive={activeSection === 'game' && !collectionModalOpen}
+              isActive={activeSection === 'game' && !collectionModalOpen && !isInGame}
               onExitDown={onTabsSection}
             />
           </div>
@@ -234,7 +232,7 @@ const GameView = ({ gameId }: { gameId?: string }) => {
             <FaAngleDown
               className={classNames(
                 css.indicatorDown,
-                activeSection !== 'game' && css.hidden,
+                (activeSection !== 'game' || isInGame) && css.hidden,
                 !windowFocused && css.noAnimate
               )}
               size="1.25em"
