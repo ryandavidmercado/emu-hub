@@ -78,7 +78,7 @@ const TabSelector = ({ tabsClassName, tabs: unfilteredTabs, disabled, onExitUp }
       {Content && (
         <Content
           game={tabs[activeTab].game}
-          isDisabled={activeSection !== 'content'}
+          isDisabled={activeSection !== 'content' || disabled}
           onExitUp={() => {
             setActiveSection('tabs')
           }}
