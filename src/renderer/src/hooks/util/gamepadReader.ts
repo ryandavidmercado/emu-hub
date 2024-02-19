@@ -1,27 +1,11 @@
 import { eventHandler } from '@renderer/eventHandler'
 import { Input } from '../../enums'
+import { sdlButtonToInputMap } from '@common/types/Input'
 
 type Cb = (input: Input, source: 'gamepad' | 'keyboard') => void
 
 type DIRECTION_BUTTON = Input.LEFT | Input.RIGHT | Input.DOWN | Input.UP
 const DIRECTION_BUTTONS = new Set([Input.LEFT, Input.DOWN, Input.RIGHT, Input.UP])
-
-const buttonKeyMap: Record<number, Input> = {
-  14: Input.LEFT,
-  12: Input.UP,
-  15: Input.RIGHT,
-  13: Input.DOWN,
-  0: Input.A,
-  1: Input.B,
-  2: Input.X,
-  3: Input.Y,
-  8: Input.SELECT,
-  9: Input.START,
-  6: Input.LT,
-  7: Input.RT,
-  4: Input.LB,
-  5: Input.RB
-}
 
 interface Combo {
   id: string,
@@ -37,29 +21,24 @@ const combos: Combo[] = [
   }
 ]
 
-const gamepad = window.gamepad()
-
-gamepad.openDevice()
-gamepad.rumbleTest()
-
 const gamepadReader = (cb: Cb) => {
-  const pressedButtons: Record<string, Set<Input>> = {}
-  const pressedCombos: Record<string, Set<string>> = {}
+  const pressedButtons: Record<number, Set<Input>> = {}
+  const pressedCombos: Record<number, Set<string>> = {}
 
   let directionRepeatTimeout: NodeJS.Timeout
 
-  const combosHandler = (controllerId: string) => {
-    if(!pressedCombos[controllerId]) pressedCombos[controllerId] = new Set()
+  const combosHandler = (controllerId: number) => {
+    if (!pressedCombos[controllerId]) pressedCombos[controllerId] = new Set()
     const controllerPressedCombos = pressedCombos[controllerId]
 
-    for(const combo of combos) {
+    for (const combo of combos) {
       const comboIsHeld = combo.inputs.every(input => pressedButtons[controllerId].has(input))
-      if(comboIsHeld) {
-        if(controllerPressedCombos.has(combo.id)) return
+      if (comboIsHeld) {
+        if (controllerPressedCombos.has(combo.id)) return
         controllerPressedCombos.add(combo.id)
 
         const sendCombo = () => {
-          if(!controllerPressedCombos.has(combo.id)) return
+          if (!controllerPressedCombos.has(combo.id)) return
           eventHandler.emit('combo', { id: combo.id, focused: document.hasFocus() })
         }
 
@@ -70,7 +49,7 @@ const gamepadReader = (cb: Cb) => {
     }
   }
 
-  const directionRepeatHandler = (input: Input, controllerId: string) => {
+  const directionRepeatHandler = (input: Input, controllerId: number) => {
     if (!DIRECTION_BUTTONS.has(input)) return
     if (directionRepeatTimeout) clearTimeout(directionRepeatTimeout)
 
@@ -83,7 +62,7 @@ const gamepadReader = (cb: Cb) => {
     directionRepeatTimeout = setTimeout(fireDirection, 400)
   }
 
-  const handleInput = (input: Input, pressed: boolean, controllerId: string) => {
+  const handleInput = (input: Input, pressed: boolean, controllerId: number) => {
     const isFocused = document.hasFocus();
 
     if (!pressed) {
@@ -93,52 +72,64 @@ const gamepadReader = (cb: Cb) => {
 
     if (pressedButtons[controllerId].has(input)) return
 
-    if(isFocused) cb(input, 'gamepad')
+    if (isFocused) cb(input, 'gamepad')
     pressedButtons[controllerId].add(input)
 
     if (DIRECTION_BUTTONS.has(input) && isFocused) directionRepeatHandler(input, controllerId)
   }
 
-  const handleGamepads = () => {
-    const gamepads = navigator.getGamepads()
+  const gamepadHandler = window.sdlGamepad()
+  gamepadHandler.onButton('down', (input, id) => { handleInput(input, true, id )})
+  gamepadHandler.onButton('up', (input, id) => { handleInput(input, false, id )})
 
-    for (const gamepad of gamepads) {
-      if (!gamepad) continue
-      if (!pressedButtons[gamepad.id]) pressedButtons[gamepad.id] = new Set()
 
-      const pressedDirections = new Set<DIRECTION_BUTTON>()
+  // const handleGamepads = () => {
+  //   const gamepads = sdlGamepad.getDevices()
 
-      gamepad.buttons.forEach((button, i) => {
-        const input = buttonKeyMap[i]
-        if (!input) return
+  //   for (const gamepad of gamepads) {
+  //     if (!gamepad) continue
 
-        if (DIRECTION_BUTTONS.has(input)) {
-          if (button.pressed) pressedDirections.add(input as DIRECTION_BUTTON)
-          return
-        }
+  //     if (!pressedButtons[gamepad.device.id]) pressedButtons[gamepad.device.id] = new Set()
 
-        handleInput(input, button.pressed, gamepad.id)
-      })
+  //     const pressedDirections = new Set<DIRECTION_BUTTON>()
 
-      gamepad.axes.forEach((axis, i) => {
-        if (i === 0 && axis < -0.6) pressedDirections.add(Input.LEFT)
-        if (i === 0 && axis > 0.6) pressedDirections.add(Input.RIGHT)
-        if (i === 1 && axis < -0.6) pressedDirections.add(Input.UP)
-        if (i === 1 && axis > 0.6) pressedDirections.add(Input.DOWN)
-      })
+  //     Object.entries(gamepad.buttons).forEach(([button, pressed]) => {
+  //       const input = sdlButtonToInputMap[button]
+  //       if (!input) return
 
-      handleInput(Input.LEFT, pressedDirections.has(Input.LEFT), gamepad.id)
-      handleInput(Input.RIGHT, pressedDirections.has(Input.RIGHT), gamepad.id)
-      handleInput(Input.UP, pressedDirections.has(Input.UP), gamepad.id)
-      handleInput(Input.DOWN, pressedDirections.has(Input.DOWN), gamepad.id)
+  //       if (DIRECTION_BUTTONS.has(input)) {
+  //         if (pressed) pressedDirections.add(input as DIRECTION_BUTTON)
+  //         return
+  //       }
 
-      combosHandler(gamepad.id)
-    }
+  //       handleInput(input, pressed, gamepad.device.id)
+  //     })
 
-    requestAnimationFrame(handleGamepads)
-  }
+  //     Object.entries(gamepad.axes).forEach(([axis, value]) => {
+  //       switch(axis) {
+  //         case 'leftStickX': {
+  //           if (value < -0.6) pressedDirections.add(Input.LEFT)
+  //           if (value > .6) pressedDirections.add(Input.RIGHT)
+  //         }
+  //         case 'leftStickY': {
+  //           if (value < -0.6) pressedDirections.add(Input.UP)
+  //           if (value > .6) pressedDirections.add(Input.DOWN)
+  //         }
+  //       }
+  //     })
 
-  handleGamepads()
+  //     handleInput(Input.LEFT, pressedDirections.has(Input.LEFT), gamepad.device.id)
+  //     handleInput(Input.RIGHT, pressedDirections.has(Input.RIGHT), gamepad.device.id)
+  //     handleInput(Input.UP, pressedDirections.has(Input.UP), gamepad.device.id)
+  //     handleInput(Input.DOWN, pressedDirections.has(Input.DOWN), gamepad.device.id)
+
+  //     combosHandler(gamepad.device.id)
+  //   }
+
+  //   requestAnimationFrame(handleGamepads)
+  // }
+
+  // handleGamepads()
 }
 
 export default gamepadReader

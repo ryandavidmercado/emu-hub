@@ -3,24 +3,9 @@ import { Input } from '../enums'
 import gamepadReader from './util/gamepadReader'
 import { atom } from 'jotai'
 import { jotaiStore } from '@renderer/atoms/store/store'
-import { InputLabel } from '@common/types/Input'
+import { InputLabel, keyboardToInputMap } from '@common/types/Input'
 
 type Callback = (input: Input) => void
-
-const kbKeyMap: Partial<Record<KeyboardEvent['key'], Input>> = {
-  ArrowLeft: Input.LEFT,
-  ArrowRight: Input.RIGHT,
-  ArrowUp: Input.UP,
-  ArrowDown: Input.DOWN,
-  a: Input.LEFT,
-  d: Input.RIGHT,
-  w: Input.UP,
-  s: Input.DOWN,
-  Enter: Input.A,
-  Escape: Input.B,
-  Backspace: Input.START,
-  Tab: Input.SELECT
-}
 
 export interface ControllerHint {
   input: InputLabel
@@ -57,7 +42,7 @@ const passInputToSubscribers = (input: Input, source: 'keyboard' | 'gamepad') =>
 gamepadReader(passInputToSubscribers)
 
 document.addEventListener('keydown', (e) => {
-  const input = kbKeyMap[e.key]
+  const input = keyboardToInputMap[e.key]
   if (!input) return
 
   passInputToSubscribers(input, 'keyboard')
