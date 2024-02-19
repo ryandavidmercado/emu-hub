@@ -38,12 +38,12 @@ const combos: Combo[] = [
 ]
 
 const gamepadReader = (cb: Cb) => {
-  const pressedButtons: Record<string, Set<Input>> = {}
-  const pressedCombos: Record<string, Set<string>> = {}
+  const pressedButtons: Record<number, Set<Input>> = {}
+  const pressedCombos: Record<number, Set<string>> = {}
 
   let directionRepeatTimeout: NodeJS.Timeout
 
-  const combosHandler = (controllerId: string) => {
+  const combosHandler = (controllerId: number) => {
     if(!pressedCombos[controllerId]) pressedCombos[controllerId] = new Set()
     const controllerPressedCombos = pressedCombos[controllerId]
 
@@ -65,7 +65,7 @@ const gamepadReader = (cb: Cb) => {
     }
   }
 
-  const directionRepeatHandler = (input: Input, controllerId: string) => {
+  const directionRepeatHandler = (input: Input, controllerId: number) => {
     if (!DIRECTION_BUTTONS.has(input)) return
     if (directionRepeatTimeout) clearTimeout(directionRepeatTimeout)
 
@@ -78,7 +78,7 @@ const gamepadReader = (cb: Cb) => {
     directionRepeatTimeout = setTimeout(fireDirection, 400)
   }
 
-  const handleInput = (input: Input, pressed: boolean, controllerId: string) => {
+  const handleInput = (input: Input, pressed: boolean, controllerId: number) => {
     const isFocused = document.hasFocus();
 
     if (!pressed) {
@@ -94,12 +94,17 @@ const gamepadReader = (cb: Cb) => {
     if (DIRECTION_BUTTONS.has(input) && isFocused) directionRepeatHandler(input, controllerId)
   }
 
+  window.addEventListener('gamepaddisconnected', (e) => {
+    pressedButtons[e.gamepad.index]?.clear()
+    pressedCombos[e.gamepad.index]?.clear()
+  })
+
   const handleGamepads = () => {
     const gamepads = navigator.getGamepads()
 
     for (const gamepad of gamepads) {
       if (!gamepad) continue
-      if (!pressedButtons[gamepad.id]) pressedButtons[gamepad.id] = new Set()
+      if (!pressedButtons[gamepad.index]) pressedButtons[gamepad.index] = new Set()
 
       const pressedDirections = new Set<DIRECTION_BUTTON>()
 
@@ -112,7 +117,7 @@ const gamepadReader = (cb: Cb) => {
           return
         }
 
-        handleInput(input, button.pressed, gamepad.id)
+        handleInput(input, button.pressed, gamepad.index)
       })
 
       gamepad.axes.forEach((axis, i) => {
@@ -122,12 +127,12 @@ const gamepadReader = (cb: Cb) => {
         if (i === 1 && axis > 0.6) pressedDirections.add(Input.DOWN)
       })
 
-      handleInput(Input.LEFT, pressedDirections.has(Input.LEFT), gamepad.id)
-      handleInput(Input.RIGHT, pressedDirections.has(Input.RIGHT), gamepad.id)
-      handleInput(Input.UP, pressedDirections.has(Input.UP), gamepad.id)
-      handleInput(Input.DOWN, pressedDirections.has(Input.DOWN), gamepad.id)
+      handleInput(Input.LEFT, pressedDirections.has(Input.LEFT), gamepad.index)
+      handleInput(Input.RIGHT, pressedDirections.has(Input.RIGHT), gamepad.index)
+      handleInput(Input.UP, pressedDirections.has(Input.UP), gamepad.index)
+      handleInput(Input.DOWN, pressedDirections.has(Input.DOWN), gamepad.index)
 
-      combosHandler(gamepad.id)
+      combosHandler(gamepad.index)
     }
 
     requestAnimationFrame(handleGamepads)
