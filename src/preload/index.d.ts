@@ -13,6 +13,7 @@ import loadMedia, { loadMediaAsync } from './util/loadMedia'
 import removeGameFiles from './util/removeGameFiles'
 import initRomDir from './util/initRomDir'
 import { installEmulator } from './util/installEmulator'
+import { controller } from '@kmamal/sdl'
 
 declare global {
   interface Window {
@@ -39,5 +40,6 @@ declare global {
     hasFlatpak: boolean
     installEmulator: typeof installEmulator
     writeDefaultConfig: typeof writeDefaultConfig
+    gamepad: () => typeof controller
   }
 }

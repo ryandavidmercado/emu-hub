@@ -1,0 +1,13 @@
+diff --git a/node_modules/@kmamal/sdl/src/javascript/events/index.js b/node_modules/@kmamal/sdl/src/javascript/events/index.js
+index 3d724c9..fb50817 100644
+--- a/node_modules/@kmamal/sdl/src/javascript/events/index.js
++++ b/node_modules/@kmamal/sdl/src/javascript/events/index.js
+@@ -19,7 +19,7 @@ const {
+ 	make: makeAudioDevice,
+ 	compare: compareAudioDevice,
+ } = require('../audio/device')
+-
++const { setInterval, clearInterval } = require('timers')
+ 
+ const reconcileDevices = (emitter, mainList, currList, compare) => {
+ 	currList.sort(compare)

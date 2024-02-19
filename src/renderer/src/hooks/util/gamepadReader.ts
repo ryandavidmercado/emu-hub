@@ -37,6 +37,11 @@ const combos: Combo[] = [
   }
 ]
 
+const gamepad = window.gamepad()
+
+gamepad.openDevice()
+gamepad.rumbleTest()
+
 const gamepadReader = (cb: Cb) => {
   const pressedButtons: Record<string, Set<Input>> = {}
   const pressedCombos: Record<string, Set<string>> = {}

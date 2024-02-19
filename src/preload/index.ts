@@ -14,6 +14,12 @@ import os from 'os'
 import initRomDir from './util/initRomDir'
 import { hasFlatpak } from './util/systemHasFlatpak';
 
+import { setInterval, clearInterval } from 'timers'
+window.setInterval = setInterval
+window.clearInterval = clearInterval
+
+import sdl, { Sdl } from '@kmamal/sdl'
+
 import { accessSync, constants as fsConstants } from 'fs'
 import { installEmulator } from './util/installEmulator'
 
@@ -56,6 +62,19 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('hasFlatpak', hasFlatpak)
     contextBridge.exposeInMainWorld('installEmulator', installEmulator)
     contextBridge.exposeInMainWorld('writeDefaultConfig', writeDefaultConfig)
+    contextBridge.exposeInMainWorld('gamepad', () => {
+      const deviceHandles: Sdl.Controller.ControllerInstance[] = []
+      sdl.controller.on('deviceAdd', (d) => { console.log(d) })
+      sdl.controller.on('deviceRemove', (d) => { console.log(d)})
+
+      return {
+        devices: sdl.controller.devices,
+        openDevice: () => {
+          deviceHandles.push(sdl.controller.openDevice(sdl.controller.devices[0]))
+        },
+        rumbleTest: () => { deviceHandles[0].rumble(1, 1, 1e3) }
+      }
+    })
   } catch (error) {
     console.error(error)
   }
