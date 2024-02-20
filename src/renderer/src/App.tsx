@@ -21,6 +21,8 @@ import { exitGameAtom } from './atoms/runningGame'
 import { useAtom } from 'jotai'
 import { appConfigAtom } from './atoms/appConfig'
 import ControllerHints from './components/ControllerHints/ControllerHints'
+import { QueryParamProvider } from 'use-query-params'
+import { ReactRouter6Adapter } from 'use-query-params/adapters/react-router-6'
 
 function App() {
   const { parentRef, waveHeight } = useWaveHeight(0.3)
@@ -49,9 +51,13 @@ function App() {
   return (
     <div className="App" ref={parentRef}>
       <HashRouter>
-        <NavHeader />
-        <AppRoutes />
-        {appConfig.ui.controllerHints && <ControllerHints />}
+        <QueryParamProvider
+          adapter={ReactRouter6Adapter}
+        >
+          <NavHeader />
+          <AppRoutes />
+          {appConfig.ui.controllerHints && <ControllerHints />}
+        </QueryParamProvider>
       </HashRouter>
       {waveHeight && (
         <Wave

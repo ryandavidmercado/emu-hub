@@ -26,5 +26,5 @@ export const SearchView = () => {
     return null
   }
 
-  return <GameListPage games={gamesList} label={`Results for "${search}"`} disableSort={true} />
+  return <GameListPage games={gamesList} label={`Results for "${search}"`} disableSort={true} id={`search-${search}` }/>
 }

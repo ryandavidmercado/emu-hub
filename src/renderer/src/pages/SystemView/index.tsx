@@ -23,5 +23,5 @@ export const SystemView = () => {
     return null
   }
 
-  return <GameListPage games={system.games} label={system.name} />
+  return <GameListPage games={system.games} label={system.name} id={`system-${systemId}`} />
 }

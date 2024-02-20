@@ -15,12 +15,13 @@ interface Props {
   games: Game[]
   label?: string
   disableSort?: boolean
+  id?: string
 }
 
 type SortType = "name"
 type SortOrder = "desc" | "asc"
 
-export const GameListPage = ({ games, label, disableSort }: Props) => {
+export const GameListPage = ({ games, label, disableSort, id }: Props) => {
   const [sortType] = useState<SortType>("name");
   const [sortOrder] = useState<SortOrder>("asc");
 
@@ -63,6 +64,7 @@ export const GameListPage = ({ games, label, disableSort }: Props) => {
           label={label}
           onSelect={() => navigate(`/game/${activeGame.id}`)}
           onHighlight={setActiveGame}
+          id={id ? `game-list-${id}` : undefined}
         />
       </div>
       <div className={css.right}>

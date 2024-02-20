@@ -12,9 +12,10 @@ import collections from '@renderer/atoms/collections'
 import { getGameShowcaseConfig } from '@renderer/components/Showcase/presets/game'
 import { getSystemShowcaseConfig } from '@renderer/components/Showcase/presets/system'
 import classNames from 'classnames'
+import { useIndexParam } from '@renderer/util/queryParams/IndexParam'
 
 export const Home = () => {
-  const [scrollerIndex, setScrollerIndex] = useState(0)
+  const [scrollerIndex, setScrollerIndex] = useIndexParam('home-scroller')
 
   const [systemsList] = useAtom(systems.lists.onlyWithGames)
   const [recentlyPlayedGamesList] = useAtom(games.lists.recentlyPlayed)
@@ -119,6 +120,7 @@ export const Home = () => {
         className={css.scrollers}
         key={scrollers.length}
         controlledIndex={{ index: scrollerIndex, setIndex: setScrollerIndex }}
+        id={'home-scrollers'}
       />
     </div>
   )

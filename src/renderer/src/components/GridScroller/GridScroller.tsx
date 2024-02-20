@@ -1,31 +1,31 @@
 import { ScrollerProps } from '../Scroller'
 import { forwardRef, useEffect, useId, useMemo, useRef } from 'react'
 import { VirtuosoGrid, VirtuosoGridHandle } from "react-virtuoso"
-import { atom, useAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { useOnInput } from '@renderer/hooks'
 import { Input } from '@renderer/enums'
-import { atomFamily } from 'jotai/utils'
 import { appConfigAtom } from '@renderer/atoms/appConfig'
 import Label from '../Label/Label'
 import css from './GridScroller.module.scss'
 import { Game } from '@common/types/Game'
 import GameTile from '../MediaTile/Presets/GameTile'
+import { JsonParam, useQueryParam, withDefault } from 'use-query-params'
 
-const activeCellAtom = atomFamily((_id: string) =>
-  atom({
-    row: 0,
-    column: 0
-  })
-)
+interface ActiveCell {
+  column: number,
+  row: number
+}
 
 const GridScroller = ({
   isActive = true,
   elems,
   label,
   onSelect,
-  onHighlight
+  onHighlight,
+  id: propsId
 }: ScrollerProps<Game>) => {
   const instanceId = useId()
+  const id = propsId ?? instanceId
 
   const [
     {
@@ -38,7 +38,11 @@ const GridScroller = ({
   const rowCount = Math.ceil(elems.length / columnCount)
   const scrollerRef = useRef<VirtuosoGridHandle>(null)
 
-  const [activeCell, setActiveCell] = useAtom(activeCellAtom(instanceId))
+  const [activeCell, setActiveCell] = useQueryParam<ActiveCell, ActiveCell>(
+    id,
+    withDefault(JsonParam, { row: 0, column: 0 }),
+    { updateType: 'replaceIn' }
+  )
 
   const activeIndex = useMemo(() => {
     return activeCell.row * columnCount + activeCell.column;
@@ -107,7 +111,7 @@ const GridScroller = ({
   useEffect(() => {
     scrollerRef.current?.scrollToIndex({
       index: activeIndex,
-      behavior: "smooth",
+      behavior: 'smooth',
       align: 'center'
     })
   }, [activeIndex])
@@ -136,6 +140,7 @@ const GridScroller = ({
           style={{ overflowY: "hidden" }}
           ref={scrollerRef}
           overscan={1000}
+          initialTopMostItemIndex={activeIndex}
         />
       </div>
     </div>

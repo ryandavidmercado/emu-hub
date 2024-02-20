@@ -22,5 +22,5 @@ export const AllGames = () => {
     return null
   }
 
-  return <GameListPage games={gamesList} label="All Games" />
+  return <GameListPage games={gamesList} label="All Games" id='all-games' />
 }

@@ -63,6 +63,7 @@
     "short-unique-id": "^5.0.3",
     "simple-keyboard-key-navigation": "^2.4.246",
     "unzipper": "^0.10.14",
+    "use-query-params": "^2.2.1",
     "yaml": "^2.3.4"
   },
   "devDependencies": {

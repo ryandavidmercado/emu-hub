@@ -1,6 +1,6 @@
-import { Dispatch, useRef, useState } from 'react'
+import { Dispatch, useId, useRef, useState } from 'react'
 import { Scroller, ScrollerProps } from '../Scroller'
-import { useKeepVisible } from '@renderer/hooks'
+import { useKeepVisible, useDeferredValue } from '@renderer/hooks'
 import { ScrollType } from '@renderer/enums'
 import { System, SystemWithGames } from '@common/types/System'
 import { Game } from '@common/types/Game'
@@ -19,7 +19,8 @@ interface Props {
   controlledIndex?: {
     index: number
     setIndex: Dispatch<SetStateAction<number>>
-  }
+  },
+  id?: string
 }
 
 const Scrollers = ({
@@ -28,12 +29,17 @@ const Scrollers = ({
   isDisabled,
   onExitUp,
   onExitDown,
-  controlledIndex
+  controlledIndex,
+  id: propsId
 }: Props) => {
   const [localActiveIndex, localSetActiveIndex] = useState(0)
 
+  const instanceId = useId()
+  const id = propsId ?? instanceId
+
   const activeIndex = controlledIndex?.index ?? localActiveIndex
   const setActiveIndex = controlledIndex?.setIndex ?? localSetActiveIndex
+  const scrollBehavior = useDeferredValue('smooth', 'initial')
 
   const activeRef = useRef<HTMLDivElement>(null)
 
@@ -59,13 +65,14 @@ const Scrollers = ({
         forwardedRef={activeIndex === i ? activeRef : undefined}
         style={i === filteredScrollers.length - 1 ? { marginBottom: '100vh' } : undefined}
         disableInput={isDisabled}
+        id={`${id}-${scroller.id}`}
       />
     ))
   }
 
   useKeepVisible(activeRef, 35, ScrollType.VERTICAL, true)
 
-  return <div className={className}>{content()}</div>
+  return <div className={className} style={{ scrollBehavior }}>{content()}</div>
 }
 
 export default Scrollers

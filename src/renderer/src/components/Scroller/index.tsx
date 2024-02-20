@@ -1,13 +1,14 @@
 import classNames from 'classnames'
-import { CSSProperties, Ref, useEffect, useRef, useState } from 'react'
+import { CSSProperties, Ref, useEffect, useId, useRef } from 'react'
 import css from './Scroller.module.scss'
-import { useKeepVisible, useOnInput } from '../../hooks'
+import { useKeepVisible, useOnInput, useDeferredValue } from '../../hooks'
 import { Input, ScrollType } from '../../enums'
 import Label from '../Label/Label'
 import { System } from '@common/types/System'
 import { Game } from '@common/types'
 import SystemTile from '../MediaTile/Presets/SystemTile'
 import GameTile from '../MediaTile/Presets/GameTile'
+import { useIndexParam } from '@renderer/util/queryParams/IndexParam'
 
 export interface ScrollerProps<T extends Game | System> {
   aspectRatio?: 'landscape' | 'square'
@@ -23,6 +24,7 @@ export interface ScrollerProps<T extends Game | System> {
   forwardedRef?: Ref<HTMLDivElement>
   disableInput?: boolean
   contentType?: 'game' | 'system'
+  id?: string
 }
 
 export const Scroller = <T extends Game | System>({
@@ -38,9 +40,15 @@ export const Scroller = <T extends Game | System>({
   onNextScroller,
   onActiveChange,
   disableInput,
-  contentType
+  contentType,
+  id: propsId
 }: ScrollerProps<T>) => {
-  const [activeIndex, setActiveIndex] = useState(0)
+  const instanceId = useId()
+  const id = propsId ?? instanceId
+
+  const scrollBehavior = useDeferredValue('smooth', 'initial')
+
+  const [activeIndex, setActiveIndex] = useIndexParam(id)
   const getIsSystem = (_elem: Game | System): _elem is System => {
     return contentType === 'system'
   }
@@ -115,14 +123,16 @@ export const Scroller = <T extends Game | System>({
 
   useKeepVisible(activeRef, 35, ScrollType.HORIZONTAL, isActive)
 
-
   return (
     <div
       className={classNames({
         [css.container]: true,
         [css.inActive]: !isActive
       })}
-      style={style}
+      style={{
+        ...style,
+        scrollBehavior
+      }}
       ref={forwardedRef}
     >
       {label && (
