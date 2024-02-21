@@ -13,7 +13,7 @@ hub | _noun_:
 
 > the effective center of an activity
 
-[Discord](https://discord.gg/Uma7bmqB)
+[Latest Release](https://github.com/ryandavidmercado/emu-hub/releases/latest) | [Discord](https://discord.gg/Uma7bmqB)
 
 ## Features
 
