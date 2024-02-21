@@ -102,9 +102,9 @@ hub | _noun_:
 ## Data Directories
 
 - Linux:
-   - ROMs: If you have EmuDeck installed, EmuHub will use EmuDeck's configured roms path. If you don't, ROMs are stored under ~/.local/share/EmuHub/roms.
-   - Assets: ~/.local/share/EmuHub/assets
-   - Config: ~/.config/EmuHub/EmuHubConfig
+   - ROMs: If you have EmuDeck installed, EmuHub will use EmuDeck's configured roms path. If you don't, ROMs are stored under $XDG_DATA_HOME/EmuHub/roms or ~/.local/share/EmuHub/roms.
+   - Assets: $XDG_DATA_HOME/EmuHub/assets or ~/.local/share/EmuHub/assets
+   - Config: $XDG_CONFIG_HOME/EmuHub/EmuHubConfig or ~/.config/EmuHub/EmuHubConfig
 - MacOS:
    - ROMs: ~/Documents/EmuHub/roms
    - Assets: ~/Documents/EmuHub/assets
