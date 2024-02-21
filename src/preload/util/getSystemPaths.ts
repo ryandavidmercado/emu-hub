@@ -29,9 +29,9 @@ export const getSystemPaths = () => {
       const emudeckConfig = path.join(HOME_PATH, '.config', 'EmuDeck', 'backend', 'functions', 'all.sh')
       if(existsSync(emudeckConfig)) {
         try {
-          const stdout = execSync(`source ${emudeckConfig} && echo $romsPath`, { encoding: 'utf8' })
+          const stdout = execSync(`source ${emudeckConfig} && echo $romsPath`, { encoding: 'utf8', shell: '/bin/bash' })
           if(stdout) {
-            romsDefault = stdout
+            romsDefault = stdout.trim()
             break
           }
         } catch {}
