@@ -42,6 +42,7 @@ hub | _noun_:
 1. (Linux/Steam Deck only)
    - Make sure to set the EmuHub AppImage to executable: https://docs.appimage.org/introduction/quickstart.html
    - If you're planning on running EmuHub from Game Mode, make sure to set the launch arguments in Steam to --no-sandbox, otherwise the app will fail to launch.
+       - You can apply the following (temporary) artwork to the Steam entry if desired: [EmuHub Steam Assets (temp)](https://imgur.com/a/6de14bz)
 1. Verify you've installed necessary emulators
    - The needed dependencies are listed below under Supported Systems. You only need one emulator for any system that lists multiple options.
    - If you're running on a Steam Deck with EmuDeck installed, this has already been taken care of for you. (DISCLAIMER: EmuHub is not affiliated with EmuDeck!)
