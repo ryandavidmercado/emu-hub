@@ -46,7 +46,7 @@ hub | _noun_:
    - The needed dependencies are listed below under Supported Systems. You only need one emulator for any system that lists multiple options.
    - If you're running on a Steam Deck with EmuDeck installed, this has already been taken care of for you. (DISCLAIMER: EmuHub is not affiliated with EmuDeck!)
    - If you're running on a Linux system with Flatpak, EmuHub can install emulators for you! Attempting to launch a game without the required emulator will prompt you to confirm the installation.
-     - EmuDeck will not configure the emulator for you yet! You might have to set up controls yourself, configure BIOS, etc. Consult the respective emulator's documentation if you run into any trouble.
+     - EmuHub will not configure the emulator for you yet! You might have to set up controls yourself, configure BIOS, etc. Consult the respective emulator's documentation if you run into any trouble.
      - MacOS support through Homebrew and Windows support through scoop for automatic emulator installation is on the roadmap but not yet implemented.
 1. Launch EmuHub
    - This will generate ROMs, assets, and config folders for you and guide you through initial setup
