@@ -16,7 +16,7 @@ const parseLaunchCommand = (
     /*  NOTE: Emulator path for RetroArch cores pre-includes the core launch command
         ex: "/path/to/RetroArch.AppImage" -L core_to_launch */
     '%EMUPATH%': () => emulatorLocation, // ex: "/home/Applications/CoolEmu.AppImage"
-    '%ROMPATH%': () => romLocation, // ex: "/path/to/roms/someSystem/someParentDir/myRom.rom"
+    '%ROMPATH%': () => romLocation, // ex: /path/to/roms/someSystem/someParentDir/myRom.rom
     '%ROMDIR%': () => path.dirname(romLocation), // ex: /path/to/roms/someSystem/someParentDir
     '%ROMDIRNAME%': () => path.basename(path.dirname(romLocation)), // ex: someParentDir
     '%ROMNAME%': () => path.parse(romLocation).base, // ex: myRom.rom

@@ -1,5 +1,5 @@
 {
-  "name": "emu-hub",
+  "name": "EmuHub",
   "version": "1.0.0-alpha.4",
   "description": "A games-first hub for emulation.",
   "main": "./out/main/index.js",

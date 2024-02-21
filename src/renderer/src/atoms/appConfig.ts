@@ -11,7 +11,7 @@ const defaults: AppConfig = {
     controllerHints: true
   },
   paths: {
-    roms: window.path.join(window.homedir, 'Documents', 'EmuHub', 'roms')
+    roms: ''
   },
   credentials: {
     screenscraper: {

@@ -38,8 +38,15 @@ const Init = () => {
     disabled: modalProps.open || settingsOpen
   })
 
-  const main = async (paths: AppConfig['paths']) => {
-    await window.initRomDir(paths, systems)
+  const main = async (paramPaths: AppConfig['paths']) => {
+    const romPath = await window.initRomDir(paramPaths, systems)
+    let paths = paramPaths
+
+    if(!paths.roms) {
+      updateAppConfig((draft) => { draft.paths.roms = romPath })
+      paths = { ...paramPaths, roms: romPath }
+    }
+
     const gamesLength = await scanRoms()
 
     if (gamesLength > 0) {
