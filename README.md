@@ -1,8 +1,9 @@
 # EmuHub
 
-![EmuHub Home](https://github.com/ryandavidmercado/emu-hub/assets/78172310/3ccb4bc2-5171-4125-a2e7-5c049a2e71cf)
-![EmuHub Game View](https://github.com/ryandavidmercado/emu-hub/assets/78172310/696f4025-ca7e-4b7f-9c7b-735c6f610152)
-![EmuHub Stores](https://github.com/ryandavidmercado/emu-hub/assets/78172310/914a6941-b217-4fd7-be2b-3025c7ef9374)
+![EmuHub Home](https://github.com/ryandavidmercado/emu-hub/assets/78172310/4652762b-4465-4a34-9a58-37edd666e990)
+![EmuHub Game View](https://github.com/ryandavidmercado/emu-hub/assets/78172310/58d81c57-578a-46df-8d49-e4929978ded9)
+![EmuHub Store](https://github.com/ryandavidmercado/emu-hub/assets/78172310/b8f33c68-fbe6-422f-8802-7e06a87ee79d)
+![EmuHub All Games](https://github.com/ryandavidmercado/emu-hub/assets/78172310/565ef5d8-f1a9-4a37-973d-3770485b5627)
 
 emu(lator) | _noun_:
 
