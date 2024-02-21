@@ -6,6 +6,7 @@ import { readFileSync } from 'fs'
 import findEmulator from './findEmulator'
 import { AppConfig } from '@common/types/AppConfig'
 import { raEmulatorEntry } from '@common/features/RetroArch'
+import log from 'electron-log/renderer'
 
 const parseLaunchCommand = (
   command: string,
@@ -56,7 +57,7 @@ const launchGame = async (game: Game, emulator: Emulator, system: System) => {
 
   const parsedCommand = parseLaunchCommand(launchCommand, emulatorLocation, romLocation)
 
-  console.log(`Launching ${game.name} with command: ${parsedCommand}`)
+  log.info(`Launching ${game.name} with command: ${parsedCommand}`)
 
   const spawnedProcess = spawn(parsedCommand, [], { detached: true, shell: true, windowsHide: true })
 

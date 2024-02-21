@@ -9,6 +9,7 @@ import { exec as execCb } from "child_process";
 import { promisify } from "util"
 import { raEmulatorEntry } from '@common/features/RetroArch'
 import { AppConfig } from '@common/types/AppConfig'
+import log from 'electron-log/renderer'
 
 const exec = promisify(execCb);
 
@@ -25,12 +26,18 @@ const findEmulator = async (emulator: Emulator): Promise<string> => {
     return `${await findRaPath()} -L ${emulator.location.core}`
   }
 
+  log.info(`Attempting to find emulator: ${emulator.name}`)
+
   switch (platform) {
     case 'darwin': {
-      return await findDarwinEmulator(emulator)
+      const location = await findDarwinEmulator(emulator)
+      log.info(`Found emulator ${emulator.name} at ${location} !`)
+      return location
     }
     case 'linux': {
-      return await findLinuxEmulator(emulator)
+      const location = await findLinuxEmulator(emulator)
+      log.info(`Found emulator ${emulator.name} at ${location} !`)
+      return location
     }
   }
 
@@ -48,15 +55,18 @@ async function findDarwinEmulator(emulator: Emulator): Promise<string> {
     }
   }
 
+  log.info(`Searching for emulator ${emulator.name} in /Applications/${emulator.location.darwin.name}*.app ...`)
   const appDir = await readdir('/Applications')
   const matcher = new RegExp(`^${escapeRegExp(emulator.location.darwin.name)}.*\.app$`)
 
   const emuDir = appDir.find((app) => app.match(matcher))
-  if (!emuDir)
+  if (!emuDir) {
+    log.error(`Couldn't find match for /Applications/${emulator.location.darwin.name}*.app !`)
     throw {
       type: 'emu-not-found',
       data: emulator
     }
+  }
 
   const emuMacOSDir = path.join('/', 'Applications', emuDir, 'Contents', 'MacOS')
   const binName = (await readdir(emuMacOSDir))?.[0]
@@ -79,13 +89,17 @@ async function findLinuxEmulator(emulator: Emulator): Promise<string> {
   }
 
   if (emulator.location.linux.appImage) {
+    log.info(`Attempting to find ${emulator.name} by AppImage ...`)
     const matcher = new RegExp(`^${escapeRegExp(emulator.location.linux.appImage)}.*\.AppImage$`)
 
     for (const applicationPath of LINUX_APPLICATION_PATHS) {
+      log.info(`Scanning ${applicationPath}`)
+
       let dirContents: string[]
       try {
         dirContents = await readdir(applicationPath)
       } catch {
+        log.warn(`Failed to read ${applicationPath}!`)
         continue
       }
 
@@ -100,9 +114,13 @@ async function findLinuxEmulator(emulator: Emulator): Promise<string> {
     }
   }
 
+  log.info('AppImage not found!')
+
   if (emulator.location.linux.binName) {
+    log.info(`Attempting to find ${emulator.name} by bin ...`)
     // see if we're linked in PATH
     try {
+      log.info(`Scanning in PATH ...`)
       const { stdout } = await exec(`which ${emulator.location.linux.binName}`)
       if(stdout) return stdout
     } catch {}
@@ -118,6 +136,8 @@ async function findLinuxEmulator(emulator: Emulator): Promise<string> {
       }
 
       for (const entry of dirContents) {
+        log.info(`Scanning ${applicationPath}`)
+
         const entryPath = path.join(applicationPath, entry)
         const entryStat = await stat(entryPath)
 
@@ -125,6 +145,8 @@ async function findLinuxEmulator(emulator: Emulator): Promise<string> {
           if (entry.match(matcher)) return parseDesktopFile(path.join(applicationPath, entry))
         } else {
           // we can scan for binNames one layer deep; don't go deeper to keep this quick
+          log.info(`Scanning ${entryPath}`)
+
           const entryContents = await readdir(entryPath)
           const match = entryContents.find(
             (entryContent) =>
@@ -162,20 +184,26 @@ async function findLinuxEmulator(emulator: Emulator): Promise<string> {
   }
 }
 
+// super simple .desktop parse; we just use the Exec field
 async function parseDesktopFile(filePath: string): Promise<string> {
-  // super simple .desktop parse; we just use the Exec field
   if(path.extname(filePath).toLowerCase() !== '.desktop') return `"${filePath}"`;
+
+  log.info(`Parsing .desktop file: ${filePath}`)
 
   const execMatcher = /^Exec=(.*)$/m
 
   const file = await readFile(filePath, { encoding: 'utf8' })
   const execString = file.match(execMatcher)?.[1]
-  if (!execString) throw 'desktop-could-not-parse'
+  if (!execString) {
+    log.error('Failed to parse .desktop file!')
+    throw 'desktop-could-not-parse'
+  }
 
+  log.info(`Parsed exec string from .desktop file: ${execString}`)
   return execString;
 }
 
-function escapeRegExp(string) {
+function escapeRegExp(string: string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
 } // https://stackoverflow.com/a/6969486
 
