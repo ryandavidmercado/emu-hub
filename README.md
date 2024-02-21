@@ -12,9 +12,31 @@ hub | _noun_:
 
 > the effective center of an activity
 
+[Discord](https://discord.gg/Uma7bmqB)
+
+## Features
+
+* Sleek, modern UI (look at that wave go!)
+* Games-first paradigm
+    * EmuHub prefers to organize games by relevant info (Recently Played, Recommended, Collections, etc) instead of by system. This makes it much easier to forget that you're emulating so you can focus on enjoying your collection!
+* Universal exit game hotkey: LT + RT + Up + Y to exit from any running game back to EmuHub
+* Scraping support (ScreenScraper, IGDB)
+* In-app homebrew stores
+* Automatic ROM scanning
+* Automatic emulator detection
+* Automatic emulator installation (Linux only; Mac/Windows on the roadmap)
+* Easily-accessible game collections
+    * Press Add to Collection on any Game View
+    * Collections show up directly on the Home screen!
+* Customizable game art
+    * Modify Home showcase to show screenshot or fanart
+    * Modify Game View to show screenshot or fanart
+    * Modify Game Tile to show poster, screenshot + logo or fanart + logo
+* Multiple color themes
+
 ## Initial Setup
 
-1. (Steam Deck only)
+1. (Linux/Steam Deck only)
    - Make sure to set the EmuHub AppImage to executable: https://docs.appimage.org/introduction/quickstart.html
    - If you're planning on running EmuHub from Game Mode, make sure to set the launch arguments in Steam to --no-sandbox, otherwise the app will fail to launch.
 1. Verify you've installed necessary emulators
@@ -35,19 +57,47 @@ hub | _noun_:
    - Keep an eye on the Controller Hints in the footer; they'll guide you through navigation and sometimes signal features you might otherwise miss.
    - Check out Settings > Stores to download homebrew from EmuDeck (DISCLAIMER: EmuHub is not affiliated with EmuDeck!)
    - Select any game from the Home page to enter the Game View
-     - Try creating a new collection! Collections will display individual scrollers in the Home page
-     - Hit Down in the Game View to access game information and dynamic recommendations (by genre, developer, and publisher)
-   - Hit Play on the Game View to launch
-   - Hit Add to Collection in the Game View to create your first collection!
+   - Select Play on the Game View to launch
+   - Select in the Game View to access game information and dynamic recommendations (by genre, developer, and publisher)
+   - Select "Add to Collection" in the Game View to create your first collection!
      - Collections are great because they surface directly as scrollers on the Home Page
        - It has never been easier to access every Mario Kart in your collection.
-   - Hit Select to access the Navigation Menu
+   - Hit Select at any time to access the Navigation Menu
      - Home: The main screen; this is what you see when you launch EmuHub.
      - All Games: Self-explanatory. All games!
      - Search Games: Self-explanatory. Search your games collection!
    - Keep scraping as you add new games! The more you scrape, the better EmuHub will get.
      - EmuHub uses scraped data to surface per-game and general recommendations.
      - Powerful sorting and filtering tools are on the roadmap. The more data you have scraped, the easier it'll be to discover new games in your collection!
+  
+## Supported Systems
+
+- Nintendo Entertainment System (RetroArch - Mesen)
+- Super Nintendo Entertainment System (RetroArch - bsnes)
+- Nintendo 64 (RetroArch - Mupen64Plus-Next, RetroArch - ParaLLEl)
+- Nintendo GameCube (Dolphin)
+- Nintendo Wii (Dolphin)
+- Nintendo Wii U (Cemu)
+- Nintendo Switch (Yuzu, Ryujinx)
+- Game Boy (RetroArch - Sameboy, RetroArch - Gambatte, RetroArch - mGBA)
+- Game Boy Color (RetroArch - Sameboy, RetroArch - Gambatte, RetroArch - mGBA)
+- Game Boy Advance (RetroArch - mGBA)
+- Nintendo DS (RetroArch - melonDS)
+- Sega Genesis (RetroArch - Genesis Plus GX)
+- Sega Saturn (RetroArch - Beetle Saturn)
+- Dreamcast (RetroArch - Flycast)
+- Sony PlayStation (DuckStation)
+- Sony PlayStation 2 (PCSX2)
+- Sony PlayStation 3 (RPCS3)
+- Sony PlayStation Portable (PPSSPP)
+- Sony PlayStation Vita (Vita3K)
+- More on the roadmap ...
+
+## Supported Platforms
+
+- Linux
+- MacOS
+- Windows (WIP)
 
 ## Data Directories
 
@@ -74,43 +124,17 @@ If you're running EmuHub through Game Mode, add --no-sandbox to the launch argum
 
 > EmuHub said emulator not found when I tried to launch SOME GAME, but I have that emulator installed!
 
-Please file an issue on this GitHub repository or leave a comment in your platform's support channel on [our Discord](https://discord.gg/4GCas5cj).
+Please file an issue on this GitHub repository or leave a comment in your platform's support channel on [our Discord](https://discord.gg/Uma7bmqB).
 
 > RetroArch crashes when I run N64 games! (I'm on MacOS)
 
 The default emulator for N64 (Mupen64Plus-Next) has some compatibility issues with MacOS. Go to your game's settings and swap the emulator to ParaLLEl. (System-level emulator configuration is on the roadmap but not yet implemented; you'll have to change emulator per-game for the time being.)
 
-## Supported Systems
 
-- Nintendo Entertainment System (RetroArch - Mesen)
-- Super Nintendo Entertainment System (RetroArch - bsnes)
-- Nintendo 64 (RetroArch - Mupen64Plus-Next, RetroArch - ParaLLEl)
-- Nintendo GameCube (Dolphin)
-- Nintendo Wii (Dolphin)
-- Nintendo Wii U (Cemu)
-- Nintendo Switch (yuzu, ryujinx)
-- Game Boy (RetroArch - Sameboy, RetroArch - Gambatte, RetroArch - mGBA)
-- Game Boy Color (RetroArch - Sameboy, RetroArch - Gambatte, RetroArch - mGBA)
-- Game Boy Advance (RetroArch - mGBA)
-- Nintendo DS (RetroArch - melonDS)
-- Sega Genesis (RetroArch - Genesis Plus GX)
-- Sega Saturn (RetroArch - Beetle Saturn)
-- Dreamcast (RetroArch - Flycast)
-- Sony PlayStation (DuckStation)
-- Sony PlayStation 2 (PCSX2)
-- Sony PlayStation 3 (RPCS3)
-- Sony PlayStation Portable (PPSSPP)
-- Sony PlayStation Vita (Vita3K)
-
-## Supported Platforms
-
-- Linux
-- MacOS
-- Windows (WIP)
 
 ## ADVANCED - Adding custom systems
 
-EmuHub does not yet have a GUI for adding custom systems; you'll need to add these entries to the config files. (Alternatively, leave a comment in the #system-requests channel of [our Discord](https://discord.gg/4GCas5cj) so I can add the system to the EmuHub roadmap!)
+EmuHub does not yet have a GUI for adding custom systems; you'll need to add these entries to the config files. (Alternatively, leave a comment in the #system-requests channel of [our Discord](https://discord.gg/Uma7bmqB) so we can add the system to our roadmap!)
 
 1. Head to the EmuHub config directory for your respective platform (see: [Data Directories](#data-directories))
 1. Open systems.yml
