@@ -19,12 +19,12 @@ hub | _noun_:
 * Sleek, modern UI (look at that wave go!)
 * Games-first paradigm
     * EmuHub prefers to organize games by relevant info (Recently Played, Recommended, Collections, etc) instead of by system. This makes it much easier to forget that you're emulating so you can focus on enjoying your collection!
-* Universal exit game hotkey: LT + RT + Up + Y to exit from any running game back to EmuHub
+* Universal exit game hotkey: LT + RT + Up + Y to exit from any running game back to EmuHub (Not supported on MacOS due to platform constraints)
 * Scraping support (ScreenScraper, IGDB)
 * In-app homebrew stores
 * Automatic ROM scanning
 * Automatic emulator detection
-* Automatic emulator installation (Linux only; Mac/Windows on the roadmap)
+* Automatic emulator installation (Linux only; MacOS/Windows on the roadmap)
 * Easily-accessible game collections
     * Press Add to Collection on any Game View
     * Collections show up directly on the Home screen!
