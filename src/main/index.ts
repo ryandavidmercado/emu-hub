@@ -21,6 +21,11 @@ function createWindow(): void {
     backgroundColor: 'hsl(200, 15%, 20%)'
   })
 
+  process.on('uncaughtException', (e) => {
+    console.error(e)
+    log.error(e)
+  })
+
   ipcMain.handle('restart', () => {
     app.relaunch()
     app.quit()

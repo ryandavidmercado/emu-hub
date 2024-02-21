@@ -15,6 +15,7 @@ import { useInputModal } from '@renderer/components/InputModal/InputModal'
 import notifications from '@renderer/atoms/notifications'
 import { InputPriority } from '@renderer/const/inputPriorities'
 import { AppConfig } from '@common/types/AppConfig'
+import { useErrorBoundary } from 'react-error-boundary'
 
 let isInitializing = false
 
@@ -22,6 +23,8 @@ const Init = () => {
   const [appConfig, updateAppConfig] = useAtom(appConfigAtom)
   const [systems] = useAtom(systemsAtoms.lists.all)
   const [, addNotification] = useAtom(notifications.add)
+
+  const { showBoundary } = useErrorBoundary()
 
   const [settingsOpen] = useAtom(settingsOpenAtom)
 
@@ -115,6 +118,7 @@ const Init = () => {
     const unbind = eventHandler.on('settings-close', () => {
       unbind()
       main(paths)
+        .catch(showBoundary)
     })
   }
 
@@ -122,6 +126,7 @@ const Init = () => {
     if (!isInitializing) {
       isInitializing = true
       main(appConfig.paths)
+        .catch(showBoundary)
     }
   }, [])
 
