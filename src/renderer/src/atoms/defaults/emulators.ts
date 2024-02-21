@@ -112,7 +112,8 @@ const defaultEmulators = [
       darwin: {
         name: 'Cemu'
       }
-    }
+    },
+    killSignal: 'SIGKILL'
   },
   {
     id: 'yuzu',
