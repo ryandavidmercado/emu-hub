@@ -118,7 +118,7 @@ const defaultEmulators = [
   {
     id: 'yuzu',
     name: 'Yuzu',
-    args: ['-g'],
+    args: ['-f', '-g'],
     location: {
       linux: {
         appImage: 'yuzu',
