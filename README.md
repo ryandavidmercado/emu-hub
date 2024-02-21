@@ -135,7 +135,7 @@ The default emulator for N64 (Mupen64Plus-Next) has some compatibility issues wi
 
 
 
-## ADVANCED - Adding custom systems
+## ADVANCED - Adding custom systems/emulators
 
 EmuHub does not yet have a GUI for adding custom systems; you'll need to add these entries to the config files. (Alternatively, leave a comment in the #system-requests channel of [our Discord](https://discord.gg/Uma7bmqB) so we can add the system to our roadmap!)
 
