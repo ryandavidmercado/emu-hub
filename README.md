@@ -37,6 +37,8 @@ hub | _noun_:
 
 ## Initial Setup
 
+1. Download the [latest release](https://github.com/ryandavidmercado/emu-hub/releases/latest)
+1. (MacOS only) Open the DMG file and drag EmuHub.app onto the Installations folder.
 1. (Linux/Steam Deck only)
    - Make sure to set the EmuHub AppImage to executable: https://docs.appimage.org/introduction/quickstart.html
    - If you're planning on running EmuHub from Game Mode, make sure to set the launch arguments in Steam to --no-sandbox, otherwise the app will fail to launch.
