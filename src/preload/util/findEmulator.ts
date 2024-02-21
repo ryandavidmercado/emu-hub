@@ -4,7 +4,7 @@ import { readdir, stat, readFile } from 'fs/promises'
 import path from 'path'
 import { LINUX_APPLICATION_PATHS, SNAP_PATHS } from './const'
 import { loadConfig } from './configStorage'
-import { existsSync, statSync } from 'fs'
+import { Stats, existsSync, statSync } from 'fs'
 import { exec as execCb } from "child_process";
 import { promisify } from "util"
 import { raEmulatorEntry } from '@common/features/RetroArch'
@@ -16,7 +16,7 @@ const exec = promisify(execCb);
 const platform = os.platform()
 
 const findRaPath = async (): Promise<string> => {
-  const { paths: { RetroArch: configRaPath }} = loadConfig('config', {}) as AppConfig
+  const { paths: { RetroArch: configRaPath } } = loadConfig('config', {}) as AppConfig
   return configRaPath || findEmulator(raEmulatorEntry as unknown as Emulator)
 }
 
@@ -105,10 +105,14 @@ async function findLinuxEmulator(emulator: Emulator): Promise<string> {
 
       for (const entry of dirContents) {
         const entryPath = path.join(applicationPath, entry)
-        const entryStat = await stat(entryPath)
 
-        if (!entryStat.isDirectory() && entry.match(matcher)) {
-          return `"${path.join(applicationPath, entry)}"`
+        try {
+          const entryStat = await stat(entryPath)
+          if (!entryStat.isDirectory() && entry.match(matcher)) {
+            return `"${path.join(applicationPath, entry)}"`
+          }
+        } catch {
+          continue
         }
       }
     }
@@ -122,8 +126,12 @@ async function findLinuxEmulator(emulator: Emulator): Promise<string> {
     try {
       log.info(`Scanning in PATH ...`)
       const { stdout } = await exec(`which ${emulator.location.linux.binName}`)
-      if(stdout) return stdout
-    } catch {}
+      if (stdout) {
+        return stdout
+      } else throw {}
+    } catch {
+      log.info(`Bin not found in PATH`)
+    }
 
     const matcher = new RegExp(`^${escapeRegExp(emulator.location.linux.binName)}$`)
 
@@ -139,7 +147,15 @@ async function findLinuxEmulator(emulator: Emulator): Promise<string> {
         log.info(`Scanning ${applicationPath}`)
 
         const entryPath = path.join(applicationPath, entry)
-        const entryStat = await stat(entryPath)
+
+        let entryStat: Stats;
+
+        try {
+          entryStat = await stat(entryPath)
+        } catch {
+          log.warn(`Couldn't get stats for ${entryPath}`)
+          continue
+        }
 
         if (!entryStat.isDirectory()) {
           if (entry.match(matcher)) return parseDesktopFile(path.join(applicationPath, entry))
@@ -147,7 +163,15 @@ async function findLinuxEmulator(emulator: Emulator): Promise<string> {
           // we can scan for binNames one layer deep; don't go deeper to keep this quick
           log.info(`Scanning ${entryPath}`)
 
-          const entryContents = await readdir(entryPath)
+          let entryContents: string[]
+
+          try {
+            entryContents = await readdir(entryPath)
+          } catch {
+            log.warn(`Couldn't read ${entryPath}`)
+            continue
+          }
+
           const match = entryContents.find(
             (entryContent) =>
               entryContent.match(matcher) &&
@@ -160,23 +184,39 @@ async function findLinuxEmulator(emulator: Emulator): Promise<string> {
     }
   }
 
+  log.info(`Bin not found!`)
+
   if (emulator.location.linux.flatpak) {
+    log.info(`Attempting to find ${emulator.name} by flatpak ...`)
     try {
       const { stdout } = await exec(`flatpak info ${emulator.location.linux.flatpak}`)
-      if(stdout) return `flatpak run ${emulator.location.linux.flatpak}`
-    } catch(e) {
-      console.log(e)
+      if (stdout) return `flatpak run ${emulator.location.linux.flatpak}`
+    } catch (e) {
+      log.warn(e)
     }
   }
 
+  log.info(`Flatpak not found!`)
+
   if (emulator.location.linux.snap) {
+    log.info(`Attempting to find ${emulator.name} by Snap ...`)
+
     for (const snapPath of SNAP_PATHS) {
       const emuPath = path.join(snapPath, emulator.location.linux.snap)
 
-      if (!existsSync(emuPath)) continue
+      try {
+        const exists = existsSync(emuPath)
+        if (!exists) continue
+      } catch {
+        log.info(`Couldn't read Snap directory ${emuPath}`)
+      }
+
       return `"${emuPath}"`
     }
   }
+
+  log.info(`Snap not found!`)
+  log.error(`Unable to locate emulator ${emulator.name}`)
 
   throw {
     type: 'emu-not-found',
@@ -186,7 +226,7 @@ async function findLinuxEmulator(emulator: Emulator): Promise<string> {
 
 // super simple .desktop parse; we just use the Exec field
 async function parseDesktopFile(filePath: string): Promise<string> {
-  if(path.extname(filePath).toLowerCase() !== '.desktop') return `"${filePath}"`;
+  if (path.extname(filePath).toLowerCase() !== '.desktop') return `"${filePath}"`;
 
   log.info(`Parsing .desktop file: ${filePath}`)
 
