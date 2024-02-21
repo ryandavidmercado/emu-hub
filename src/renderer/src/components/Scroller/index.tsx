@@ -129,10 +129,7 @@ export const Scroller = <T extends Game | System>({
         [css.container]: true,
         [css.inActive]: !isActive
       })}
-      style={{
-        ...style,
-        scrollBehavior
-      }}
+      style={style}
       ref={forwardedRef}
     >
       {label && (
@@ -142,7 +139,7 @@ export const Scroller = <T extends Game | System>({
           sublabel={isActive ? activeElem?.name : undefined}
         />
       )}
-      <div className={css.main}>{displayElems}</div>
+      <div className={css.main} style={{ scrollBehavior }}>{displayElems}</div>
     </div>
   )
 }
