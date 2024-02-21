@@ -44,11 +44,13 @@ export const getSystemPaths = () => {
       data = path.join(HOME_PATH, 'Documents', APP_NAME)
       config = path.join(HOME_PATH, 'Library', 'Application Support', APP_NAME, APP_CONFIG_SUBDIR)
       romsDefault = path.join(data, 'roms')
+      break
     }
     case 'win32': {
       data = path.join(HOME_PATH, 'Documents', APP_NAME)
       config = path.join(HOME_PATH, 'AppData', 'Roaming', APP_NAME, APP_CONFIG_SUBDIR)
       romsDefault = path.join(data, 'roms')
+      break
     }
     default: {
       throw('os not supported')
