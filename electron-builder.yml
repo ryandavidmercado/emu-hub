@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: electron-app
+appId: com.emuhub.app
+productName: EmuHub
 directories:
   buildResources: build
 files:
@@ -11,10 +11,10 @@ files:
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 asarUnpack:
   - resources/**
-  - "**/node_modules/sharp/**/*"
-  - "**/node_modules/@img/**/*"
+  - '**/node_modules/sharp/**/*'
+  - '**/node_modules/@img/**/*'
 win:
-  executableName: electron-app
+  executableName: EmuHub
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

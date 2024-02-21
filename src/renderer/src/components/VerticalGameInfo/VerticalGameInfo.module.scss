@@ -1,10 +1,9 @@
-@import "@renderer/scss/colors";
+@import '@renderer/scss/colors';
 
 .container {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  padding-bottom: 5rem;
 
   .bgAndLogo {
     width: 100%;
@@ -35,9 +34,9 @@
 
   .description {
     font-family: 'Figtree Variable', sans-serif;
-    font-size: 1.1em;
+    font-size: 1rem;
     font-weight: 400;
-    color: white;
+    color: $text-secondary;
     margin-top: 1rem;
     max-height: 100%;
     overflow: hidden;
@@ -51,4 +50,5 @@
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+  row-gap: .5rem;
 }

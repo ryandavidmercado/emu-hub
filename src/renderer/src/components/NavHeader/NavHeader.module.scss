@@ -7,17 +7,19 @@
   background-color: black;
 }
 
-.searchContainer {
+.navContainer {
   position: absolute;
   width: 100%;
   z-index: 3;
   display: flex;
   justify-content: center;
+  align-items: start;
+  gap: 1rem;
 
-  .searchbar {
-    background-color: var(--primary);
-    color: var(--background-dark);
-    padding: 20px 35px;
+  .navEntry {
+    background-color: var(--background-light);
+    transition: all .1s ease;
+    color: var(--primary);
     border-radius: 20px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
@@ -25,7 +27,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 50px;
+    gap: 1.5rem;
     font-size: 1.4rem;
+    box-shadow: 0px 3px 5px rgba(0, 0, 0, .7);
+    position: relative;
+
+    &.active {
+      background-color: var(--primary);
+      color: var(--background-dark);
+    }
   }
 }

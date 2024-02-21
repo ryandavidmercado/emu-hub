@@ -1,21 +1,25 @@
-import { System } from "@common/types";
-import { MainPaths } from "@common/types/Paths";
-import { mkdir } from "fs/promises";
-import path from "path";
+import { System } from '@common/types'
+import { AppConfig } from '@common/types'
+import { mkdir } from 'fs/promises'
+import path from 'path'
+import { ROMS_PATH } from './const'
 
-const initRomDir = async (paths: MainPaths, systems: System[]) => {
-  const { ROMs: ROM_PATH } = paths;
+const initRomDir = async (paths: AppConfig['paths'], systems: System[]) => {
+  const { roms: configRomPath } = paths
+  const romPath = configRomPath || ROMS_PATH
 
   try {
-    await mkdir(ROM_PATH);
-  } catch(e) { }
+    await mkdir(romPath)
+  } catch (e) {}
 
-  for(const system of systems) {
-    if(system.romdir) continue;
+  for (const system of systems) {
+    if (system.romdir) continue
 
-    const systemPath = path.join(ROM_PATH, system.id);
+    const systemPath = path.join(romPath, system.id)
     await mkdir(systemPath, { recursive: true })
   }
+
+  return romPath
 }
 
-export default initRomDir;
+export default initRomDir

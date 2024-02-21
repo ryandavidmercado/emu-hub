@@ -1,6 +1,8 @@
-import { SectionProps } from "..";
-import MultiPageControllerForm, { MultiFormPage } from "@renderer/components/ControllerForm/MultiPage";
-import { IoExitOutline } from "react-icons/io5";
+import { SectionProps } from '..'
+import MultiPageControllerForm, {
+  MultiFormPage
+} from '@renderer/components/ControllerForm/MultiPage'
+import { IoExitOutline } from 'react-icons/io5'
 
 const Power = ({ onExit, inputPriority, isActive }: SectionProps) => {
   const pages: MultiFormPage[] = [
@@ -9,10 +11,12 @@ const Power = ({ onExit, inputPriority, isActive }: SectionProps) => {
       entries: [
         {
           id: 'exit',
-          label: "Exit EmuHub",
-          type: "action",
+          label: 'Exit EmuHub',
+          type: 'action',
           Icon: IoExitOutline,
-          onSelect: () => { window.close() }
+          onSelect: () => {
+            window.close()
+          }
         }
       ]
     }

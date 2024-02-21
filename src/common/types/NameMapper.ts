@@ -1,1 +1,1 @@
-export type NameMapper = "vita"
+export type NameMapper = 'vita' | 'ps3'

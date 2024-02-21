@@ -1,4 +1,4 @@
-@import "@renderer/scss/colors";
+@import '@renderer/scss/colors';
 
 .button {
   border: 2px solid;
@@ -12,10 +12,10 @@
   font-size: 1.1em;
   color: white;
 
-  transition: all .2s ease;
+  transition: all 0.2s ease;
   border-radius: 50%;
 
-  filter: drop-shadow(0px 3px 3px rgba(0, 0, 0, .4));
+  filter: drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.4));
 
   &.active {
     transform: scale(1.1);
@@ -29,10 +29,19 @@
       max-width: 150px;
     }
 
-    &.default { background-color: var(--primary); }
-    &.caution { background-color: $caution; }
-    &.warning { background-color: $warning; color: var(--background-dark); }
-    &.confirm { background-color: $confirm; }
+    &.default {
+      background-color: var(--primary);
+    }
+    &.caution {
+      background-color: $caution;
+    }
+    &.warning {
+      background-color: $warning;
+      color: var(--background-dark);
+    }
+    &.confirm {
+      background-color: $confirm;
+    }
   }
 }
 
@@ -40,7 +49,7 @@
   display: flex;
   gap: 15px;
   justify-content: center;
-  transition: filter ease .1s;
+  transition: filter ease 0.1s;
 
   &.inactive {
     filter: saturate(0%) opacity(50%);
@@ -55,7 +64,7 @@
   color: white;
   overflow: visible;
   text-wrap: nowrap;
-  filter: drop-shadow(0px 3px 3px rgba(0, 0, 0, .3));
+  filter: drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.3));
 }
 
 .labelWrapper {

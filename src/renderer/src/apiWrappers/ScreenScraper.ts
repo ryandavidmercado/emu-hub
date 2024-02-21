@@ -1,6 +1,7 @@
-import { Game, MediaTypes, System } from "@common/types";
-import { SOFTNAME } from "@renderer/const/const";
-import fetchRetry from "fetch-retry";
+import { Game, MediaTypes, System } from '@common/types'
+import Fuse from 'fuse.js'
+import { SOFTNAME } from '@renderer/const/const'
+import fetchRetry from 'fetch-retry'
 
 const fetch = fetchRetry(window.fetch, {
   retries: 3,
@@ -10,22 +11,23 @@ const fetch = fetchRetry(window.fetch, {
 
 type URLParams = Record<string, string | number | undefined>
 interface ConstructorProps {
-  userId?: string;
-  userPassword?: string;
+  userId?: string
+  userPassword?: string
 }
 
-const getDecodedHTMLString = (text: string) => new DOMParser().parseFromString(text, "text/html").body.innerText;
+const getDecodedHTMLString = (text: string) =>
+  new DOMParser().parseFromString(text, 'text/html').body.innerText
 
 export class ScreenScraper {
-  private devid = import.meta.env.RENDERER_VITE_SCREENSCRAPER_DEVID;
-  private devpassword = import.meta.env.RENDERER_VITE_SCREENSCRAPER_DEVPASSWORD;
-  private baseUrl = "https://api.screenscraper.fr/api2/";
+  private devid = import.meta.env.RENDERER_VITE_SCREENSCRAPER_DEVID
+  private devpassword = import.meta.env.RENDERER_VITE_SCREENSCRAPER_DEVPASSWORD
+  private baseUrl = 'https://api.screenscraper.fr/api2/'
 
-  private url: URL;
+  private url: URL
 
   private addParamsToUrl(params: Record<string, string | number | undefined>, url: URL) {
     Object.entries(params).forEach(([key, value]) => {
-      if (value) url.searchParams.append(key, String(value));
+      if (value) url.searchParams.append(key, String(value))
     })
   }
 
@@ -35,29 +37,35 @@ export class ScreenScraper {
       devid: this.devid,
       devpassword: this.devpassword,
       softname: SOFTNAME,
-      output: "json",
+      output: 'json',
       ssid: userId || undefined,
       sspassword: userPassword || undefined
     }
 
-    this.addParamsToUrl(params, this.url);
+    this.addParamsToUrl(params, this.url)
   }
 
   private async fetchWithParams(path: string, params: URLParams) {
-    const url = new URL(this.url.href);
-    url.pathname += path;
+    const url = new URL(this.url.href)
+    url.pathname += path
     this.addParamsToUrl(params, url)
 
-    const res = await (await fetch(url)).json();
-    return res.response;
+    const res = await (await fetch(url)).json()
+    return res.response
   }
 
   private async saveScrapeResponseToGame(gameResponse: any, game: Game) {
-    const getArt = (ssMediaType: string | string[], ehMediaType: keyof MediaTypes, region: string) => {
-      const ssMediaTypes = typeof ssMediaType === "string" ? [ssMediaType] : ssMediaType;
+    const getArt = (
+      ssMediaType: string | string[],
+      ehMediaType: keyof MediaTypes,
+      region: string
+    ) => {
+      const ssMediaTypes = typeof ssMediaType === 'string' ? [ssMediaType] : ssMediaType
 
-      const entriesOfType = gameResponse.medias.filter(media => ssMediaTypes.includes(media.type));
-      const artEntry = entriesOfType.find(entry => !entry.region || ["wor", region].includes(entry.region)) ?? entriesOfType[0];
+      const entriesOfType = gameResponse.medias.filter((media) => ssMediaTypes.includes(media.type))
+      const artEntry =
+        entriesOfType.find((entry) => !entry.region || ['wor', region].includes(entry.region)) ??
+        entriesOfType[0]
 
       return {
         mediaType: ehMediaType,
@@ -66,47 +74,48 @@ export class ScreenScraper {
       }
     }
 
-    const getByLanguage = (lang: string, entryArray: { langue: string, text: string }[]) => {
-      const entry = entryArray.find(entry => entry.langue === lang) ?? entryArray[0];
-      return entry?.text;
+    const getByLanguage = (lang: string, entryArray: { langue: string; text: string }[]) => {
+      const entry = entryArray.find((entry) => entry.langue === lang) ?? entryArray[0]
+      return entry?.text
     }
 
-    const getByRegion = (region: string, entryArray: { region: string, text: string }[]) => {
-      const entry = entryArray.find(entry => ["wor", region].includes(entry.region)) ?? entryArray[0];
-      return entry?.text;
+    const getByRegion = (region: string, entryArray: { region: string; text: string }[]) => {
+      const entry =
+        entryArray.find((entry) => ['wor', region].includes(entry.region)) ?? entryArray[0]
+      return entry?.text
     }
 
     const medias = [
-      getArt("fanart", "hero", "us"),
-      getArt("steamgrid", "poster", "us"),
-      getArt(["wheel", "wheel-hd"], "logo", "us"),
-      getArt("ss", "screenshot", "us")
-    ].filter(media => media.url && media.format)
+      getArt('fanart', 'hero', 'us'),
+      getArt('steamgrid', 'poster', 'us'),
+      getArt(['wheel', 'wheel-hd'], 'logo', 'us'),
+      getArt('ss', 'screenshot', 'us')
+    ].filter((media) => media.url && media.format)
 
     const gameWithMedias = await window.downloadGameMedia(game, medias)
 
     return {
       ...gameWithMedias,
-      description: getDecodedHTMLString(getByLanguage("en", gameResponse.synopsis ?? [])),
+      description: getDecodedHTMLString(getByLanguage('en', gameResponse.synopsis ?? [])),
       players: gameResponse.joueurs?.text,
-      name: getByRegion("us", gameResponse.noms),
-      genre: getByLanguage("en", gameResponse.genres?.[0]?.noms ?? []),
+      name: getByRegion('us', gameResponse.noms),
+      genre: getByLanguage('en', gameResponse.genres?.[0]?.noms ?? []),
       publisher: gameResponse.editeur?.text,
-      developer: gameResponse.developpeur?.text,
+      developer: gameResponse.developpeur?.text
     }
   }
 
   async scrapeByRomInfo(game: Game, system: System): Promise<Game> {
-    const path = "jeuInfos.php";
+    const path = 'jeuInfos.php'
 
-    const { crc, size } = (game.romsize)
+    const { crc, size } = game.romsize
       ? { crc: game.crc, size: game.romsize }
-      : await window.getRomFileInfo(game);
+      : await window.getRomFileInfo(game)
 
-    const params = { romnom: game.romname, systemeid: system.ssId, crc, size };
+    const params = { romnom: game.romname, systemeid: system.ssId, crc, size }
 
     try {
-      const response = await this.fetchWithParams(path, params);
+      const response = await this.fetchWithParams(path, params)
       const gameWithMetadata = await this.saveScrapeResponseToGame(response.jeu, game)
 
       return {
@@ -116,21 +125,27 @@ export class ScreenScraper {
       }
     } catch (e) {
       // if we failed to scrape, at least save crc & romsize so we don't have to recalculate these
-      throw ({ size, crc, err: e })
+      throw { size, crc, err: e }
     }
   }
 
   async scrapeByName(game: Game, system: System): Promise<Game> {
-    const path = "jeuRecherche.php"
+    const path = 'jeuRecherche.php'
     const params = { systemeid: system.ssId, recherche: game.name }
 
     try {
-      const response = await this.fetchWithParams(path, params);
-      const gameResponse = response.jeux?.[0]
+      const response = await this.fetchWithParams(path, params)
+      console.log(response)
 
-      if(!gameResponse) throw "Game not found!"
-      return await this.saveScrapeResponseToGame(gameResponse, game)
-    } catch(e) {
+      if (!response.jeux?.length) throw 'Game not found!'
+
+      // ScreenScraper doesn't sort search results
+      // Run a local fuzzy search against the results to get the best match
+      const localSearcher = new Fuse(response.jeux, { keys: ['noms.text'], threshold: 1 })
+      const localSearchResult = localSearcher.search(game.name ?? '')[0].item
+
+      return await this.saveScrapeResponseToGame(localSearchResult, game)
+    } catch (e) {
       throw { err: e }
     }
   }

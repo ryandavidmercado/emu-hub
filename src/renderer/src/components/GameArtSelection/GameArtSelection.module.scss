@@ -1,14 +1,15 @@
-@import "@renderer/scss/colors";
+@import '@renderer/scss/colors';
 
 .container {
   background-color: var(--background);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 5px 0px 5px rgba(0, 0, 0, .4);
+  box-shadow: 5px 0px 5px rgba(0, 0, 0, 0.4);
 
   display: flex;
 
-  .left, .right {
+  .left,
+  .right {
     display: grid;
     grid-template-rows: repeat(3, minmax(0, 1fr));
   }
@@ -29,10 +30,12 @@
       min-width: 250px;
 
       .sub {
-        font-size: .8rem;
+        font-size: 0.8rem;
       }
 
-      transition: background-color .1s ease, color .1s ease;
+      transition:
+        background-color 0.1s ease,
+        color 0.1s ease;
 
       &.active {
         background-color: var(--primary);
@@ -48,7 +51,7 @@
       justify-content: space-around;
       gap: 3rem;
 
-      transition: backdrop-filter .1s ease;
+      transition: backdrop-filter 0.1s ease;
 
       &.active {
         backdrop-filter: brightness(140%);
@@ -79,7 +82,9 @@
   }
 
   .img {
-    transition: border .15s ease, transform .15s ease;
+    transition:
+      border 0.15s ease,
+      transform 0.15s ease;
 
     height: 15vh;
     object-fit: cover;

@@ -1,13 +1,11 @@
-@import "@renderer/scss/util";
+@import '@renderer/scss/util';
 
 .label {
   padding-bottom: 10px;
   padding-left: 10px;
-}
-
-.tileWrapper {
-  display: flex;
-  align-items: center;
+  overflow: hidden;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
 }
 
 .tile {
@@ -16,7 +14,12 @@
 }
 
 .grid {
-  @include hide-scrollbar
+  scroll-behavior: smooth;
+}
+
+.hideScrollbar {
+  @include hide-scrollbar;
+  overflow-y: hidden;
 }
 
 .container {

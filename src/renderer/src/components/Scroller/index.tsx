@@ -1,32 +1,34 @@
-import classNames from "classnames";
-import { CSSProperties, Ref, useEffect, useRef, useState } from "react";
-import css from "./Scroller.module.scss"
-import { useKeepVisible, useOnInput } from "../../hooks"
-import { Input, ScrollType } from "../../enums";
-import Label from "../Label/Label";
-import { System } from "@common/types/System";
-import { Game } from "@common/types";
-import SystemTile from "../MediaTile/Presets/SystemTile";
-import GameTile from "../MediaTile/Presets/GameTile";
+import classNames from 'classnames'
+import { CSSProperties, Ref, useEffect, useId, useRef } from 'react'
+import css from './Scroller.module.scss'
+import { useKeepVisible, useOnInput, useDeferredValue } from '../../hooks'
+import { Input, ScrollType } from '../../enums'
+import Label from '../Label/Label'
+import { System } from '@common/types/System'
+import { Game } from '@common/types'
+import SystemTile from '../MediaTile/Presets/SystemTile'
+import GameTile from '../MediaTile/Presets/GameTile'
+import { useIndexParam } from '@renderer/util/queryParams/IndexParam'
 
 export interface ScrollerProps<T extends Game | System> {
-  aspectRatio?: "landscape" | "square"
-  style?: CSSProperties;
-  elems: T[],
+  aspectRatio?: 'landscape' | 'square'
+  style?: CSSProperties
+  elems: T[]
   label?: string
-  isActive?: boolean;
-  onHighlight?: (arg0: T) => void;
-  onSelect?: (arg0: T) => void;
-  onNextScroller?: () => void;
-  onPrevScroller?: () => void;
-  onActiveChange?: (active: boolean) => void;
+  isActive?: boolean
+  onHighlight?: (arg0: T) => void
+  onSelect?: (arg0: T) => void
+  onNextScroller?: () => void
+  onPrevScroller?: () => void
+  onActiveChange?: (active: boolean) => void
   forwardedRef?: Ref<HTMLDivElement>
-  disableInput?: boolean;
-  contentType?: "game" | "system"
+  disableInput?: boolean
+  contentType?: 'game' | 'system'
+  id?: string
 }
 
 export const Scroller = <T extends Game | System>({
-  aspectRatio = "landscape",
+  aspectRatio = 'landscape',
   style,
   elems,
   label,
@@ -38,27 +40,33 @@ export const Scroller = <T extends Game | System>({
   onNextScroller,
   onActiveChange,
   disableInput,
-  contentType
+  contentType,
+  id: propsId
 }: ScrollerProps<T>) => {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const instanceId = useId()
+  const id = propsId ?? instanceId
+
+  const scrollBehavior = useDeferredValue('smooth', 'initial')
+
+  const [activeIndex, setActiveIndex] = useIndexParam(id)
   const getIsSystem = (_elem: Game | System): _elem is System => {
-    return contentType === "system";
+    return contentType === 'system'
   }
 
   useEffect(() => {
     onActiveChange?.(isActive)
-  }, [isActive]);
+  }, [isActive])
 
   useEffect(() => {
-    if(!isActive) return;
+    if (!isActive) return
     onHighlight?.(elems[activeIndex])
-  }, [activeIndex, isActive]);
+  }, [activeIndex, isActive])
 
-  const activeRef = useRef<HTMLDivElement>(null);
+  const activeRef = useRef<HTMLDivElement>(null)
 
   const displayElems = elems.map((elem, i) => {
     const elemIsActive = i === activeIndex
-    const isSystem = getIsSystem(elem);
+    const isSystem = getIsSystem(elem)
 
     const tileProps = {
       key: elem.id,
@@ -67,44 +75,53 @@ export const Scroller = <T extends Game | System>({
       aspectRatio
     }
 
-    return isSystem
-      ? <SystemTile system={elem} {...tileProps} />
-      : <GameTile game={elem} {...tileProps} />
+    return isSystem ? (
+      <SystemTile system={elem} {...tileProps} />
+    ) : (
+      <GameTile game={elem} {...tileProps} />
+    )
   })
 
-  useOnInput((input) => {
-    const handlePrev = () => {
-      setActiveIndex((i) => Math.max(i - 1, 0));
-    }
+  const activeElem = elems[activeIndex];
+  const isSystem = getIsSystem(activeElem);
 
-    const handleNext = () => {
-      setActiveIndex((i) => Math.min(i + 1, elems.length - 1));
-    }
+  useOnInput(
+    (input) => {
+      const handlePrev = () => {
+        setActiveIndex((i) => Math.max(i - 1, 0))
+      }
 
-    switch (input) {
-      case Input.LEFT:
-        handlePrev();
-        break;
-      case Input.RIGHT:
-        handleNext();
-        break;
-      case Input.UP:
-        onPrevScroller?.();
-        break;
-      case Input.DOWN:
-        onNextScroller?.();
-        break;
-      case Input.A:
-        onSelect?.(elems[activeIndex]);
-        break;
+      const handleNext = () => {
+        setActiveIndex((i) => Math.min(i + 1, elems.length - 1))
+      }
+
+      switch (input) {
+        case Input.LEFT:
+          handlePrev()
+          break
+        case Input.RIGHT:
+          handleNext()
+          break
+        case Input.UP:
+          onPrevScroller?.()
+          break
+        case Input.DOWN:
+          onNextScroller?.()
+          break
+        case Input.A:
+          onSelect?.(elems[activeIndex])
+          break
+      }
+    },
+    {
+      disabled: !isActive || disableInput,
+      hints: [
+        { input: Input.A, text: `Select ${isSystem ? 'System' : 'Game'}` }
+      ]
     }
-  }, {
-    disabled: !isActive || disableInput
-  });
+  )
 
   useKeepVisible(activeRef, 35, ScrollType.HORIZONTAL, isActive)
-
-  const activeElem = elems[activeIndex];
 
   return (
     <div
@@ -121,10 +138,8 @@ export const Scroller = <T extends Game | System>({
           label={label}
           sublabel={isActive ? activeElem?.name : undefined}
         />
-     )}
-      <div className={css.main}>
-        {displayElems}
-      </div>
+      )}
+      <div className={css.main} style={{ scrollBehavior }}>{displayElems}</div>
     </div>
   )
 }

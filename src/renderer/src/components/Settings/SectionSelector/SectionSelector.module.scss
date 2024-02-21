@@ -1,7 +1,9 @@
-@import "@renderer/scss/colors.scss";
+@import '@renderer/scss/colors.scss';
 
 .sectionButton {
-  font-family: Figtree Variable, sans-serif;
+  font-family:
+    Figtree Variable,
+    sans-serif;
 
   width: 100%;
   border-radius: 20px;
@@ -16,11 +18,17 @@
   background-color: hsla(0, 0%, 0%, 0%);
   color: var(--primary);
 
-  transition: background-color .1s ease, color .1s ease;
+  transition:
+    background-color 0.1s ease,
+    color 0.1s ease;
 
   &.active {
     background-color: var(--primary);
     color: var(--background);
+  }
+
+  @media screen and (max-width: 1050px) {
+    padding: 15px;
   }
 }
 
@@ -28,7 +36,7 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-  transition: filter .1s ease;
+  transition: filter 0.1s ease;
 
   &.inactive {
     filter: opacity(50%);

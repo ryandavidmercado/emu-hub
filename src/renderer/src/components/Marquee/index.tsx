@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren } from 'react'
 
 interface Props {
   className?: string
@@ -6,16 +6,9 @@ interface Props {
   velocity?: number
 }
 
-const Marquee = ({
-  children,
-  className,
-}: PropsWithChildren<Props>) => {
+const Marquee = ({ children, className }: PropsWithChildren<Props>) => {
   // TODO: Get marquee scroll working
-  return (
-    <div className={className}>
-      {children}
-    </div>
-  )
+  return <div className={className}>{children}</div>
 }
 
 export default Marquee

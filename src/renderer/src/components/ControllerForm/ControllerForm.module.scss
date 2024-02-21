@@ -1,4 +1,4 @@
-@import "@renderer/scss/colors";
+@import '@renderer/scss/colors';
 
 .controllerForm {
   display: flex;
@@ -15,18 +15,28 @@
 
   padding: 30px;
 
-  font-family: Figtree Variable, sans-serif;
+  font-family:
+    Figtree Variable,
+    sans-serif;
   font-size: 1.3rem;
   color: $fadedminus;
-  transition: all .1s ease;
+  transition: all 0.1s ease;
 
   &.active {
     color: black;
 
-    &.default { background-color: var(--primary) }
-    &.caution { background-color: $caution }
-    &.warning { background-color: $warning }
-    &.confirm { background-color: $confirm; }
+    &.default {
+      background-color: var(--primary);
+    }
+    &.caution {
+      background-color: $caution;
+    }
+    &.warning {
+      background-color: $warning;
+    }
+    &.confirm {
+      background-color: $confirm;
+    }
   }
 }
 
@@ -36,8 +46,8 @@
   gap: 3px;
 
   .sublabel {
-    font-size: .9rem;
-    transition: opacity .1s ease;
+    font-size: 0.9rem;
+    transition: opacity 0.1s ease;
 
     &.active {
       opacity: 1;
@@ -52,23 +62,27 @@
 }
 
 .toggleOuter {
-  height: 100%;
-  width: 80px;
-  transition: background-color .1s ease, opacity .1s ease;
+  height: 80%;
+  width: 60px;
+  transition:
+    background-color 0.1s ease,
+    opacity 0.1s ease;
   background-color: hsla(0, 0%, 50%, 60%);
   border-radius: 3rem;
   display: flex;
   justify-content: flex-end;
-  padding: .3rem .4rem;
-  opacity: .5;
-  box-shadow: 2px 2px 3px rgba(0, 0, 0, .15);
+  padding: 0.3rem 0.4rem;
+  opacity: 0.5;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
 
   .toggleInner {
     height: 100%;
     aspect-ratio: 1 / 1;
     border-radius: 100%;
     background-color: hsla(0, 0%, 70%, 60%);
-    transition: background-color .4s ease, opacity .1s ease;
+    transition:
+      background-color 0.4s ease,
+      opacity 0.1s ease;
     &.enabled {
       background-color: var(--primary);
     }
@@ -91,12 +105,14 @@
 .selectorInput {
   display: flex;
   align-items: center;
-  gap: .25rem;
-  opacity: .5;
-  transition: opacity .15s ease, scale .1s ease;
+  gap: 0.25rem;
+  opacity: 0.5;
+  transition:
+    opacity 0.15s ease,
+    scale 0.1s ease;
 
   .caret {
-    transition: width .2s ease;
+    transition: width 0.2s ease;
 
     &.disabled {
       width: 0;

@@ -1,11 +1,10 @@
 export const scrapers = [
   {
-    id: "screenscraper",
-    label: "ScreenScraper"
+    id: 'screenscraper',
+    label: 'ScreenScraper'
   },
   {
-    id: "igdb",
-    label: "IGDB"
+    id: 'igdb',
+    label: 'IGDB'
   }
-] as const;
-
+] as const

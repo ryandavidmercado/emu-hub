@@ -1,4 +1,4 @@
-@import "@renderer/scss/colors";
+@import '@renderer/scss/colors';
 @import url('https://fonts.googleapis.com/css2?family=Lora&family=Ubuntu:wght@700&family=Young+Serif&display=swap');
 
 .foreground {
@@ -16,14 +16,14 @@
   height: 100%;
 
   &.withForeground {
-    filter: brightness(65%) blur(.6px);
+    filter: brightness(65%) blur(0.6px);
   }
 }
 
 .elem {
-  height: clamp(120px, 12vh, 300px);
+  height: clamp(120px, 12vh, 160px);
   filter: brightness(85%);
-  transition: all .15s ease;
+  transition: all 0.15s ease;
   border-radius: 3px;
   border: 3px solid transparent;
   box-shadow: 1px 4px 3px rgba(0, 0, 0, 0.5);
@@ -35,12 +35,12 @@
   background-clip: content-box;
 
   &.swapTransform {
-    transform: scale(.96);
+    transform: scale(0.96);
   }
 
   &.square {
     aspect-ratio: 1 / 1;
-    height: clamp(150px, 15vh, 300px);
+    height: clamp(150px, 15vh, 170px);
 
     .foreground {
       padding: 10%;
@@ -93,5 +93,3 @@
   -webkit-line-clamp: 3; // max nb lines to show
   -webkit-box-orient: vertical;
 }
-
-

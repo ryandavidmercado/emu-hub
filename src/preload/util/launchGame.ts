@@ -1,67 +1,89 @@
-import path from "path";
-import { Game, Emulator, System } from "@common/types";
-import { FLATPAK_PATH } from "./const";
-import { exec as execCb } from "child_process";
-import { promisify } from "util";
-import { loadConfig } from "./configStorage";
-import { MainPaths } from "@common/types/Paths";
-import { readFileSync } from "fs";
+import path from 'path'
+import { Game, Emulator, System } from '@common/types'
+import { spawn } from 'child_process'
+import { loadConfig } from './configStorage'
+import { readFileSync } from 'fs'
+import findEmulator from './findEmulator'
+import { AppConfig } from '@common/types/AppConfig'
+import { raEmulatorEntry } from '@common/features/RetroArch'
 
-const exec = promisify(execCb);
-
-const parseLaunchCommand = (command: string, emulatorLocation: string, romLocation: string) => {
+const parseLaunchCommand = (
+  command: string,
+  emulatorLocation: string,
+  romLocation: string
+) => {
   const templateMap = {
     /*  NOTE: Emulator path for RetroArch cores pre-includes the core launch command
-        ex: /path/to/RetroArch.AppImage -L /path/to/ra-cores/relevant_core.dylib */
-    "%EMUPATH%": () => emulatorLocation, // ex: /home/Applications/CoolEmu.AppImage
-    "%ROMPATH%": () => romLocation, // ex: /path/to/roms/someSystem/someParentDir/myRom.rom
-    "%ROMDIR%": () => path.dirname(romLocation), // ex: /path/to/roms/someSystem/someParentDir
-    "%ROMDIRNAME%": () => path.basename(path.dirname(romLocation)), // ex: someParentDir
-    "%ROMNAME%": () => path.parse(romLocation).base, // ex: myRom.rom
-    "%ROMNAMENOEXT%": () => path.parse(romLocation).name, // ex: myRom
-    "%ROMEXT%": () => path.parse(romLocation).ext, // .rom
-    "%ROMTEXTCONTENT%": () => readFileSync(romLocation, { encoding: "utf8" }), // ex: rom is text file with contents "Hello" -> this returns "Hello"
+        ex: "/path/to/RetroArch.AppImage" -L core_to_launch */
+    '%EMUPATH%': () => emulatorLocation, // ex: "/home/Applications/CoolEmu.AppImage"
+    '%ROMPATH%': () => romLocation, // ex: /path/to/roms/someSystem/someParentDir/myRom.rom
+    '%ROMDIR%': () => path.dirname(romLocation), // ex: /path/to/roms/someSystem/someParentDir
+    '%ROMDIRNAME%': () => path.basename(path.dirname(romLocation)), // ex: someParentDir
+    '%ROMNAME%': () => path.parse(romLocation).base, // ex: myRom.rom
+    '%ROMNAMENOEXT%': () => path.parse(romLocation).name, // ex: myRom
+    '%ROMEXT%': () => path.parse(romLocation).ext, // .rom
+    '%ROMTEXTCONTENT%': () => readFileSync(romLocation, { encoding: 'utf8' }).trim() // ex: rom is text file with contents "Hello" -> this returns "Hello"
   } as const
 
-  return Object.keys(templateMap).reduce((command, templateKey) => {
-    if(!command.includes(templateKey)) return command;
+  const injectTemplateValues = (command: string) => Object.keys(templateMap).reduce((command, templateKey) => {
+    if (!command.includes(templateKey)) return command
     return command.replaceAll(templateKey, templateMap[templateKey]())
-  }, command);
+  }, command)
+
+  return injectTemplateValues(command)
 }
 
-const launchGame = (game: Game, emulator: Emulator, system: System) => {
-  const { RetroArch: RA_PATHS, ROMs: ROM_PATH } = loadConfig("paths", {} /* we don't need to supply a default; jotai initializes this config on boot */) as MainPaths;
+const launchGame = async (game: Game, emulator: Emulator, system: System) => {
+  const emulatorLocation = await findEmulator(emulator);
 
-  const systemDir = system.romdir ?? path.join(ROM_PATH, system.id);
-  const romLocation = path.join(systemDir, ...(game.rompath ?? []), game.romname);
+  const { paths: { roms: romPath } } = loadConfig(
+    'config',
+    {} /* we don't need to supply a default; jotai initializes this config on boot */
+  ) as AppConfig
 
-  let bin: string;
-  let args: string[];
+  const systemDir = system.romdir ?? path.join(romPath, system.id)
+  const romLocation = path.join(systemDir, ...(game.rompath ?? []), game.romname)
 
-  if("core" in emulator) {
-    const coreLocation = `${path.join(RA_PATHS.cores, emulator.core)}.${RA_PATHS.coreExtension}`
-    bin = `${RA_PATHS.bin} -L "${coreLocation}"`;
+  const args = [
+    ...('core' in emulator.location ? (raEmulatorEntry.args ?? []) : []),
+    ...(emulator.args ?? [])
+  ].join(" ")
 
-    args = [
-      `"${romLocation}"`,
-      "-f"
-    ]
-  } else if("flatpak" in emulator) {
-    bin = path.join(FLATPAK_PATH, emulator.flatpak);
-    args = [emulator.arg, `"${romLocation}"`].filter(Boolean) as string[];
-  } else {
-    bin = emulator.bin;
-    args = [emulator.arg, `"${romLocation}"`].filter(Boolean) as string[];
+  const defaultLaunchCommand = `%EMUPATH% ${args} "%ROMPATH%"`
+  const launchCommand = emulator.launchCommands?.[path.extname(game.romname)]
+      ?? emulator.launchCommand
+      ?? defaultLaunchCommand
+
+  const parsedCommand = parseLaunchCommand(launchCommand, emulatorLocation, romLocation)
+
+  console.log(`Launching ${game.name} with command: ${parsedCommand}`)
+
+  const spawnedProcess = spawn(parsedCommand, [], { detached: true, shell: true, windowsHide: true })
+
+  const execInstance = new Promise<void>((resolve, reject) => {
+    spawnedProcess.on('close', (status) => {
+      if(status !== 1) resolve();
+
+      if ('core' in emulator.location) {
+        reject({ type: 'emu-not-found', data: emulator })
+      }
+    })
+
+    spawnedProcess.on('error', (e) => {
+      reject(e)
+    })
+  })
+
+  const abort = () => {
+    if(!spawnedProcess.pid) return;
+    process.kill(-spawnedProcess.pid, emulator.killSignal || 'SIGTERM')
   }
 
-  const launchCommand = emulator.launchCommands?.[path.extname(game.romname)] ?? emulator.launchCommand;
-
-  const execString = launchCommand
-    ? parseLaunchCommand(launchCommand, bin, romLocation)
-    : `${bin} ${args.join(" ")}`
-
-  console.log(`Launching ${game.name ?? game.romname} with command: ${execString}`);
-  return exec(execString);
+  return {
+    execInstance,
+    abort,
+    game
+  }
 }
 
-export default launchGame;
+export default launchGame

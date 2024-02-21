@@ -2,7 +2,6 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import installExtension, { REACT_DEVELOPER_TOOLS } from "electron-devtools-installer";
 
 function createWindow(): void {
   // Create the browser window.
@@ -16,15 +15,21 @@ function createWindow(): void {
       webSecurity: false
     },
     fullscreen: app.isPackaged,
-    backgroundColor: "hsl(200, 15%, 20%)"
+    backgroundColor: 'hsl(200, 15%, 20%)'
   })
 
   ipcMain.handle('restart', () => {
-    app.relaunch();
-    app.quit();
+    app.relaunch()
+    app.quit()
   })
 
-  ipcMain.handle('quit', () => { app.quit() });
+  ipcMain.handle('quit', () => {
+    app.quit()
+  })
+
+  ipcMain.handle('focusApp', () => {
+    app.focus({ steal: true })
+  })
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.maximize()
@@ -36,26 +41,25 @@ function createWindow(): void {
     return { action: 'deny' }
   })
 
-  mainWindow.webContents.session.webRequest.onBeforeSendHeaders(
-    (details, callback) => {
-      callback({ requestHeaders: { Origin: '*', ...details.requestHeaders } });
-    },
-  );
+  mainWindow.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
+    callback({ requestHeaders: { Origin: '*', ...details.requestHeaders } })
+  })
 
   mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
-    if(!details.responseHeaders) return callback({})
+    if (!details.responseHeaders) return callback({})
 
-    for(const header of Object.keys(details.responseHeaders)) {
-      if(header.toLowerCase() === 'access-control-allow-origin') delete details.responseHeaders[header];
+    for (const header of Object.keys(details.responseHeaders)) {
+      if (header.toLowerCase() === 'access-control-allow-origin')
+        delete details.responseHeaders[header]
     }
 
     callback({
       responseHeaders: {
         ...details.responseHeaders,
-        'Access-Control-Allow-Origin': ['*'],
-      },
-    });
-  });
+        'Access-Control-Allow-Origin': ['*']
+      }
+    })
+  })
 
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
@@ -71,11 +75,6 @@ function createWindow(): void {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  // install react dev tools
-  installExtension(REACT_DEVELOPER_TOOLS, { loadExtensionOptions: { allowFileAccess: true } })
-    .then((name) => console.log(`Added Extension:  ${name}`))
-    .catch((err) => console.log('An error occurred: ', err));
-
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 
@@ -100,7 +99,7 @@ app.whenReady().then(() => {
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   // if (process.platform !== 'darwin') {
-    app.quit()
+  app.quit()
   // }
 })
 
