@@ -1,5 +1,5 @@
 export const APPNAME = 'EmuHub'
-export const version = '1.0.0-alpha.4'
+export const version = '1.0.0-beta.0'
 export const SOFTNAME = `${APPNAME} v${version}`
 
 export const displayTypeMap = {
