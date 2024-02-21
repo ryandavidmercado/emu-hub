@@ -28,12 +28,13 @@ const GameSettingsModal = ({ game, open, setOpen }: Props) => {
 
   const [inGameArtSelection, setInGameArtSelection] = useState(false)
 
+  const selectedEmulator = game?.emulator ?? gameSystem?.defaultEmulator ?? gameSystem?.emulators?.[0]
+  const isDefaultEmulator = (emulatorId: string | undefined) => (gameSystem?.defaultEmulator ?? gameSystem?.emulators?.[0]) === emulatorId
+
   const emulatorsList = (gameSystem?.emulators ?? []).map(getEmulator).map((emu) => ({
     id: emu?.id,
-    label: emu?.name
+    label: (emu?.name ?? '') + (isDefaultEmulator(emu?.id) ? ' (Default)' : '')
   }))
-
-  const selectedEmulator = game.emulator ?? emulatorsList[0]?.id
 
   const pages: MultiFormPage[] = [
     {
@@ -55,7 +56,7 @@ const GameSettingsModal = ({ game, open, setOpen }: Props) => {
           options: emulatorsList,
           value: selectedEmulator,
           onSelect: (emuId: string) => {
-            updateGame({ emulator: emuId })
+            updateGame({ emulator: isDefaultEmulator(emuId) ? undefined : emuId })
           },
           wraparound: true
         },

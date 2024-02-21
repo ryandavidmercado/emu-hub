@@ -4,13 +4,14 @@ import { useState } from 'react'
 import { SectionProps } from '..'
 import { GrScan } from 'react-icons/gr'
 import MultiPageControllerForm, {
-  MultiFormPage
+  MultiFormPage, MultiPageControllerFormEntry
 } from '@renderer/components/ControllerForm/MultiPage'
 import notifications from '@renderer/atoms/notifications'
 import { appConfigAtom } from '@renderer/atoms/appConfig'
 import { IoCloudDownload } from 'react-icons/io5'
 import { scrapers } from '@renderer/const/scrapers'
-import { ControllerFormEntry } from '@renderer/components/ControllerForm/ControllerForm'
+import systems from '@renderer/atoms/systems'
+import emulators from '@renderer/atoms/emulators'
 
 const General = ({ isActive, onExit, inputPriority }: SectionProps) => {
   const [, scanRoms] = useAtom(games.scan)
@@ -22,6 +23,10 @@ const General = ({ isActive, onExit, inputPriority }: SectionProps) => {
   const [scraper, setScraper] = useState<string>(scrapers[0].id)
 
   const [scrapeBy, setScrapeBy] = useState('rom')
+
+  const [systemsList] = useAtom(systems.lists.all)
+  const [, updateSystem] = useAtom(systems.curriedSingle)
+  const [getEmulator] = useAtom(emulators.curriedSingle)
 
   const pages: MultiFormPage[] = [
     {
@@ -42,6 +47,7 @@ const General = ({ isActive, onExit, inputPriority }: SectionProps) => {
           type: 'action',
           Icon: GrScan
         },
+
         // electron doesn't get background gamepad input on MacOS
         window.platform !== "darwin" && {
           id: 'enable-quit',
@@ -54,9 +60,17 @@ const General = ({ isActive, onExit, inputPriority }: SectionProps) => {
         {
           id: 'scrape',
           label: 'Scrape Games',
-          type: 'navigate'
-        }
-      ].filter(Boolean) as ControllerFormEntry[]
+          type: 'navigate',
+          navigateTo: 'scrape'
+        },
+        {
+          id: 'default-emulators',
+          label: 'Default Emulators',
+          sublabel: 'Select default emulators per-system.',
+          type: 'navigate',
+          navigateTo: 'default-emulators'
+        },
+      ].filter(Boolean) as MultiPageControllerFormEntry[]
     },
     {
       id: 'scrape',
@@ -146,6 +160,21 @@ const General = ({ isActive, onExit, inputPriority }: SectionProps) => {
           }
         }
       ]
+    },
+    {
+      id: 'default-emulators',
+      entries: systemsList.map(system => {
+        return {
+          id: system.id,
+          type: 'selector',
+          options: system.emulators
+            ?.map(id => ({ id, label: getEmulator(id)?.name }))
+            .filter(entry => entry.label) ?? [],
+          value: system.defaultEmulator ?? system.emulators?.[0] ?? '',
+          onSelect: (emulatorId) => { updateSystem({ id: system.id, defaultEmulator: emulatorId }) },
+          label: system.name
+        }
+      })
     }
   ]
 

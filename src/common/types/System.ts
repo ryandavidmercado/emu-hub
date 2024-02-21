@@ -49,6 +49,7 @@ export interface System {
       map?: NameMapper
     }
   }
+  defaultEmulator?: string
 }
 
 export type SystemWithGames = System & { games: Game[]; screenshot?: string }
