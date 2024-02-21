@@ -148,7 +148,7 @@ const launchGameAtom = atom(null, async (get, set, gameId: string) => {
   const system = systemsList.find((system) => system.id === gameSystem)
   if (!system) throw new Error(`Tried to open game for undefined system: ${gameSystem}`)
 
-  const emulatorId = game.emulator ?? system.emulators?.[0]
+  const emulatorId = game.emulator ?? system.defaultEmulator ?? system.emulators?.[0]
   const emulator = get(emulators.single(emulatorId ?? ''))
 
   if (!emulatorId || !emulator) throw new Error(`No emulators defined for system: ${system.id}`)

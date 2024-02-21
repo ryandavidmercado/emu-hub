@@ -5,12 +5,12 @@ import { Input } from '@renderer/enums/Input'
 import { FaAngleRight } from 'react-icons/fa'
 import { Align } from 'react-window'
 
-type Entry = Omit<ControllerFormEntry, 'onSelect' | 'type'> &
+export type MultiPageControllerFormEntry = Omit<ControllerFormEntry, 'onSelect' | 'type'> &
   (FormTypes | { type: 'navigate'; navigateTo?: string | -1; onSelect?: (id: string) => void })
 
 export interface MultiFormPage {
   id: string
-  entries: Entry[] | ((data: any) => Entry[])
+  entries: MultiPageControllerFormEntry[] | ((data: any) => MultiPageControllerFormEntry[])
   canExitLeft?: boolean
   defaultSelection?: string
 }
