@@ -1,6 +1,6 @@
 {
   "name": "EmuHub",
-  "version": "1.0.0-alpha.4",
+  "version": "1.0.0-beta.0",
   "description": "A games-first hub for emulation.",
   "main": "./out/main/index.js",
   "author": "ryandavidmercado.github.com",
