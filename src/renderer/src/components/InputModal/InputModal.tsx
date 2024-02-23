@@ -4,7 +4,7 @@ import Modal from '../Modal/Modal'
 import css from './InputModal.module.scss'
 import { atom, useAtom } from 'jotai'
 import { Unsubscribe, createNanoEvents } from 'nanoevents'
-import { CSSProperties, useState } from 'react'
+import { CSSProperties, useRef, useState } from 'react'
 
 import keyNavigation from 'simple-keyboard-key-navigation'
 import Keyboard, { KeyboardButtonTheme, SimpleKeyboard } from 'react-simple-keyboard'
@@ -90,6 +90,19 @@ export const InputModal = () => {
   const [shiftOnSpace] = useAtom(shiftOnSpaceAtom)
 
   const [keyboardHandler, setKeyboardHandler] = useState<SimpleKeyboard>()
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const cursorLeft = () => {
+    if(!inputRef.current?.selectionStart) return
+    const newPosition = Math.max(inputRef.current.selectionStart - 1, 0)
+    inputRef.current.setSelectionRange(newPosition, newPosition)
+  }
+
+  const cursorRight = () => {
+    if(!inputRef.current?.selectionStart) return
+    const newPosition = Math.min(inputRef.current.selectionStart + 1, inputRef.current.value.length)
+    inputRef.current.setSelectionRange(newPosition, newPosition)
+  }
 
   useOnInput(
     (input) => {
@@ -138,6 +151,14 @@ export const InputModal = () => {
           module.right()
           break
         }
+        case Input.LB: {
+          cursorLeft()
+          break
+        }
+        case Input.RB: {
+          cursorRight()
+          break
+        }
         case Input.X: {
           setInput((i) => i.slice(0, -1))
           break
@@ -167,6 +188,8 @@ export const InputModal = () => {
         { input: Input.X, text: 'Backspace' },
         { input: Input.Y, text: 'Space' },
         { input: Input.START, text: 'Submit' },
+        { input: Input.LB, text: 'Previous Letter' },
+        { input: Input.RB, text: 'Next Letter' },
         { input: Input.LT, text: 'Shift' },
         { input: Input.RT, text: 'Caps Lock' }
       ],
@@ -205,6 +228,7 @@ export const InputModal = () => {
           onBlur={(e) => e.target.focus()}
           spellCheck='false'
           type={isPassword ? 'password' : 'text'}
+          ref={inputRef}
           inputMode='none' // disables triggering steam deck virtual keyboard; the trigger is too buggy to use in practice
         />
         <Keyboard
@@ -216,6 +240,10 @@ export const InputModal = () => {
           enableKeyNavigation={true}
           onKeyPress={(button) => {
             if (!['{backspace}', '{shift}'].includes(button) && isShift) setIsShift(false)
+
+            if(!inputRef.current) return
+            const insertionIndex = inputRef.current.selectionStart ?? inputRef.current.value.length
+            const insertChar = (text: string, char: string) => text.slice(0, insertionIndex) + char + text.slice(insertionIndex)
 
             switch (button) {
               case '{enter}':
@@ -229,17 +257,24 @@ export const InputModal = () => {
                 if (isCaps) setIsCaps(false)
                 break
               case '{space}':
-                setInput((i) => i + ' ')
+                setInput((i) => insertChar(i, ' '))
                 if (!isCaps && shiftOnSpace) setIsShift(true)
                 break
               case '{tab}':
-                setInput((i) => i + ' ')
+                setInput((i) => insertChar(i, '   '))
                 break
               case '{bksp}':
-                setInput((i) => i.slice(0, -1))
+                if(insertionIndex === 0) break
+                setInput((i) => i.slice(0, insertionIndex - 1) + i.slice(insertionIndex))
+                break
+              case '{left}':
+                cursorLeft()
+                break
+              case '{right}':
+                cursorRight()
                 break
               default:
-                setInput((i) => i + button)
+                setInput((i) => insertChar(i, button))
                 break
             }
           }}
@@ -249,14 +284,14 @@ export const InputModal = () => {
               '{tab} q w e r t y u i o p [ ] \\',
               "{lock} a s d f g h j k l ; ' {enter}",
               '{shift} z x c v b n m , . / {shift}',
-              '{space}'
+              '{space} {left} {right}'
             ],
             shift: [
               '~ ! @ # $ % ^ &amp; * ( ) _ + {bksp}',
               '{tab} Q W E R T Y U I O P { } |',
               '{lock} A S D F G H J K L : " {enter}',
               '{shift} Z X C V B N M &lt; &gt; ? {shift}',
-              '{space}'
+              '{space} {left} {right}'
             ]
           }}
           layoutName={isShift || isCaps ? 'shift' : 'default'}
@@ -271,7 +306,9 @@ export const InputModal = () => {
             '{enter}': '&nbsp;'.repeat(5) + 'Enter' + '&nbsp;'.repeat(5),
             '{shift}': '&nbsp;'.repeat(8) + 'Shift' + '&nbsp;'.repeat(8),
             '{lock}': 'Caps Lock',
-            '{tab}': 'Tab'
+            '{tab}': 'Tab',
+            '{left}': '←',
+            '{right}': '→'
           }}
           mergeDisplay={true}
         />

@@ -16,6 +16,8 @@ const kbKeyMap: Partial<Record<KeyboardEvent['key'], Input>> = {
   d: Input.RIGHT,
   w: Input.UP,
   s: Input.DOWN,
+  q: Input.LB,
+  e: Input.RB,
   Enter: Input.A,
   Escape: Input.B,
   Backspace: Input.START,
