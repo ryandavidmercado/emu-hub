@@ -28,7 +28,6 @@ interface UseInputModalProps {
   defaultValue?: string
   isPassword?: boolean
   style?: CSSProperties
-  shiftOnOpen?: boolean
   shiftOnSpace?: boolean
 }
 
@@ -47,7 +46,6 @@ export const useInputModal = () => {
     defaultValue,
     isPassword,
     style,
-    shiftOnOpen = true,
     shiftOnSpace = true
   }: UseInputModalProps) => {
     setLabel(label)
@@ -56,7 +54,7 @@ export const useInputModal = () => {
     setIsPassword(isPassword ?? false)
     setStyle(style ?? {})
     setIsCaps(false)
-    setIsShift(shiftOnOpen)
+    setIsShift(false)
     setShiftOnSpace(shiftOnSpace)
 
     let unbindCancelListener: Unsubscribe
@@ -171,22 +169,44 @@ export const InputModal = () => {
         { input: Input.START, text: 'Submit' },
         { input: Input.LT, text: 'Shift' },
         { input: Input.RT, text: 'Caps Lock' }
-      ]
-      // disableForDevice: "keyboard"
+      ],
+      disableForDevice: "keyboard"
     }
   )
+
+  useOnInput((input) => {
+    switch (input) {
+      case Input.A:
+        eventHandler.emit('input-modal-submit', modalInput)
+        break
+      case Input.B:
+        eventHandler.emit('input-modal-closed')
+        break
+    }
+  },
+  {
+    disabled: !open,
+    priority: InputPriority.INPUT_MODAL,
+    hints: [
+      { input: Input.B, text: 'Cancel' }
+    ],
+    disableForDevice: 'gamepad'
+  })
+
   return (
     <Modal open={open} id="input-modal">
       <div className={css.inputModal} style={style}>
         {/* <div>{label}</div> */}
-        <div className={css.inputWrapper}>
-          <div className={css.input}>
-            {isPassword
-              ? modalInput.split('').map(() => '*')
-              : modalInput.replaceAll(' ', '\u00A0')}
-          </div>
-          <div className={css.inputCaret}>|</div>
-        </div>
+        <input
+          className={css.input}
+          value={modalInput}
+          onChange={(e) => setInput(e.target.value)}
+          autoFocus
+          onBlur={(e) => e.target.focus()}
+          spellCheck='false'
+          type={isPassword ? 'password' : 'text'}
+          inputMode='none' // disables triggering steam deck virtual keyboard; the trigger is too buggy to use in practice
+        />
         <Keyboard
           modules={[keyNavigation]}
           onModulesLoaded={(keyboard) => {
