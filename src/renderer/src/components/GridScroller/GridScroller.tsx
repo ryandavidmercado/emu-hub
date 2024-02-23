@@ -10,6 +10,7 @@ import css from './GridScroller.module.scss'
 import { Game } from '@common/types/Game'
 import GameTile from '../MediaTile/Presets/GameTile'
 import { JsonParam, useQueryParam, withDefault } from 'use-query-params'
+import { useNavigate } from 'react-router-dom'
 
 interface ActiveCell {
   column: number,
@@ -26,6 +27,7 @@ const GridScroller = ({
 }: ScrollerProps<Game>) => {
   const instanceId = useId()
   const id = propsId ?? instanceId
+  const navigate = useNavigate()
 
   const [
     {
@@ -115,6 +117,20 @@ const GridScroller = ({
       align: 'center'
     })
   }, [activeIndex])
+
+  if(!elems[activeIndex]) {
+    if(!elems[0]) {
+      navigate(-1)
+      return null
+    } else {
+      setActiveCell({
+        row: 0,
+        column: 0
+      })
+
+      return null
+    }
+  }
 
   return (
     <div className={css.container}>

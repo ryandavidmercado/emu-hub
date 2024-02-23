@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { Showcase, ShowcaseContent } from '../../components/Showcase'
 import css from './Home.module.scss'
-import { useAtom } from 'jotai'
+import { atom, useAtomValue } from 'jotai'
 import games from '@renderer/atoms/games'
 import { Game, SystemWithGames } from '@common/types'
 import systems from '@renderer/atoms/systems'
@@ -14,19 +14,22 @@ import { getSystemShowcaseConfig } from '@renderer/components/Showcase/presets/s
 import classNames from 'classnames'
 import { useIndexParam } from '@renderer/util/queryParams/IndexParam'
 
+export const homeScrollersIdAtom = atom(String(Math.random()))
+
 export const Home = () => {
-  const [scrollerIndex, setScrollerIndex] = useIndexParam('home-scroller')
+  const scrollersId = useAtomValue(homeScrollersIdAtom)
 
-  const [systemsList] = useAtom(systems.lists.onlyWithGames)
-  const [recentlyPlayedGamesList] = useAtom(games.lists.recentlyPlayed)
-  const [recentlyAddedGamesList] = useAtom(games.lists.recentlyAdded)
-  const [collectionsList] = useAtom(collections.lists.withGames)
+  const systemsList = useAtomValue(systems.lists.onlyWithGames)
+  const recentlyPlayedGamesList = useAtomValue(games.lists.recentlyPlayed)
+  const recentlyAddedGamesList = useAtomValue(games.lists.recentlyAdded)
+  const collectionsList = useAtomValue(collections.lists.withGames)
 
-  const [recommendations] = useAtom(games.lists.recommended({ excludedRecentlyPlayed: true }))
+  const recommendations = useAtomValue(games.lists.recommended({ excludedRecentlyPlayed: true }))
 
   const [currentContent, setCurrentContent] = useState<
     { type: 'game'; data: Game } | { type: 'system'; data: SystemWithGames }
   >()
+
   const gamePills = useGamePills(currentContent?.type === 'game' ? currentContent.data : null)
 
   const navigate = useNavigate()
@@ -109,6 +112,8 @@ export const Home = () => {
     ]
   )
 
+  const [scrollerIndex, setScrollerIndex] = useIndexParam(`home-scrollers-index-${scrollersId}`, scrollers.length)
+
   return (
     <div className={css.landing}>
       <Showcase
@@ -120,7 +125,7 @@ export const Home = () => {
         className={css.scrollers}
         key={scrollers.length}
         controlledIndex={{ index: scrollerIndex, setIndex: setScrollerIndex }}
-        id={'home-scrollers'}
+        id={`home-scrollers-${scrollersId}`}
       />
     </div>
   )
