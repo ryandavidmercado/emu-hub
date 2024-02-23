@@ -11,6 +11,7 @@ import deepEqual from 'fast-deep-equal'
 import uFuzzy from '@leeoniya/ufuzzy'
 import { IGDB } from '@renderer/apiWrappers/IGDB'
 import { runningGameAtom } from './runningGame'
+import { homeScrollersIdAtom } from '@renderer/pages/Home'
 
 const mainAtoms = arrayConfigAtoms<Game>({ storageKey: 'games' })
 const PseudoRandom = () => {
@@ -160,6 +161,9 @@ const launchGameAtom = atom(null, async (get, set, gameId: string) => {
 
   const launchedGame = await window.launchGame(game, emulator, system);
   set(runningGameAtom, launchedGame)
+
+  // reset home scrollers when we launch a game
+  set(homeScrollersIdAtom, String(Math.random()))
 
   resetPseudoRandom()
   return launchedGame
