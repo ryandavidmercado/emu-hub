@@ -13,6 +13,8 @@ import { getGameShowcaseConfig } from '@renderer/components/Showcase/presets/gam
 import { getSystemShowcaseConfig } from '@renderer/components/Showcase/presets/system'
 import classNames from 'classnames'
 import { useIndexParam } from '@renderer/util/queryParams/IndexParam'
+import { ControllerHint, useOnInput } from '@renderer/hooks'
+import { Input } from '@renderer/enums'
 
 export const homeScrollersIdAtom = atom(String(Math.random()))
 
@@ -55,7 +57,7 @@ export const Home = () => {
     }
   })()
 
-  const scrollers = useMemo(
+  const unfilteredScrollers = useMemo(
     () => [
       {
         id: 'continue-playing',
@@ -112,7 +114,26 @@ export const Home = () => {
     ]
   )
 
+  const scrollers = useMemo(() => unfilteredScrollers.filter(s => s.elems?.length), [unfilteredScrollers])
+
   const [scrollerIndex, setScrollerIndex] = useIndexParam(`home-scrollers-index-${scrollersId}`, scrollers.length)
+  const collectionsIndex = scrollers.findIndex(s => s.id.startsWith('collection'))
+
+  useOnInput((input) => {
+    switch(input) {
+      case Input.Y: {
+        if(collectionsIndex === -1) return
+        if(scrollerIndex >= collectionsIndex) return
+
+        setScrollerIndex(collectionsIndex)
+      }
+    }
+  },
+  {
+    hints: [
+      collectionsIndex !== -1 && scrollerIndex < collectionsIndex && { input: Input.Y, text: 'Jump to Collections' }
+    ].filter(Boolean) as ControllerHint[]
+  })
 
   return (
     <div className={css.landing}>
