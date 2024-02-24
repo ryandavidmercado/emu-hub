@@ -7,3 +7,4 @@
     * This fixes less obvious crash cases for navigating back to an invalid scroller index (ex: deleting the last game in a list)
 * Add Jump to Collections button on Home
 * Add native keyboard support for input modals (setting ROMs directory, rename game, search, etc)
+* Add support for moving input caret in keyboard
