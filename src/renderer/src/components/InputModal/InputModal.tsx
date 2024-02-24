@@ -215,8 +215,8 @@ export const InputModal = () => {
         { input: Input.X, text: 'Backspace' },
         { input: Input.Y, text: 'Space' },
         { input: Input.START, text: 'Submit' },
-        { input: Input.LB, text: 'Previous Letter' },
-        { input: Input.RB, text: 'Next Letter' },
+        { input: Input.LB, text: 'Cursor Left' },
+        { input: Input.RB, text: 'Cursor Right' },
         { input: Input.LT, text: 'Shift' },
         { input: Input.RT, text: 'Caps Lock' }
       ],
