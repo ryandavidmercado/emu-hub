@@ -90,6 +90,7 @@ export const InputModal = () => {
   const [shiftOnSpace] = useAtom(shiftOnSpaceAtom)
 
   const [keyboardHandler, setKeyboardHandler] = useState<SimpleKeyboard>()
+
   const inputRef = useRef<HTMLInputElement>(null)
 
   const cursorLeft = () => {
@@ -102,6 +103,32 @@ export const InputModal = () => {
     if(!inputRef.current?.selectionStart) return
     const newPosition = Math.min(inputRef.current.selectionStart + 1, inputRef.current.value.length)
     inputRef.current.setSelectionRange(newPosition, newPosition)
+  }
+
+  const backspace = () => {
+    if(!inputRef.current?.selectionStart) return
+
+    const text = inputRef.current.value
+    const insertionIndex = inputRef.current.selectionStart ?? inputRef.current.value.length
+
+    const newText = text.slice(0, insertionIndex - 1) + text.slice(insertionIndex)
+    const newIndex = insertionIndex - 1
+
+    setInput(newText)
+    setTimeout(() => { inputRef.current?.setSelectionRange(newIndex, newIndex) }, 5)
+  }
+
+  const insertChar = (char: string) => {
+    if(!inputRef.current?.selectionStart) return
+
+    const text = inputRef.current.value
+    const insertionIndex = inputRef.current.selectionStart ?? inputRef.current.value.length
+
+    const newText = text.slice(0, insertionIndex) + char + text.slice(insertionIndex)
+    const newIndex = insertionIndex + 1
+
+    setInput(newText)
+    setTimeout(() => { inputRef.current?.setSelectionRange(newIndex, newIndex) }, 5)
   }
 
   useOnInput(
@@ -160,11 +187,11 @@ export const InputModal = () => {
           break
         }
         case Input.X: {
-          setInput((i) => i.slice(0, -1))
+          backspace()
           break
         }
         case Input.Y: {
-          setInput((i) => i + ' ')
+          insertChar(' ')
           break
         }
         case Input.LT: {
@@ -239,11 +266,10 @@ export const InputModal = () => {
           useMouseEvents={true}
           enableKeyNavigation={true}
           onKeyPress={(button) => {
-            if (!['{backspace}', '{shift}'].includes(button) && isShift) setIsShift(false)
+            if (!['{bksp}', '{shift}'].includes(button) && isShift) setIsShift(false)
 
             if(!inputRef.current) return
             const insertionIndex = inputRef.current.selectionStart ?? inputRef.current.value.length
-            const insertChar = (text: string, char: string) => text.slice(0, insertionIndex) + char + text.slice(insertionIndex)
 
             switch (button) {
               case '{enter}':
@@ -257,15 +283,15 @@ export const InputModal = () => {
                 if (isCaps) setIsCaps(false)
                 break
               case '{space}':
-                setInput((i) => insertChar(i, ' '))
+                insertChar(' ')
                 if (!isCaps && shiftOnSpace) setIsShift(true)
                 break
               case '{tab}':
-                setInput((i) => insertChar(i, '   '))
+                insertChar(' ')
                 break
               case '{bksp}':
                 if(insertionIndex === 0) break
-                setInput((i) => i.slice(0, insertionIndex - 1) + i.slice(insertionIndex))
+                backspace()
                 break
               case '{left}':
                 cursorLeft()
@@ -274,7 +300,7 @@ export const InputModal = () => {
                 cursorRight()
                 break
               default:
-                setInput((i) => insertChar(i, button))
+                insertChar(button)
                 break
             }
           }}
