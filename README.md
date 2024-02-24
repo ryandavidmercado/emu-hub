@@ -118,6 +118,15 @@ hub | _noun_:
    - Assets: C:\Users\[YOUR-USERNAME]\Documents\EmuHub\assets
    - Config: C:\Users\[YOUR-USERNAME]\AppData\Roaming\EmuHub\EmuHubConfig
 
+# Keyboard Mapping
+
+When using a keyboard to navigate the interface, controls are mapped as follows:
+* WASD: D-Pad
+* Enter: A Button
+* Escape: B Button
+* Backspace: Start Button
+* Tab: Select Button
+
 ## Troubleshooting
 
 > EmuHub won't launch! (I'm on Steam Deck)
