@@ -118,7 +118,7 @@ hub | _noun_:
    - Assets: C:\Users\[YOUR-USERNAME]\Documents\EmuHub\assets
    - Config: C:\Users\[YOUR-USERNAME]\AppData\Roaming\EmuHub\EmuHubConfig
 
-# Keyboard Mapping
+## Keyboard Mapping
 
 When using a keyboard to navigate the interface, controls are mapped as follows:
 * WASD: D-Pad
