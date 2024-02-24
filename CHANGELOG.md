@@ -8,3 +8,4 @@
 * Add Jump to Collections button on Home
 * Add native keyboard support for input modals (setting ROMs directory, rename game, search, etc)
 * Add support for moving input caret in keyboard
+* Support renaming collections (Settings -> Collections -> [Some Collection] -> Rename "Some Collection")
