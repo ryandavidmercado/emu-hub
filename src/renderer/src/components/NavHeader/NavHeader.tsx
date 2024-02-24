@@ -54,7 +54,6 @@ const NavHeader = () => {
       handler: async () => {
         const query = await getInput({
           label: 'Search Games',
-          shiftOnOpen: false,
           shiftOnSpace: false
         })
 

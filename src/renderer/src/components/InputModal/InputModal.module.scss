@@ -12,18 +12,23 @@
 .inputModal {
   width: min(1088px, 85vw);
 
-  .inputWrapper {
+  .input {
     width: 100%;
     height: 100px;
     padding: 0 50px;
     background-color: var(--background);
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
+    border: none;
     display: flex;
     font-size: 2rem;
     font-family: Figtree Variable;
     color: white;
     align-items: center;
+
+    &:focus {
+      outline: none;
+    }
   }
 
   .inputCaret {

@@ -83,7 +83,6 @@ const Init = () => {
       case 'change': {
         const input = await getInput({
           defaultValue: paths.roms,
-          shiftOnOpen: false
         })
 
         if (!input) return main(paths)

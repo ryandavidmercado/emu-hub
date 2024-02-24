@@ -221,7 +221,6 @@ const Store = ({ system, store, isActive, onBack, onExit, inputPriority }: Store
           if(!canSearch) break
           const newQuery = await getInput({
             label: 'Search Store',
-            shiftOnOpen: false,
             shiftOnSpace: false
           })
 
