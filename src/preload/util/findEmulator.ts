@@ -136,6 +136,8 @@ async function findLinuxEmulator(emulator: Emulator): Promise<string> {
     const matcher = new RegExp(`^${escapeRegExp(emulator.location.linux.binName)}$`)
 
     for (const applicationPath of LINUX_APPLICATION_PATHS) {
+      log.info(`Scanning ${applicationPath}`)
+
       let dirContents: string[]
       try {
         dirContents = await readdir(applicationPath)
@@ -144,10 +146,7 @@ async function findLinuxEmulator(emulator: Emulator): Promise<string> {
       }
 
       for (const entry of dirContents) {
-        log.info(`Scanning ${applicationPath}`)
-
         const entryPath = path.join(applicationPath, entry)
-
         let entryStat: Stats;
 
         try {
