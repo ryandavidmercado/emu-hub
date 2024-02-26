@@ -13,7 +13,7 @@ hub | _noun_:
 
 > the effective center of an activity
 
-[Latest Release](https://github.com/ryandavidmercado/emu-hub/releases/latest) | [Discord](https://discord.gg/Uma7bmqB)
+[Latest Release](https://github.com/ryandavidmercado/emu-hub/releases/latest) | [Discord](https://discord.gg/YjNZ2mB6eg)
 
 ## Features
 
@@ -142,7 +142,7 @@ If you're running EmuHub through Game Mode, [add --no-sandbox to the launch opti
 
 > EmuHub said emulator not found when I tried to launch SOME GAME, but I have that emulator installed!
 
-Please file an issue on this GitHub repository or leave a comment in your platform's support channel on [our Discord](https://discord.gg/Uma7bmqB).
+Please file an issue on this GitHub repository or leave a comment in your platform's support channel on [our Discord](https://discord.gg/YjNZ2mB6eg).
 
 > RetroArch crashes when I run N64 games! (I'm on MacOS)
 
@@ -150,7 +150,7 @@ The default emulator for N64 (Mupen64Plus-Next) has some compatibility issues wi
 
 ## ADVANCED - Adding custom systems/emulators
 
-EmuHub does not yet have a GUI for adding custom systems; you'll need to add these entries to the config files. (Alternatively, leave a comment in the #system-requests channel of [our Discord](https://discord.gg/Uma7bmqB) so we can add the system to our roadmap!)
+EmuHub does not yet have a GUI for adding custom systems; you'll need to add these entries to the config files. (Alternatively, leave a comment in the #system-requests channel of [our Discord](https://discord.gg/YjNZ2mB6eg) so we can add the system to our roadmap!)
 
 1. Head to the EmuHub config directory for your respective platform (see: [Data Directories](#data-directories))
 1. Open systems.yml
