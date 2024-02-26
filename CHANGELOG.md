@@ -12,3 +12,4 @@
 * Don't overwrite user's game tile art selection when re-scraping a game
 * Add emulator: Ryujinx (Switch)
 * Remove Yuzu from default emulators for MacOS
+* Add app icon
