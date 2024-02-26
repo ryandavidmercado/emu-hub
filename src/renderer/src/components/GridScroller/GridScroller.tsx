@@ -86,9 +86,12 @@ const GridScroller = ({
       newIndex = maxIndex
     }
 
-    onHighlight?.(elems[newIndex])
     setActiveCell(newCell)
   })
+
+  useEffect(() => {
+    onHighlight?.(elems[activeIndex])
+  }, [activeIndex, onHighlight])
 
   const gridComponents = useMemo(() => {
     return {
