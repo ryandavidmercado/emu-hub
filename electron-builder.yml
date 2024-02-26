@@ -33,11 +33,14 @@ dmg:
 linux:
   target:
     - target: AppImage
-      arch: x64
+      arch:
+        - x64
+        - armv7l
+        - arm64
   maintainer: electronjs.org
   category: Utility
 appImage:
-  artifactName: ${name}-${version}.${ext}
+  artifactName: ${name}-${version}-${arch}.${ext}
 npmRebuild: false
 publish:
   provider: generic
