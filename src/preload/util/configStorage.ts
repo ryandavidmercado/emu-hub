@@ -7,7 +7,7 @@ import { CONFIG_PATH } from './const'
 const configFilePath = (configType: string) => path.join(CONFIG_PATH, `${configType}.yml`)
 
 const saveConfig = <T>(configType: string, value: T) => {
-  const yaml = YAML.stringify(value)
+  const yaml = YAML.stringify(value, { aliasDuplicateObjects: false })
 
   mkdirSync(CONFIG_PATH, { recursive: true });
   writeFileSync(configFilePath(configType), yaml, { encoding: 'utf8' })
@@ -21,7 +21,7 @@ export const writeDefaultConfig = (configType: string, value: any) => {
   writeFileSync(readmePath, "The files in this folder are provided for reference. Any changes made will be ignored and overwritten!\n\nTo modify defaults or add new entries, use the respective config files in the main config folder.")
 
   const configPath = path.join(defaultsPath, `${configType}.yml`);
-  writeFileSync(configPath, YAML.stringify(value));
+  writeFileSync(configPath, YAML.stringify(value, { aliasDuplicateObjects: false }));
 }
 
 export const loadConfig = <T>(configType: string, defaultValue: T) => {
