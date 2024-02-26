@@ -33,7 +33,7 @@ const defaultSystems = [
     id: 'wii',
     ssId: 16,
     name: 'Nintendo Wii',
-    fileExtensions: ['.iso', '.cso', '.rvz', '.wbfs'],
+    fileExtensions: ['.iso', '.cso', '.rvz', '.wbfs', '.ciso'],
     emulators: ['dolphin'],
     releaseYear: '2006',
     company: 'Nintendo'
@@ -52,7 +52,7 @@ const defaultSystems = [
     ssId: 13,
     name: 'Gamecube',
     emulators: ['dolphin'],
-    fileExtensions: ['.iso', '.cso', '.rvz'],
+    fileExtensions: ['.iso', '.cso', '.rvz', '.ciso'],
     releaseYear: '2001',
     company: 'Nintendo'
   },
