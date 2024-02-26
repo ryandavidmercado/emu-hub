@@ -38,6 +38,11 @@ hub | _noun_:
 ## Initial Setup
 
 1. Download the [latest release](https://github.com/ryandavidmercado/emu-hub/releases/latest)
+   - Steam Deck: EmuHub...-x86_64.AppImage
+   - Linux (x86/x64): EmuHub...-x86_64.AppImage
+   - Linux (ARM 32-bit): EmuHub...armv7l.AppImage
+   - Linux (ARM 64-bit): EmuHub...arm64.AppImage
+   - MacOS: EmuHub...dmg
 1. (MacOS only) Open the DMG file and drag EmuHub.app onto the Installations folder.
 1. (Linux/Steam Deck only)
    - Make sure to set the EmuHub AppImage to executable: https://docs.appimage.org/introduction/quickstart.html
