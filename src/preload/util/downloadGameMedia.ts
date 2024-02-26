@@ -26,7 +26,7 @@ const downloadGameMedia = async (
 
   try {
     await mkdir(gameAssetsPath, { recursive: true })
-  } catch {}
+  } catch { }
 
   const requests = medias.map(({ mediaType, url, format }) => async () => {
     const mediaPath = path.join(gameAssetsPath, `${mediaType}.${format}`)
@@ -61,11 +61,13 @@ const downloadGameMedia = async (
     }
   }, game)
 
-  newGame.gameTileDisplayType = newGame.hero
-    ? 'fanart'
-    : newGame.screenshot
-      ? 'screenshot'
-      : undefined
+  if (!newGame.gameTileDisplayType) {
+    newGame.gameTileDisplayType = newGame.hero
+      ? 'fanart'
+      : newGame.screenshot
+        ? 'screenshot'
+        : undefined
+  }
 
   refreshImages()
   return newGame

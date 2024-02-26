@@ -9,3 +9,4 @@
 * Add native keyboard support for input modals (setting ROMs directory, rename game, search, etc)
 * Add support for moving input caret in keyboard
 * Support renaming collections (Settings -> Collections -> [Some Collection] -> Rename "Some Collection")
+* Don't overwrite user's game tile art selection when re-scraping a game
