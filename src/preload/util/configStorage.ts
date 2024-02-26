@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync, rmSync, mkdirSync } from 'fs'
 import YAML from 'yaml'
 import path from 'path'
+import log from 'electron-log/renderer'
 
 import { CONFIG_PATH } from './const'
 
@@ -30,6 +31,9 @@ export const loadConfig = <T>(configType: string, defaultValue: T) => {
 
     return YAML.parse(file) as T
   } catch (e) {
+    log.warn(`Failed to read ${configType} at ${configFilePath(configType)}: ${e}`)
+    log.info(`Initializing ${configType} config at ${configFilePath(configType)}`)
+
     saveConfig(configType, defaultValue)
     return defaultValue
   }
