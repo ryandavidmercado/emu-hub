@@ -168,11 +168,27 @@ const defaultEmulators = [
         appImage: 'rpcs3'
       }
     },
-    args: [
-      '--no-gui',
-      '--fullscreen'
-    ]
+    args: ['--no-gui', '--fullscreen']
+  },
+  {
+    id: 'ryujinx',
+    name: 'Ryujinx',
+    location: {
+      darwin: {
+        name: 'Ryujinx'
+      },
+      linux: {
+        flatpak: 'org.ryujinx.Ryujinx',
+        binName: 'Ryujinx'
+      }
+    },
+    args: ['-f']
   }
 ]
 
-export default defaultEmulators
+const platformExclusions: Partial<Record<NodeJS.Platform, string[]>> = {
+  'darwin': ['yuzu']
+}
+
+const filteredDefaultEmulators = defaultEmulators.filter(e => !platformExclusions[window.platform]?.includes(e.id))
+export default filteredDefaultEmulators
