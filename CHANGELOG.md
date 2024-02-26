@@ -13,3 +13,4 @@
 * Add emulator: Ryujinx (Switch)
 * Remove Yuzu from default emulators for MacOS
 * Add app icon
+* Fix: Add .zip to supported extensions for NDS

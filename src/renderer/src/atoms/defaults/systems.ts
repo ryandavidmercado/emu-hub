@@ -124,7 +124,7 @@ const defaultSystems = [
     company: 'Nintendo',
     handheld: true,
     emulators: ['melonds_libretro'],
-    fileExtensions: ['.nds', '.srl']
+    fileExtensions: ['.nds', '.srl', '.zip']
   },
   {
     id: 'genesis',
