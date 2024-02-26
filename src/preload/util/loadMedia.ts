@@ -3,6 +3,7 @@ import bufferToDataUrl from 'buffer-to-data-url'
 import { MediaImageData } from '@common/types/InternalMediaType'
 import { readFileSync } from 'fs'
 import { readFile } from 'fs/promises'
+import log from 'electron-log/renderer'
 
 import path from 'path'
 
@@ -23,6 +24,7 @@ const readLocalMedia = (mediaPath: string) => {
     map[mediaPath] = url
     return url
   } catch (e) {
+    log.error(`Failed to load local image at ${mediaPath}: ${e}`)
     return ''
   }
 }
