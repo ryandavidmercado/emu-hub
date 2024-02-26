@@ -48,7 +48,8 @@ export const Scroller = <T extends Game | System>({
 
   const scrollBehavior = useDeferredValue('smooth', 'initial')
 
-  const [activeIndex, setActiveIndex] = useIndexParam(id)
+  const [activeIndex, setActiveIndex] = useIndexParam(id, elems.length)
+
   const getIsSystem = (_elem: Game | System): _elem is System => {
     return contentType === 'system'
   }

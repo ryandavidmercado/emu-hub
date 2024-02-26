@@ -73,7 +73,7 @@ hub | _noun_:
    - Keep scraping as you add new games! The more you scrape, the better EmuHub will get.
      - EmuHub uses scraped data to surface per-game and general recommendations.
      - Powerful sorting and filtering tools are on the roadmap. The more data you have scraped, the easier it'll be to discover new games in your collection!
-  
+
 ## Supported Systems
 
 - Nintendo Entertainment System (RetroArch - Mesen)
@@ -133,7 +133,7 @@ When using a keyboard to navigate the interface, controls are mapped as follows:
 
 Make sure you've set the EmuHub AppImage to executable: https://docs.appimage.org/introduction/quickstart.html
 
-If you're running EmuHub through Game Mode, add --no-sandbox to the launch arguments.
+If you're running EmuHub through Game Mode, [add --no-sandbox to the launch options](https://help.steampowered.com/en/faqs/view/7D01-D2DD-D75E-2955) for EmuHub in Steam.
 
 > EmuHub said emulator not found when I tried to launch SOME GAME, but I have that emulator installed!
 
@@ -141,9 +141,7 @@ Please file an issue on this GitHub repository or leave a comment in your platfo
 
 > RetroArch crashes when I run N64 games! (I'm on MacOS)
 
-The default emulator for N64 (Mupen64Plus-Next) has some compatibility issues with MacOS. Go to your game's settings and swap the emulator to ParaLLEl. (System-level emulator configuration is on the roadmap but not yet implemented; you'll have to change emulator per-game for the time being.)
-
-
+The default emulator for N64 (Mupen64Plus-Next) has some compatibility issues with non-Metal builds of RetroArch for MacOS. Either download [the newest RetroArch nightly](https://www.retroarch.com/index.php?page=platforms) or set the default emulator for N64 to ParaLLEl (Settings -> Games -> Default Emulators -> Nintendo 64).
 
 ## ADVANCED - Adding custom systems/emulators
 

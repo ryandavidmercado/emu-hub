@@ -193,7 +193,7 @@ const defaultSystems = [
     releaseYear: '2017',
     company: 'Nintendo',
     fileExtensions: ['.xci', '.nsp', '.nca', '.nso', '.nro'],
-    emulators: ['yuzu']
+    emulators: ['yuzu', 'ryujinx']
   },
   {
     id: 'wiiu',

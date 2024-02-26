@@ -111,7 +111,10 @@ export const arrayConfigAtoms = <T extends { id: string }>(options: ArrayConfigO
     )
   )
 
-  const curriedSingle = atom((get) => (id: string) => get(single(id)))
+  const curriedSingle = atom(
+    (get) => (id: string) => get(single(id)),
+    (_, set, update: Partial<T> & { id: string }) => set(single(update.id), update)
+  )
 
   const add = atom(null, (get, set, newElem: PartialBy<T, 'id'>) => {
     const currentEntry = get(single(newElem.id ?? ''))

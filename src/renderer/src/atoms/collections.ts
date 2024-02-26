@@ -59,6 +59,7 @@ export default {
   single: {
     base: mainAtoms.single,
     withGames: getWithGames,
+    curried: mainAtoms.curriedSingle,
     curriedWithGames: curriedGetWithGames
   },
   addGame,

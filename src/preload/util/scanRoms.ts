@@ -10,11 +10,11 @@ const uid = new ShortUniqueId()
 const scanRoms = async (paths: AppConfig['paths'], currentSystems: System[], currentGames: Game[]) => {
   const getGameLookupKey = (romname: string, systemId: string, rompath: string[] = []) =>
     `${romname}-${systemId}-${rompath.join('_')}`
-  const gameLookupMap: Record<string, Game> = currentGames.reduce((acc, game) => {
-    const key = getGameLookupKey(game.romname, game.system, game.rompath)
-    acc[key] = game
-    return acc
-  }, {})
+
+  const gameLookupMap: Record<string, Game> = currentGames.reduce((acc, game) => ({
+    ...acc,
+    [getGameLookupKey(game.romname, game.system, game.rompath)]: game
+  }), {})
 
   const { roms: romPath } = paths
 
