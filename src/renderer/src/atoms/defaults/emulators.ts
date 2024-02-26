@@ -96,7 +96,7 @@ const defaultEmulators = [
         flatpak: 'net.pcsx2.PCSX2'
       },
       darwin: {
-        name: 'PCSX2'
+        name: 'PCSX2(-v\\d)?(.\\d*)*'
       }
     }
   },

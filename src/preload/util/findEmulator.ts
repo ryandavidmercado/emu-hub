@@ -55,13 +55,13 @@ async function findDarwinEmulator(emulator: Emulator): Promise<string> {
     }
   }
 
-  log.info(`Searching for emulator ${emulator.name} in /Applications/${emulator.location.darwin.name}*.app ...`)
+  log.info(`Searching for emulator ${emulator.name} in /Applications/${emulator.location.darwin.name}.app ...`)
   const appDir = await readdir('/Applications')
-  const matcher = new RegExp(`^${escapeRegExp(emulator.location.darwin.name)}.*\.app$`)
+  const matcher = new RegExp(`^${emulator.location.darwin.name}\.app$`)
 
   const emuDir = appDir.find((app) => app.match(matcher))
   if (!emuDir) {
-    log.error(`Couldn't find match for /Applications/${emulator.location.darwin.name}*.app !`)
+    log.error(`Couldn't find match for /Applications/${emulator.location.darwin.name}.app !`)
     throw {
       type: 'emu-not-found',
       data: emulator
