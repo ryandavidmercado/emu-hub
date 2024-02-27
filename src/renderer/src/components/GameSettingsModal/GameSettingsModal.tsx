@@ -62,7 +62,8 @@ const GameSettingsModal = ({ game, open, setOpen }: Props) => {
         },
         {
           id: 'rename',
-          label: 'Rename',
+          label: "Rename",
+          inputLabel: `Rename "${game.name}"`,
           sublabel: `Current: ${game.name}`,
           type: 'input',
           onInput: (name: string) => {

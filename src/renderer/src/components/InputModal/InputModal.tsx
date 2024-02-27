@@ -81,7 +81,7 @@ export const useInputModal = () => {
 export const InputModal = () => {
   const [modalInput, setInput] = useAtom(inputAtom)
   const [open] = useAtom(modalOpenAtom)
-  // const [label] = useAtom(labelAtom);
+  const [label] = useAtom(labelAtom);
   const [isPassword] = useAtom(isPasswordAtom)
   const [style] = useAtom(styleAtom)
 
@@ -245,8 +245,8 @@ export const InputModal = () => {
 
   return (
     <Modal open={open} id="input-modal">
+      {label && <div className={css.label}>{label}</div>}
       <div className={css.inputModal} style={style}>
-        {/* <div>{label}</div> */}
         <input
           className={css.input}
           value={modalInput}

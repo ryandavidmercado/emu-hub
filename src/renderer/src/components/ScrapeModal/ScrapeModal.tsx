@@ -10,6 +10,7 @@ import { InputPriority } from '@renderer/const/inputPriorities'
 import { IoCloudDownload } from 'react-icons/io5'
 import games from '@renderer/atoms/games'
 import { scrapers } from '@renderer/const/scrapers'
+import { useInputModal } from '../InputModal/InputModal'
 
 interface Props {
   open: boolean
@@ -19,7 +20,7 @@ interface Props {
 
 const ScrapeModal = ({ open, setOpen, game }: Props) => {
   const [, scrapeGame] = useAtom(games.scrape)
-  const [scrapeBy, setScrapeBy] = useState<'name' | 'rom'>('rom')
+  const [scrapeBy, setScrapeBy] = useState<'name' | 'rom' | 'query'>('rom')
 
   useOnInput(
     (input) => {
@@ -35,6 +36,7 @@ const ScrapeModal = ({ open, setOpen, game }: Props) => {
   )
 
   const [scraper, setScraper] = useState<'screenscraper' | 'igdb'>(scrapers[0].id)
+  const getInput = useInputModal()
 
   const entries: ControllerFormEntry[] = [
     {
@@ -54,9 +56,10 @@ const ScrapeModal = ({ open, setOpen, game }: Props) => {
       label: 'Scrape By:',
       options: [
         { id: 'rom', label: 'ROM Info (Name, Size, CRC)' },
-        { id: 'name', label: 'Game Name' }
+        { id: 'name', label: 'Game Name' },
+        { id: 'query', label: 'Custom Query' }
       ],
-      onSelect: (id) => setScrapeBy(id as 'name' | 'rom'),
+      onSelect: (id) => setScrapeBy(id as 'name' | 'rom' | 'query'),
       wraparound: true,
       value: scrapeBy
     },
@@ -65,8 +68,16 @@ const ScrapeModal = ({ open, setOpen, game }: Props) => {
       type: 'action',
       label: 'Scrape Now',
       colorScheme: 'confirm',
-      onSelect: () => {
-        scrapeGame({ gameId: game.id, scraper, scrapeBy })
+      onSelect: async () => {
+        if(scrapeBy !== 'query') {
+          scrapeGame({ gameId: game.id, scraper, scrapeBy })
+          return
+        }
+
+        const query = await getInput({ label: 'Scraper Search Query' })
+        if(!query) return
+
+        scrapeGame({ gameId: game.id, scraper, scrapeBy, query })
       },
       Icon: IoCloudDownload
     }

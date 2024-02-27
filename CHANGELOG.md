@@ -1,5 +1,6 @@
 ## 1.0.0 Beta 3
 * Fix: Fix de-sync between selection and active game when navigating back to a Game List Page (All Games, Search, etc)
+* Feature: Custom search queries when scraping per-game
 
 ## 1.0.0 Beta 2
 * Feature: Select default emulators per-system (Settings -> Games -> Default Emulators)

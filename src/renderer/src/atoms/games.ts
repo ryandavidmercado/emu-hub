@@ -248,7 +248,8 @@ interface ScrapeSettings {
   gameId: string
   extraText?: string
   scraper?: 'screenscraper' | 'igdb'
-  scrapeBy?: 'rom' | 'name'
+  scrapeBy?: 'rom' | 'name' | 'query'
+  query?: string
 }
 
 const scrapeGameAtom = atom(
@@ -256,7 +257,7 @@ const scrapeGameAtom = atom(
   async (
     get,
     set,
-    { gameId, extraText, scraper = 'screenscraper', scrapeBy = 'rom' }: ScrapeSettings
+    { gameId, extraText, scraper = 'screenscraper', scrapeBy = 'rom', query = '' }: ScrapeSettings
   ) => {
     const ssCreds = get(appConfigAtom).credentials.screenscraper
 
@@ -270,7 +271,7 @@ const scrapeGameAtom = atom(
 
     set(notifications.add, {
       id: notificationId,
-      text: `Scraping ${game.name}!${extraText ?? ''}`,
+      text: `Scraping ${game.name}${scrapeBy === 'query' ? ` using query "${query}"` : ''}!${extraText ?? ''}`,
       type: 'download',
       timeout: 0
     })
@@ -281,14 +282,20 @@ const scrapeGameAtom = atom(
       let scrapedGame: Game
       switch (scraper) {
         case 'screenscraper':
-          scrapedGame =
-            scrapeBy === 'rom'
-              ? await ss.scrapeByRomInfo(game, system)
-              : await ss.scrapeByName(game, system)
+          switch(scrapeBy) {
+            case 'rom':
+              scrapedGame = await ss.scrapeByRomInfo(game, system)
+            case 'name':
+              scrapedGame = await ss.scrapeByName(game, system)
+            case 'query':
+              scrapedGame = await ss.scrapeByName(game, system, query)
+          }
+
           break
         case 'igdb':
           const igdb = await IGDB.build()
-          scrapedGame = await igdb.scrape(game, system)
+          scrapedGame = await igdb.scrape(game, system, query)
+          break
       }
 
       set(mainAtoms.single(gameId), scrapedGame)

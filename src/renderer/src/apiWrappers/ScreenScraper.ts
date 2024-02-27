@@ -129,9 +129,9 @@ export class ScreenScraper {
     }
   }
 
-  async scrapeByName(game: Game, system: System): Promise<Game> {
+  async scrapeByName(game: Game, system: System, name?: string): Promise<Game> {
     const path = 'jeuRecherche.php'
-    const params = { systemeid: system.ssId, recherche: game.name }
+    const params = { systemeid: system.ssId, recherche: name ?? game.name }
 
     try {
       const response = await this.fetchWithParams(path, params)

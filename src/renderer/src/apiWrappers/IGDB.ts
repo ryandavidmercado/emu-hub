@@ -24,11 +24,11 @@ export class IGDB {
     return new IGDB(access_token)
   }
 
-  async scrape(game: Game, system: System): Promise<Game> {
+  async scrape(game: Game, system: System, query?: string ): Promise<Game> {
     const systemQuery = system.igdbId ? ` & release_dates.platform = (${system.igdbId})` : ''
 
-    const query = `
-      search "${game.name}";
+    const gameQuery = `
+      search "${query ?? game.name}";
       fields name, screenshots.image_id, artworks.image_id, genres.name, summary, involved_companies.*, involved_companies.company.name;
       where category=0${systemQuery};
       limit 1;
@@ -45,7 +45,7 @@ export class IGDB {
         Accept: 'application/json',
         ...authHeaders
       },
-      body: query
+      body: gameQuery
     })
 
     const data = await res.json()
