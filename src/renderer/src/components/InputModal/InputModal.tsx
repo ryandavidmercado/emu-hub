@@ -106,7 +106,7 @@ export const InputModal = () => {
   }
 
   const backspace = () => {
-    if(!inputRef.current?.selectionStart) return
+    if(!inputRef.current) return
 
     const text = inputRef.current.value
     const insertionIndex = inputRef.current.selectionStart ?? inputRef.current.value.length
@@ -119,7 +119,7 @@ export const InputModal = () => {
   }
 
   const insertChar = (char: string) => {
-    if(!inputRef.current?.selectionStart) return
+    if(!inputRef.current) return
 
     const text = inputRef.current.value
     const insertionIndex = inputRef.current.selectionStart ?? inputRef.current.value.length
